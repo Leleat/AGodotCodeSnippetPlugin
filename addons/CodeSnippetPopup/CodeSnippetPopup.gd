@@ -32,7 +32,6 @@ func _ready() -> void:
 	
 	_update_snippets()
 	
-	PLUGIN.connect("main_screen_changed", self, "_on_main_screen_changed")
 	snippet_editor.connect("snippets_changed", self, "_update_snippets")
 
 
