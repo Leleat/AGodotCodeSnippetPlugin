@@ -2,7 +2,6 @@ tool
 extends PopupPanel
 
 
-var PLUGIN : EditorPlugin
 var INTERFACE : EditorInterface
 var EDITOR : ScriptEditor
 
@@ -11,6 +10,7 @@ onready var filter : LineEdit = $MarginContainer/VBoxContainer/HBoxContainer/Fil
 onready var copy_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Copy
 onready var edit_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Edit
 onready var snippet_editor : WindowDialog = $TextEditPopupPanel
+onready var timer : Timer = $JumpStackTimer
 
 export (String) var custom_keyboard_shortcut # go to "Editor > Editor Settings... > Shortcuts > Bindings" to see how a keyboard_shortcut looks as a String 
 export (String) var keyword_signals = "sig " # short for _signal
@@ -19,6 +19,7 @@ export (bool) var adapt_popup_height = true
 
 var keyboard_shortcut : String = "Control+Tab" 
 var current_main_screen : String = ""
+var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos to search for markers; can be cleared by quickly double tapping the shortcut
 var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 const types : Array = ["-", "bool", "int", "float", "String", "Vector2", "Rect2", "Vector3", "Transform2D", "Plane", "Quat", "AABB", "Basis", \
@@ -29,17 +30,24 @@ const types : Array = ["-", "bool", "int", "float", "String", "Vector2", "Rect2"
 func _ready() -> void:
 	keyboard_shortcut = custom_keyboard_shortcut if custom_keyboard_shortcut else keyboard_shortcut
 	filter.right_icon = get_icon("Search", "EditorIcons")
-	
 	_update_snippets()
-	
 	snippet_editor.connect("snippets_changed", self, "_update_snippets")
 
 
 func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.as_text() == keyboard_shortcut and current_main_screen == "Script" and not visible:
-		_update_popup_list()
-		popup_centered(Vector2(750, 500) * (OS.get_screen_dpi() / 100))
-		filter.grab_focus()
+		if jump_stack[0] == 0:
+			_update_popup_list()
+			popup_centered(Vector2(750, 500) * (OS.get_screen_dpi() / 100))
+			filter.grab_focus()
+		else:
+			var code_editor : TextEdit = _get_current_code_editor()
+			if not timer.is_stopped():
+				while jump_stack[0] != 0:
+					_jump_to_and_delete_next_jump_marker(code_editor)
+				return
+			timer.start()
+			_jump_to_and_delete_next_jump_marker(code_editor)
 
 
 func _on_main_screen_changed(new_screen : String) -> void:
@@ -119,44 +127,64 @@ func _update_popup_list() -> void:
 
 
 func _paste_signal(signal_name : String) -> void:
-	var text_editor : TextEdit = _get_current_text_editor()
+	var code_editor : TextEdit = _get_current_code_editor()
 	var script_name = EDITOR.get_current_script().resource_path.get_file().get_basename()
 	var snippet = "connect(\"%s\", , \"_on_%s_%s\")" % [signal_name, script_name, signal_name]
-	text_editor.insert_text_at_cursor(snippet)
-	var new_column = text_editor.cursor_get_column() - signal_name.length() - script_name.length() - 10 # 10 = , "_on_")
-	text_editor.cursor_set_column(new_column)
+	code_editor.insert_text_at_cursor(snippet)
+	var new_column = code_editor.cursor_get_column() - signal_name.length() - script_name.length() - 10 # 10 = , "_on_")
+	code_editor.cursor_set_column(new_column)
 	OS.clipboard = "func _on_%s_%s():\n\tpass" % [script_name, signal_name]
 
 
 func _paste_code_snippet(snippet_name : String) -> void:
-	var text_editor : TextEdit = _get_current_text_editor()
+	var code_editor : TextEdit = _get_current_code_editor()
 	var use_type_hints = INTERFACE.get_editor_settings().get_setting("text_editor/completion/add_type_hints")
 	var snippet : String = code_snippets.get_value(snippet_name, "body") 
 	if use_type_hints and code_snippets.has_section_key(snippet_name, "type_hint"):
 		snippet += code_snippets.get_value(snippet_name, "type_hint")
 	elif not use_type_hints and code_snippets.has_section_key(snippet_name, "no_type_hint"):
 		snippet += code_snippets.get_value(snippet_name, "no_type_hint")
-		
+	
 	var goto_pos = snippet.find(snippet_marker_pos)
 	if goto_pos != -1:
 		snippet.erase(goto_pos, snippet_marker_pos.length())
-		_goto_snippet_marker(snippet, goto_pos, text_editor)
+		jump_stack[0] = snippet.count(snippet_marker_pos, goto_pos)
+		if jump_stack[0]:
+			jump_stack[1] = [code_editor.cursor_get_line(), code_editor.cursor_get_column()]
+		_goto_first_snippet_marker(snippet, goto_pos, code_editor)
 		
-	text_editor.call_deferred("insert_text_at_cursor", snippet)
+	code_editor.call_deferred("insert_text_at_cursor", snippet)
 
 
-func _goto_snippet_marker(snippet : String, goto_pos: int, text_editor : TextEdit) -> void:
-	var old_line = text_editor.cursor_get_line()
+func _goto_first_snippet_marker(snippet : String, goto_pos: int, code_editor : TextEdit) -> void:
+	var old_line = code_editor.cursor_get_line()
 	var new_line = old_line + snippet.count("\n", 0, goto_pos)
 	var new_columm = snippet.rfind("\n", goto_pos)
 	
 	new_columm = goto_pos - new_columm - 1 if new_columm != -1 else goto_pos
-	new_columm += text_editor.get_line(new_line).length() if not snippet.count("\n", 0, goto_pos) else 0 # respect previous columns
+	new_columm += code_editor.get_line(new_line).length() if not snippet.count("\n", 0, goto_pos) else 0 # respect previous columns
 	EDITOR.call_deferred("goto_line", new_line)
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
-	text_editor.call_deferred("cursor_set_column", new_columm)
+	code_editor.call_deferred("cursor_set_column", new_columm)
+
+
+func _jump_to_and_delete_next_jump_marker(code_editor : TextEdit) -> void:
+	var result = code_editor.search(snippet_marker_pos, 1, jump_stack[1][0], jump_stack[1][1])
+	if result.size() > 0:
+		jump_stack[1][0] = result[TextEdit.SEARCH_RESULT_LINE]
+		jump_stack[1][1] = result[TextEdit.SEARCH_RESULT_COLUMN]
+		code_editor.cursor_set_line(jump_stack[1][0])
+		code_editor.cursor_set_column(jump_stack[1][1])
+		
+		var tmp = OS.clipboard # couldn't find/think of a better way to mark the jump positions and delete the markers
+		code_editor.deselect()
+		code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + 1)
+		code_editor.cut()
+		OS.clipboard = tmp
+	
+	jump_stack[0] -= 1
 
 
 func _adapt_list_height() -> void:
@@ -169,7 +197,7 @@ func _adapt_list_height() -> void:
 		rect_size.y = clamp(height, 0, 500 * (OS.get_screen_dpi() / 100))
 
 
-func _get_current_text_editor() -> TextEdit:
+func _get_current_code_editor() -> TextEdit:
 	var script_index = 0
 	for script in EDITOR.get_open_scripts():
 		if script == EDITOR.get_current_script():

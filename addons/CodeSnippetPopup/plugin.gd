@@ -24,7 +24,6 @@ func _on_resource_saved(resource : Resource) -> void:
 
 func _init_palette() -> void:
 	code_snippet_popup = load("res://addons/CodeSnippetPopup/CodeSnippetPopup.tscn").instance()
-	code_snippet_popup.PLUGIN = self
 	code_snippet_popup.INTERFACE = get_editor_interface()
 	code_snippet_popup.EDITOR = get_editor_interface().get_script_editor()
 	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, code_snippet_popup)

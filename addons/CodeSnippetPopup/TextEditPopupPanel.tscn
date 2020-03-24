@@ -22,7 +22,7 @@ __meta__ = {
 [node name="Label" type="Label" parent="VBoxContainer"]
 margin_right = 1016.0
 margin_bottom = 31.0
-text = "Use INI-style structure. The [section] is the snippet name. \"body\" is the only key which has to be defined. Optionally use @ to mark the position the cursor is supposed to jump to."
+text = "Use INI-style structure. The [section] is the snippet name. \"body\" is the only key which has to be defined. Optionally use @ to mark the position(s) the cursor jumps to when pressing the shortcut again."
 autowrap = true
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
