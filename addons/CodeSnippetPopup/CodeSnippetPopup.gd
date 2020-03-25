@@ -4,19 +4,19 @@ extends PopupPanel
 
 var INTERFACE : EditorInterface
 var EDITOR : ScriptEditor
-
+	
 onready var item_list = $MarginContainer/VBoxContainer/ItemList
 onready var filter : LineEdit = $MarginContainer/VBoxContainer/HBoxContainer/Filter
 onready var copy_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Copy
 onready var edit_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Edit
 onready var snippet_editor : WindowDialog = $TextEditPopupPanel
 onready var timer : Timer = $JumpStackTimer
-
+	
 export (String) var custom_keyboard_shortcut # go to "Editor > Editor Settings... > Shortcuts > Bindings" to see how a keyboard_shortcut looks as a String 
 export (String) var keyword_signals = "sig " # short for _signal
-export (String) var snippet_marker_pos = "@" # if this is changed, the CodeSnippets.cfg should also be edited
+export (String) var snippet_jump_marker = "[@]" # if this is changed, the CodeSnippets.cfg should also be edited
 export (bool) var adapt_popup_height = true
-
+	
 var keyboard_shortcut : String = "Control+Tab" 
 var current_main_screen : String = ""
 var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [line, column] to search for markers; can be cleared by quickly double tapping the shortcut
@@ -40,6 +40,7 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 			_update_popup_list()
 			popup_centered(Vector2(750, 500) * (OS.get_screen_dpi() / 100))
 			filter.grab_focus()
+		
 		else:
 			var code_editor : TextEdit = _get_current_code_editor()
 			if not timer.is_stopped():
@@ -145,38 +146,21 @@ func _paste_code_snippet(snippet_name : String) -> void:
 	elif not use_type_hints and code_snippets.has_section_key(snippet_name, "no_type_hint"):
 		snippet += code_snippets.get_value(snippet_name, "no_type_hint")
 	
-	var goto_pos = snippet.find(snippet_marker_pos)
-	if goto_pos != -1:
-		snippet.erase(goto_pos, snippet_marker_pos.length())
-		jump_stack[0] = snippet.count(snippet_marker_pos, goto_pos)
-		if jump_stack[0]:
-			jump_stack[1] = [code_editor.cursor_get_line(), code_editor.cursor_get_column()]
-		_goto_first_snippet_marker(snippet, goto_pos, code_editor)
-		
-	code_editor.call_deferred("insert_text_at_cursor", snippet)
-
-
-func _goto_first_snippet_marker(snippet : String, goto_pos: int, code_editor : TextEdit) -> void:
-	var old_line = code_editor.cursor_get_line()
-	var new_line = old_line + snippet.count("\n", 0, goto_pos)
-	var new_columm = snippet.rfind("\n", goto_pos)
-	
-	new_columm = goto_pos - new_columm - 1 if new_columm != -1 else goto_pos
-	new_columm += code_editor.get_line(new_line).length() if not snippet.count("\n", 0, goto_pos) else 0 # respect previous columns
-	EDITOR.call_deferred("goto_line", new_line)
-	yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")
-	code_editor.call_deferred("cursor_set_column", new_columm)
+	var curr_pos = [code_editor.cursor_get_line(), code_editor.cursor_get_column()]
+	code_editor.insert_text_at_cursor(snippet)
+	jump_stack[0] = snippet.count(snippet_jump_marker)
+	if jump_stack[0]:
+		jump_stack[1] = curr_pos
+		_jump_to_and_delete_next_marker(code_editor)
 
 
 func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 	# couldn't find/think of a better way to mark the jump positions and delete the markers
-	var result = code_editor.search(snippet_marker_pos, 1, jump_stack[1][0], jump_stack[1][1])
+	var result = code_editor.search(snippet_jump_marker, 1, jump_stack[1][0], jump_stack[1][1])
 	if result.size() > 0:
 		if result[TextEdit.SEARCH_RESULT_LINE] < jump_stack[1][0]:
-			# search reached EOF for some reason even though stack still has a counter (for ex. because user manually deleted @s)
-			# it doesn't account for @s the user added in the script which come after the snippet but before EOF
+			# search reached EOF for some reason even though stack still has a counter (for ex. because user manually deleted snippet markers)
+			# it doesn't account for user added code which happens to be the same as the marker and appears before the EOF; workaround: unique marker
 			jump_stack[0] = 0
 			return
 		jump_stack[1][0] = result[TextEdit.SEARCH_RESULT_LINE]
@@ -186,10 +170,14 @@ func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 		
 		var tmp = OS.clipboard 
 		code_editor.deselect()
-		code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + 1)
+		code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + snippet_jump_marker.length())
 		code_editor.cut()
 		OS.clipboard = tmp
 		jump_stack[0] -= 1
+	
+	else:
+		jump_stack[0] = 0
+		return
 
 
 func _adapt_list_height() -> void:
@@ -250,9 +238,9 @@ func _on_Copy_pressed() -> void:
 			snippet += code_snippets.get_value(snippet_name, "type_hint")
 		elif not use_type_hints and code_snippets.has_section_key(snippet_name, "no_type_hint"):
 			snippet += code_snippets.get_value(snippet_name, "no_type_hint")
-		var marker_pos = snippet.find(snippet_marker_pos)
+		var marker_pos = snippet.find(snippet_jump_marker)
 		if marker_pos != -1:
-			snippet.erase(marker_pos, snippet_marker_pos.length()) 
+			snippet.erase(marker_pos, snippet_jump_marker.length()) 
 		OS.clipboard = snippet
 	hide()
 
