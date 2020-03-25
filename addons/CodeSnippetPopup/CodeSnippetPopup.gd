@@ -13,7 +13,7 @@ onready var snippet_editor : WindowDialog = $TextEditPopupPanel
 onready var timer : Timer = $JumpStackTimer
 	
 export (String) var custom_keyboard_shortcut # go to "Editor > Editor Settings... > Shortcuts > Bindings" to see how a keyboard_shortcut looks as a String 
-export (String) var keyword_signals = "sig " # short for _signal
+export (String) var keyword_signals = "sig " 
 export (String) var snippet_jump_marker = "[@]" # if this is changed, the CodeSnippets.cfg should also be edited
 export (bool) var adapt_popup_height = true
 	
