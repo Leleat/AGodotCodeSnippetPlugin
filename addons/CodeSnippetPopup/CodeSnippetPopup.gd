@@ -19,7 +19,7 @@ export (bool) var adapt_popup_height = true
 
 var keyboard_shortcut : String = "Control+Tab" 
 var current_main_screen : String = ""
-var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos to search for markers; can be cleared by quickly double tapping the shortcut
+var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [line, column] to search for markers; can be cleared by quickly double tapping the shortcut
 var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 const types : Array = ["-", "bool", "int", "float", "String", "Vector2", "Rect2", "Vector3", "Transform2D", "Plane", "Quat", "AABB", "Basis", \
@@ -35,7 +35,7 @@ func _ready() -> void:
 
 
 func _unhandled_key_input(event : InputEventKey) -> void:
-	if event.as_text() == keyboard_shortcut and current_main_screen == "Script" and not visible:
+	if event.as_text() == keyboard_shortcut and current_main_screen == "Script":
 		if jump_stack[0] == 0:
 			_update_popup_list()
 			popup_centered(Vector2(750, 500) * (OS.get_screen_dpi() / 100))
@@ -44,10 +44,10 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 			var code_editor : TextEdit = _get_current_code_editor()
 			if not timer.is_stopped():
 				while jump_stack[0] != 0:
-					_jump_to_and_delete_next_jump_marker(code_editor)
+					_jump_to_and_delete_next_marker(code_editor)
 				return
 			timer.start()
-			_jump_to_and_delete_next_jump_marker(code_editor)
+			_jump_to_and_delete_next_marker(code_editor)
 
 
 func _on_main_screen_changed(new_screen : String) -> void:
@@ -170,21 +170,26 @@ func _goto_first_snippet_marker(snippet : String, goto_pos: int, code_editor : T
 	code_editor.call_deferred("cursor_set_column", new_columm)
 
 
-func _jump_to_and_delete_next_jump_marker(code_editor : TextEdit) -> void:
+func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
+	# couldn't find/think of a better way to mark the jump positions and delete the markers
 	var result = code_editor.search(snippet_marker_pos, 1, jump_stack[1][0], jump_stack[1][1])
 	if result.size() > 0:
+		if result[TextEdit.SEARCH_RESULT_LINE] < jump_stack[1][0]:
+			# search reached EOF for some reason even though stack still has a counter (for ex. because user manually deleted @s)
+			# it doesn't account for @s the user added in the script which come after the snippet but before EOF
+			jump_stack[0] = 0
+			return
 		jump_stack[1][0] = result[TextEdit.SEARCH_RESULT_LINE]
 		jump_stack[1][1] = result[TextEdit.SEARCH_RESULT_COLUMN]
 		code_editor.cursor_set_line(jump_stack[1][0])
 		code_editor.cursor_set_column(jump_stack[1][1])
 		
-		var tmp = OS.clipboard # couldn't find/think of a better way to mark the jump positions and delete the markers
+		var tmp = OS.clipboard 
 		code_editor.deselect()
 		code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + 1)
 		code_editor.cut()
 		OS.clipboard = tmp
-	
-	jump_stack[0] -= 1
+		jump_stack[0] -= 1
 
 
 func _adapt_list_height() -> void:
