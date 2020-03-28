@@ -14,9 +14,12 @@ onready var timer : Timer = $JumpStackTimer
 	
 export (String) var custom_keyboard_shortcut # go to "Editor > Editor Settings... > Shortcuts > Bindings" to see how a keyboard_shortcut looks as a String 
 export (String) var keyword_signals = "sig " 
-export (String) var snippet_jump_marker = "[@]" # if this is changed, the CodeSnippets.cfg should also be edited
 export (bool) var adapt_popup_height = true
 	
+var snippet_jump_marker = "" # [@X] -> X needs to be an integer. Using the same X multiple times will replace them by whatever you typed for the first X (after a shortcut press)
+var current_snippet = ""
+var _delayed_one_key_press : bool = false
+
 var keyboard_shortcut : String = "Control+Tab" 
 var current_main_screen : String = ""
 var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [line, column] to search for markers; can be cleared by quickly double tapping the shortcut
@@ -36,16 +39,15 @@ func _ready() -> void:
 
 func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.as_text() == keyboard_shortcut and current_main_screen == "Script":
-		if jump_stack[0] == 0:
+		if jump_stack[0] <= 0:
 			_update_popup_list()
 			popup_centered(Vector2(750, 500) * (OS.get_screen_dpi() / 100))
 			filter.grab_focus()
-		
+			_delayed_one_key_press = false
 		else:
 			var code_editor : TextEdit = _get_current_code_editor()
 			if not timer.is_stopped():
-				while jump_stack[0] != 0:
-					_jump_to_and_delete_next_marker(code_editor)
+				jump_stack[0] = 0
 				return
 			timer.start()
 			_jump_to_and_delete_next_marker(code_editor)
@@ -140,44 +142,73 @@ func _paste_signal(signal_name : String) -> void:
 func _paste_code_snippet(snippet_name : String) -> void:
 	var code_editor : TextEdit = _get_current_code_editor()
 	var use_type_hints = INTERFACE.get_editor_settings().get_setting("text_editor/completion/add_type_hints")
-	var snippet : String = code_snippets.get_value(snippet_name, "body") 
+	var tab_count = code_editor.get_line(code_editor.cursor_get_line()).count("\t")
+	var tabs = "\t".repeat(tab_count)
+	
+	current_snippet = code_snippets.get_value(snippet_name, "body") 
 	if use_type_hints and code_snippets.has_section_key(snippet_name, "type_hint"):
-		snippet += code_snippets.get_value(snippet_name, "type_hint")
+		current_snippet += code_snippets.get_value(snippet_name, "type_hint")
 	elif not use_type_hints and code_snippets.has_section_key(snippet_name, "no_type_hint"):
-		snippet += code_snippets.get_value(snippet_name, "no_type_hint")
+		current_snippet += code_snippets.get_value(snippet_name, "no_type_hint")
+	current_snippet = current_snippet.replace("\n", "\n" + tabs)
 	
 	var curr_pos = [code_editor.cursor_get_line(), code_editor.cursor_get_column()]
-	code_editor.insert_text_at_cursor(snippet)
-	jump_stack[0] = snippet.count(snippet_jump_marker)
+	code_editor.insert_text_at_cursor(current_snippet)
+	jump_stack[0] = current_snippet.count("[@")
 	if jump_stack[0]:
 		jump_stack[1] = curr_pos
 		_jump_to_and_delete_next_marker(code_editor)
 
 
 func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
-	# couldn't find/think of a better way to mark the jump positions and delete the markers
-	var result = code_editor.search(snippet_jump_marker, 1, jump_stack[1][0], jump_stack[1][1])
+	if _delayed_one_key_press: # place the mirror vars after the keyboard shortcut was pressed
+		var mirror_var = _get_mirror_var(code_editor)
+		var specific_marker_count = current_snippet.count(snippet_jump_marker)
+		jump_stack[0] -= specific_marker_count - 1
+		while specific_marker_count:
+			var res = code_editor.search(snippet_jump_marker, 1, jump_stack[1][0], jump_stack[1][1])
+			if res:
+				code_editor.select(res[TextEdit.SEARCH_RESULT_LINE], res[TextEdit.SEARCH_RESULT_COLUMN], res[TextEdit.SEARCH_RESULT_LINE], res[TextEdit.SEARCH_RESULT_COLUMN] + snippet_jump_marker.length())
+				code_editor.insert_text_at_cursor(mirror_var)
+			specific_marker_count -= 1
+		current_snippet = current_snippet.replace(snippet_jump_marker, mirror_var)
+		
+	var result = code_editor.search("[@", 1, jump_stack[1][0], jump_stack[1][1])
 	if result.size() > 0:
 		if result[TextEdit.SEARCH_RESULT_LINE] < jump_stack[1][0]:
-			# search reached EOF for some reason even though stack still has a counter (for ex. because user manually deleted snippet markers)
-			# it doesn't account for user added code which happens to be the same as the marker and appears before the EOF; workaround: unique marker
+			# EOF reached, for example because user manually deleted markers
 			jump_stack[0] = 0
 			return
+		_set_current_marker()
+		_delayed_one_key_press = true
 		jump_stack[1][0] = result[TextEdit.SEARCH_RESULT_LINE]
 		jump_stack[1][1] = result[TextEdit.SEARCH_RESULT_COLUMN]
-		code_editor.cursor_set_line(jump_stack[1][0])
-		code_editor.cursor_set_column(jump_stack[1][1])
-		
-		var tmp = OS.clipboard 
-		code_editor.deselect()
 		code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + snippet_jump_marker.length())
+		var tmp = OS.clipboard 
 		code_editor.cut()
 		OS.clipboard = tmp
 		jump_stack[0] -= 1
+
+
+func _get_mirror_var(code_editor : TextEdit) -> String:
+	code_editor.select(0, 0, jump_stack[1][0], jump_stack[1][1])
+	var _code_before_marker = code_editor.get_selection_text()
 	
+	var pos = current_snippet.find(snippet_jump_marker)
+	var _text_in_snippet_after_marker = current_snippet.substr(pos + snippet_jump_marker.length() + 1)
+	
+	var _end_of_mirror_var = code_editor.text.find(_text_in_snippet_after_marker, _code_before_marker.length())
+	code_editor.deselect()
+	return code_editor.text.substr(_code_before_marker.length(), _end_of_mirror_var  - _code_before_marker.length() - 1)
+
+
+func _set_current_marker() -> void:
+	var pos = current_snippet.find("[@")
+	var end_pos = current_snippet.find("]", pos)
+	if current_snippet.substr(pos + 2, end_pos - pos - 2).is_valid_integer():
+		snippet_jump_marker = current_snippet.substr(pos, end_pos - pos + 1)
 	else:
-		jump_stack[0] = 0
-		return
+		push_warning("Code Snippet Plugin: Jump marker is not set up properly. The format is [@X] where X needs to be an integer")
 
 
 func _adapt_list_height() -> void:
