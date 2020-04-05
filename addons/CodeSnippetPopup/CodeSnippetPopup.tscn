@@ -27,7 +27,6 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-snippet_jump_marker = "[@]"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0
@@ -45,16 +44,14 @@ margin_right = 19448.0
 margin_bottom = 338.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-margin_right = 1016.0
+margin_right = 19448.0
 margin_bottom = 26.0
 
 [node name="Filter" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-margin_right = 929.0
+margin_right = 19361.0
 margin_bottom = 26.0
-hint_tooltip = "\"sig \" (without quotes) will list all available signals of the current scene root. 
-Activating a signal will generate a connection and copy the signal method to the clipboard. 
-
-Ending the search_string with \" X\" will jump to the X-th item in the list."
+hint_tooltip = "Ending the search_string with \" X\" will jump to the X-th item in the list.
+Click the \"Edit\" button to edit the code snippets. "
 size_flags_horizontal = 3
 clear_button_enabled = true
 right_icon = SubResource( 2 )
@@ -63,24 +60,24 @@ caret_blink = true
 caret_blink_speed = 0.5
 
 [node name="Copy" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-margin_left = 933.0
-margin_right = 976.0
+margin_left = 19365.0
+margin_right = 19408.0
 margin_bottom = 26.0
 text = "Copy"
 
 [node name="Edit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-margin_left = 980.0
-margin_right = 1016.0
+margin_left = 19412.0
+margin_right = 19448.0
 margin_bottom = 26.0
 text = "Edit"
 
 [node name="ItemList" type="ItemList" parent="MarginContainer/VBoxContainer"]
 margin_top = 30.0
-margin_right = 1016.0
-margin_bottom = 592.0
+margin_right = 19448.0
+margin_bottom = 338.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-items = [ " 0  :: ", null, false, "---- I'm an just example. ----", null, false, "Click the 'Edit' button to see how I work. Feel free to delete me!", null, true, " 1  :: ", null, false, "for loop", null, false, "", null, true, " 2  :: ", null, false, "_ready", null, false, "", null, true, " 3  :: ", null, false, "_enter_tree", null, false, "", null, true, " 4  :: ", null, false, "_exit_tree", null, false, "", null, true, " 5  :: ", null, false, "_physics_process", null, false, " (delta : float)", null, true, " 6  :: ", null, false, "_process", null, false, " (delta : float)", null, true, " 7  :: ", null, false, "_input", null, false, " (event : InputEvent)", null, true, " 8  :: ", null, false, "_unhandled_input", null, false, " (event : InputEvent)", null, true, " 9  :: ", null, false, "_unhandled_key_input", null, false, " (event : InputEventKey)", null, true, " 10  :: ", null, false, "_gui_input", null, false, " (event : InputEvent)", null, true, " 11  :: ", null, false, "_draw", null, false, "", null, true ]
+items = [ " 0  :: ", null, false, "---- I'm an just example. ----", null, false, "Click the 'Edit' button to see how I work. Feel free to delete me!", null, true, " 1  :: ", null, false, "---- Mirrored var example. ----", null, false, "Just another example you can delete.", null, true, " 2  :: ", null, false, "_ready", null, false, "", null, true, " 3  :: ", null, false, "_enter_tree", null, false, "", null, true, " 4  :: ", null, false, "_exit_tree", null, false, "", null, true, " 5  :: ", null, false, "_physics_process", null, false, " (delta : float)", null, true, " 6  :: ", null, false, "_process", null, false, " (delta : float)", null, true, " 7  :: ", null, false, "_input", null, false, " (event : InputEvent)", null, true, " 8  :: ", null, false, "_unhandled_input", null, false, " (event : InputEvent)", null, true, " 9  :: ", null, false, "_unhandled_key_input", null, false, " (event : InputEventKey)", null, true, " 10  :: ", null, false, "_gui_input", null, false, " (event : InputEvent)", null, true, " 11  :: ", null, false, "_draw", null, false, "", null, true ]
 max_columns = 3
 __meta__ = {
 "_edit_use_anchors_": false

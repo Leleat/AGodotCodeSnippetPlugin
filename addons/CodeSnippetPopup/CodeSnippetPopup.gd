@@ -13,7 +13,6 @@ onready var snippet_editor : WindowDialog = $TextEditPopupPanel
 onready var timer : Timer = $JumpStackTimer
 	
 export (String) var custom_keyboard_shortcut # go to "Editor > Editor Settings... > Shortcuts > Bindings" to see how a keyboard_shortcut looks as a String 
-export (String) var keyword_signals = "sig " 
 export (bool) var adapt_popup_height = true
 	
 var snippet_jump_marker = "" # [@X] -> X needs to be an integer. Using the same X multiple times will replace them by whatever you typed for the first X (after a shortcut press)
@@ -25,9 +24,6 @@ var current_main_screen : String = ""
 var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [line, column] to search for markers; can be cleared by quickly double tapping the shortcut
 var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
-const types : Array = ["-", "bool", "int", "float", "String", "Vector2", "Rect2", "Vector3", "Transform2D", "Plane", "Quat", "AABB", "Basis", \
-		"Transform", "Color", "NodePath", "RID", "Object", "Dictionary", "Array", "PoolByteArray", "PoolIntArray", "PoolRealArray", \
-		"PoolStringArray", "PoolVector2Array", "PoolVector3Array", "PoolColorArray", "Variant"] # type hints for vars when using the _signal keyword
 
 
 func _ready() -> void:
@@ -79,47 +75,19 @@ func _update_popup_list() -> void:
 		if quickselect_line.is_valid_integer():
 			search_string.erase(qs_starts_at + 1, quickselect_line.length())
 	
-	# show the signals of the current scene root
-	if search_string.begins_with(keyword_signals):
-		search_string.erase(0, keyword_signals.length())
-		search_string = search_string.strip_edges()
-		copy_button.visible = false
-		edit_button.visible = false
-		var counter = 0
-		for _signal in INTERFACE.get_edited_scene_root().get_signal_list():
-			if search_string and not _signal.name.match("*" + search_string + "*"):
-				continue
-			item_list.add_item(" " + String(counter) + "  :: ", null, false)
-			item_list.add_item(_signal.name)
-			if _signal.args:
-				item_list.add_item("(") 
-				var current_item = item_list.get_item_count() - 1
-				for arg_index in _signal.args.size():
-						item_list.set_item_text(current_item, item_list.get_item_text(current_item) + _signal.args[arg_index].name + " : " \
-						+ (_signal.args[arg_index].get("class_name") if _signal.args[arg_index].get("class_name") else types[_signal.args[arg_index].type]) \
-						+ (", " if arg_index < _signal.args.size() - 1 else ""))
-				item_list.set_item_text(current_item, item_list.get_item_text(current_item) + ")") 
-				item_list.set_item_disabled(current_item, true)
-			else:
-				item_list.add_item("", null, false)
-				item_list.set_item_disabled(item_list.get_item_count() - 1, true)
-			counter += 1
-	
-	# show code snippets
-	else:
-		search_string = search_string.strip_edges()
-		copy_button.visible = true
-		edit_button.visible = true
-		var counter = 0
-		for snippet_name in code_snippets.get_sections():
-			if search_string and not snippet_name.match("*" + search_string + "*"):
-				continue
-			item_list.add_item(" " + String(counter) + "  :: ", null, false)
-			item_list.add_item(snippet_name)
-			item_list.add_item(code_snippets.get_value(snippet_name, "additional_info"), null, false) \
-					if code_snippets.has_section_key(snippet_name, "additional_info") else item_list.add_item("", null, false)
-			item_list.set_item_disabled(item_list.get_item_count() - 1, true)
-			counter += 1
+	search_string = search_string.strip_edges()
+	copy_button.visible = true
+	edit_button.visible = true
+	var counter = 0
+	for snippet_name in code_snippets.get_sections():
+		if search_string and not snippet_name.match("*" + search_string + "*"):
+			continue
+		item_list.add_item(" " + String(counter) + "  :: ", null, false)
+		item_list.add_item(snippet_name)
+		item_list.add_item(code_snippets.get_value(snippet_name, "additional_info"), null, false) \
+				if code_snippets.has_section_key(snippet_name, "additional_info") else item_list.add_item("", null, false)
+		item_list.set_item_disabled(item_list.get_item_count() - 1, true)
+		counter += 1
 	
 	quickselect_line = clamp(quickselect_line as int, 0, item_list.get_item_count() / item_list.max_columns - 1)
 	if item_list.get_item_count() > 0:
@@ -127,16 +95,6 @@ func _update_popup_list() -> void:
 		item_list.ensure_current_is_visible()
 		
 	call_deferred("_adapt_list_height")
-
-
-func _paste_signal(signal_name : String) -> void:
-	var code_editor : TextEdit = _get_current_code_editor()
-	var script_name = EDITOR.get_current_script().resource_path.get_file().get_basename()
-	var snippet = "connect(\"%s\", , \"_on_%s_%s\")" % [signal_name, script_name, signal_name]
-	code_editor.insert_text_at_cursor(snippet)
-	var new_column = code_editor.cursor_get_column() - signal_name.length() - script_name.length() - 10 # 10 = , "_on_")
-	code_editor.cursor_set_column(new_column)
-	OS.clipboard = "func _on_%s_%s():\n\tpass" % [script_name, signal_name]
 
 
 func _paste_code_snippet(snippet_name : String) -> void:
@@ -252,10 +210,7 @@ func _activate_item(selected_index : int = -1) -> void:
 		return
 	
 	var selected_name = item_list.get_item_text(selected_index)
-	if filter.text.begins_with(keyword_signals):
-		_paste_signal(selected_name)
-	else:
-		_paste_code_snippet(selected_name)
+	_paste_code_snippet(selected_name)
 	hide()
 
 

@@ -33,4 +33,4 @@ func _init_palette() -> void:
 
 func _cleanup_palette() -> void:
 	remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, code_snippet_popup)
-	code_snippet_popup.free()
+	code_snippet_popup.queue_free()
