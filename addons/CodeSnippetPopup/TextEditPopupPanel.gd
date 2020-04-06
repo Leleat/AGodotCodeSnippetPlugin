@@ -5,14 +5,14 @@ extends WindowDialog
 onready var text_edit = $VBoxContainer/MarginContainer/TextEdit
 onready var cancel_button = $VBoxContainer/HBoxContainer/CancelButton
 onready var save_button = $VBoxContainer/HBoxContainer/SaveButton
-
+	
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 signal snippets_changed
 
 
 # called via the main plugin CodeSnippetPopup.tscn/.gd
 func edit_snippet(snippets : String) -> void:
-	popup_centered_clamped(Vector2(500, 1000) * (OS.get_screen_dpi() / 100), 0.75)
+	popup_centered_clamped(Vector2(750, 1000) * (OS.get_screen_dpi() / 100), 0.75)
 	
 	text_edit.text = snippets
 	text_edit.grab_focus()

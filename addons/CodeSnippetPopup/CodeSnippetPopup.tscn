@@ -3,7 +3,7 @@
 [ext_resource path="res://addons/CodeSnippetPopup/CodeSnippetPopup.gd" type="Script" id=1]
 [ext_resource path="res://addons/CodeSnippetPopup/TextEditPopupPanel.tscn" type="PackedScene" id=2]
 
-[sub_resource type="Image" id=3]
+[sub_resource type="Image" id=1]
 data = {
 "data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
 "format": "LumAlpha8",
@@ -15,14 +15,14 @@ data = {
 [sub_resource type="ImageTexture" id=2]
 flags = 4
 flags = 4
-image = SubResource( 3 )
+image = SubResource( 1 )
 size = Vector2( 16, 16 )
 
 [node name="CodeSnippetPopup" type="PopupPanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = 25600.0
-margin_bottom = 450.0
+margin_right = 94208.0
+margin_bottom = 346.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -40,8 +40,8 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-margin_right = 26616.0
-margin_bottom = 1042.0
+margin_right = 95224.0
+margin_bottom = 938.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 margin_right = 20472.0
@@ -77,7 +77,7 @@ margin_right = 20472.0
 margin_bottom = 442.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-items = [ " 0  :: ", null, false, "---- I'm an just example. ----", null, false, "Click the 'Edit' button to see how I work. Feel free to delete me!", null, true, " 1  :: ", null, false, "---- Mirrored var example. ----", null, false, "Just another example you can delete.", null, true, " 2  :: ", null, false, "_ready", null, false, "", null, true, " 3  :: ", null, false, "_enter_tree", null, false, "", null, true, " 4  :: ", null, false, "_exit_tree", null, false, "", null, true, " 5  :: ", null, false, "_physics_process", null, false, " (delta : float)", null, true, " 6  :: ", null, false, "_process", null, false, " (delta : float)", null, true, " 7  :: ", null, false, "_input", null, false, " (event : InputEvent)", null, true, " 8  :: ", null, false, "_unhandled_input", null, false, " (event : InputEvent)", null, true, " 9  :: ", null, false, "_unhandled_key_input", null, false, " (event : InputEventKey)", null, true, " 10  :: ", null, false, "_gui_input", null, false, " (event : InputEvent)", null, true, " 11  :: ", null, false, "_draw", null, false, "", null, true ]
+items = [ " 0  :: ", null, false, "---- I'm an just example. ----", null, false, "Click the 'Edit' button to see how I work. Feel free to delete me!", null, true, " 1  :: ", null, false, "---- Mirrored/dropdown var example. ----", null, false, "Just another example you can delete.", null, true, " 2  :: ", null, false, "_ready", null, false, "", null, true, " 3  :: ", null, false, "_enter_tree", null, false, "", null, true, " 4  :: ", null, false, "_exit_tree", null, false, "", null, true, " 5  :: ", null, false, "_physics_process", null, false, " (delta : float)", null, true, " 6  :: ", null, false, "_process", null, false, " (delta : float)", null, true, " 7  :: ", null, false, "_input", null, false, " (event : InputEvent)", null, true, " 8  :: ", null, false, "_unhandled_input", null, false, " (event : InputEvent)", null, true, " 9  :: ", null, false, "_unhandled_key_input", null, false, " (event : InputEventKey)", null, true, " 10  :: ", null, false, "_gui_input", null, false, " (event : InputEvent)", null, true, " 11  :: ", null, false, "_draw", null, false, "", null, true ]
 max_columns = 3
 __meta__ = {
 "_edit_use_anchors_": false

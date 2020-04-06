@@ -32,6 +32,7 @@ func _init_palette() -> void:
 	drop_down = load("res://addons/CodeSnippetPopup/DropDownPopup.tscn").instance()
 	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, drop_down)
 	drop_down.connect("fill_list", drop_down, "_on_DropDown_shown")
+	drop_down.main = code_snippet_popup
 	code_snippet_popup.drop_down = drop_down
 	
 	connect("main_screen_changed", code_snippet_popup, "_on_main_screen_changed")
@@ -40,3 +41,4 @@ func _init_palette() -> void:
 func _cleanup_palette() -> void:
 	remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, code_snippet_popup)
 	code_snippet_popup.queue_free()
+	drop_down.queue_free()

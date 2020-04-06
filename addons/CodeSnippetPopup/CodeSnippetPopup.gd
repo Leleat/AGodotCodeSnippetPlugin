@@ -18,11 +18,7 @@ export (bool) var adapt_popup_height = true
 var snippet_jump_marker = "" # [@X] -> X needs to be an integer. Using the same X multiple times will replace them by whatever you typed for the first X (after a shortcut press)
 var current_snippet = ""
 var _delayed_one_key_press : bool = false
-<<<<<<< Updated upstream
-var placeholder 
-=======
 var placeholder : String
->>>>>>> Stashed changes
 	
 var keyboard_shortcut : String = "Control+Tab" 
 var current_main_screen : String = ""
@@ -31,17 +27,13 @@ var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 var drop_down : PopupMenu
 
-# TODO dropdown list; do it after removing the marker
-
-# TODO dropdown list; do it after removing the marker
-
 
 func _ready() -> void:
 	keyboard_shortcut = custom_keyboard_shortcut if custom_keyboard_shortcut else keyboard_shortcut
 	filter.right_icon = get_icon("Search", "EditorIcons")
 	_update_snippets()
 	snippet_editor.connect("snippets_changed", self, "_update_snippets")
-
+	
 
 func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.as_text() == keyboard_shortcut and current_main_screen == "Script":
@@ -130,7 +122,7 @@ func _paste_code_snippet(snippet_name : String) -> void:
 
 func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 	code_editor.deselect() # placeholders
-	yield(get_tree(), "idle_frame") # placeholders
+	yield(get_tree().create_timer(.01), "timeout") # placeholders
 	
 	if _delayed_one_key_press: # place the mirror vars after the keyboard shortcut was pressed
 		var mirror_var = _get_mirror_var(code_editor)
@@ -139,7 +131,8 @@ func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 		while specific_marker_count:
 			var res = code_editor.search(snippet_jump_marker, 1, jump_stack[1][0], jump_stack[1][1])
 			if res:
-				code_editor.select(res[TextEdit.SEARCH_RESULT_LINE], res[TextEdit.SEARCH_RESULT_COLUMN], res[TextEdit.SEARCH_RESULT_LINE], res[TextEdit.SEARCH_RESULT_COLUMN] + snippet_jump_marker.length())
+				code_editor.select(res[TextEdit.SEARCH_RESULT_LINE], res[TextEdit.SEARCH_RESULT_COLUMN], res[TextEdit.SEARCH_RESULT_LINE], res[TextEdit.SEARCH_RESULT_COLUMN] \
+						+ snippet_jump_marker.length())
 				code_editor.insert_text_at_cursor(mirror_var)
 			specific_marker_count -= 1
 		current_snippet = current_snippet.replace(snippet_jump_marker, mirror_var)
@@ -155,27 +148,24 @@ func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 			_delayed_one_key_press = true
 			jump_stack[1][0] = result[TextEdit.SEARCH_RESULT_LINE]
 			jump_stack[1][1] = result[TextEdit.SEARCH_RESULT_COLUMN]
-			code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + snippet_jump_marker.length() + (placeholder.length() + 1 if placeholder else 0)) 
-			var tmp = OS.clipboard 
-<<<<<<< Updated upstream
-			code_editor.cut()
-			if placeholder:
-				code_editor.insert_text_at_cursor(placeholder)
-				code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + placeholder.length())
-				placeholder = ""
-=======
-			if placeholder:
-				if placeholder.find(",") != -1:
-					drop_down.code_editor = code_editor
-					drop_down.emit_signal("fill_list", placeholder)
-					drop_down.popup_centered()
+			code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + snippet_jump_marker.length() + (placeholder.length() + 1 if placeholder else 0))
+			
+			if placeholder: # the PopupMenu needs to be called even if just one place holder is there; otherwise buggy (for ex: mirror example)
+				drop_down.code_editor = code_editor
 				code_editor.insert_text_at_cursor(placeholder if placeholder.find(",") == -1 else placeholder.split(",")[0])
-				code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + (placeholder.length() if placeholder.find(",") == -1 else placeholder.split(",")[0].length()))
+				code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + (placeholder.length() if placeholder.find(",") == -1 \
+						else placeholder.split(",")[0].length()))
+				drop_down.emit_signal("fill_list", placeholder)
+				var font_size = INTERFACE.get_editor_settings().get_setting("interface/editor/code_font_size")
+				print(code_editor.cursor_get_column())
+				drop_down.rect_global_position = code_editor.rect_global_position + Vector2((code_editor.cursor_get_column() - placeholder.split(",")[0].length()) * font_size + 65, (code_editor.cursor_get_line() \
+						- code_editor.scroll_vertical) * (font_size + 8)) # this assumes that scroll_vertical() = firt visible line
+				drop_down.popup()
 				placeholder = ""
 			else:
+				var tmp = OS.clipboard
 				code_editor.cut()
->>>>>>> Stashed changes
-			OS.clipboard = tmp
+				OS.clipboard = tmp
 			jump_stack[0] -= 1
 
 
@@ -186,7 +176,7 @@ func _get_mirror_var(code_editor : TextEdit) -> String:
 	var _text_in_snippet_after_marker = current_snippet.substr(pos + snippet_jump_marker.length() + 1)
 	var _end_of_mirror_var = code_editor.text.find(_text_in_snippet_after_marker, _code_before_marker.length())
 	code_editor.deselect()
-	return code_editor.text.substr(_code_before_marker.length(), _end_of_mirror_var - _code_before_marker.length() - 1) # TOFIXME: placeholder messes this up
+	return code_editor.text.substr(_code_before_marker.length(), _end_of_mirror_var - _code_before_marker.length() - 1) 
 
 
 func _set_current_marker() -> void:

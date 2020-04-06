@@ -2,8 +2,16 @@
 
 This plugin for Godot 3.2.X adds a popup which lists all available code snippets. The popup is shown with Control+Tab. 
 
-The snippets can be filtered by a search_string. Ending the seach_string with " X" will jump to the X-th item in the snippet list. Activating a snippet will insert it at the cursor position. The snippets can be edited within Godot itself using the "Edit" button. You can define multiple positions the cursor will jump to in the snippet after insertion with an "[@X]" (and pressing the keyboard shortcut again). X needs to be an integer. Using the same number multiple times will "mirror"  variables to the same markers (see the example in the plugin).
+The snippets can be filtered by a search_string. Ending the seach_string with " X" will jump to the X-th item in the snippet list. Activating a snippet will insert it at the cursor position. The snippets can be edited within Godot itself using the "Edit" button or you can directly edit the .cfg file with the editor of your choice. 
 
+You can define "tabstops", "mirrorable variables" and "placeholders/dropdown choice".
+
+**See the example in the plugin for more details.**
+
+*Known issues:* 
+
+- "Esc"-aping the dropdown choice options without changing the placeholder will mess up the formatting of the snippet.
+- The position of the dropdown options isn't right. I need a better way to position it.
 
 **Installation**:
 
