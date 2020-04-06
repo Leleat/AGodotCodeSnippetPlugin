@@ -3,6 +3,7 @@ extends EditorPlugin
 
 
 var code_snippet_popup : Popup
+var drop_down : PopupMenu
 
 
 func _enter_tree() -> void:
@@ -27,6 +28,11 @@ func _init_palette() -> void:
 	code_snippet_popup.INTERFACE = get_editor_interface()
 	code_snippet_popup.EDITOR = get_editor_interface().get_script_editor()
 	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, code_snippet_popup)
+	
+	drop_down = load("res://addons/CodeSnippetPopup/DropDownPopup.tscn").instance()
+	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, drop_down)
+	drop_down.connect("fill_list", drop_down, "_on_DropDown_shown")
+	code_snippet_popup.drop_down = drop_down
 	
 	connect("main_screen_changed", code_snippet_popup, "_on_main_screen_changed")
 

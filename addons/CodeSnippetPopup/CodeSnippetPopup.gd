@@ -18,13 +18,20 @@ export (bool) var adapt_popup_height = true
 var snippet_jump_marker = "" # [@X] -> X needs to be an integer. Using the same X multiple times will replace them by whatever you typed for the first X (after a shortcut press)
 var current_snippet = ""
 var _delayed_one_key_press : bool = false
+<<<<<<< Updated upstream
 var placeholder 
+=======
+var placeholder : String
+>>>>>>> Stashed changes
 	
 var keyboard_shortcut : String = "Control+Tab" 
 var current_main_screen : String = ""
 var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [line, column] to search for markers; can be cleared by quickly double tapping the shortcut
 var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
+var drop_down : PopupMenu
+
+# TODO dropdown list; do it after removing the marker
 
 # TODO dropdown list; do it after removing the marker
 
@@ -122,6 +129,9 @@ func _paste_code_snippet(snippet_name : String) -> void:
 
 
 func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
+	code_editor.deselect() # placeholders
+	yield(get_tree(), "idle_frame") # placeholders
+	
 	if _delayed_one_key_press: # place the mirror vars after the keyboard shortcut was pressed
 		var mirror_var = _get_mirror_var(code_editor)
 		var specific_marker_count = current_snippet.count(snippet_jump_marker) - 1
@@ -147,11 +157,24 @@ func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 			jump_stack[1][1] = result[TextEdit.SEARCH_RESULT_COLUMN]
 			code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + snippet_jump_marker.length() + (placeholder.length() + 1 if placeholder else 0)) 
 			var tmp = OS.clipboard 
+<<<<<<< Updated upstream
 			code_editor.cut()
 			if placeholder:
 				code_editor.insert_text_at_cursor(placeholder)
 				code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + placeholder.length())
 				placeholder = ""
+=======
+			if placeholder:
+				if placeholder.find(",") != -1:
+					drop_down.code_editor = code_editor
+					drop_down.emit_signal("fill_list", placeholder)
+					drop_down.popup_centered()
+				code_editor.insert_text_at_cursor(placeholder if placeholder.find(",") == -1 else placeholder.split(",")[0])
+				code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + (placeholder.length() if placeholder.find(",") == -1 else placeholder.split(",")[0].length()))
+				placeholder = ""
+			else:
+				code_editor.cut()
+>>>>>>> Stashed changes
 			OS.clipboard = tmp
 			jump_stack[0] -= 1
 
