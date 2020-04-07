@@ -8,10 +8,15 @@ You can define "tabstops", "mirrorable variables" and "placeholders/dropdown cho
 
 **See the example in the plugin for more details.**
 
-*Known issues:* 
+*New:*
 
-- "Esc"-aping the dropdown choice options without changing the placeholder will mess up the formatting of the snippet.
-- The position of the dropdown options isn't right. I need a better way to position it.
+- activating a dropdown choice will now jump to the next tabstop
+- ~~"Esc"-aping the dropdown choice options without changing the placeholder will mess up the formatting of the snippet.~~ workaround implemented
+- ~~The position of the dropdown options isn't right. I need a better way to position it.~~ fixed; needs more testing for different resolutions though.
+
+
+*Known issues:* 
+- multiple tabstops will cause the error *modules/gdscript/gdscript_tokenizer.cpp:1129 - Condition "tk_rb[ofs].type != TK_IDENTIFIER" is true. Returned: StringName()*. It does not hinder the functionality though.
 
 **Installation**:
 

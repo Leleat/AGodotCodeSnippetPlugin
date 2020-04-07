@@ -33,13 +33,13 @@ func _ready() -> void:
 	filter.right_icon = get_icon("Search", "EditorIcons")
 	_update_snippets()
 	snippet_editor.connect("snippets_changed", self, "_update_snippets")
-	
+
 
 func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.as_text() == keyboard_shortcut and current_main_screen == "Script":
 		if jump_stack[0] <= 0:
 			_update_popup_list()
-			popup_centered(Vector2(750, 500) * (OS.get_screen_dpi() / 100))
+			popup_centered_clamped(Vector2(750, 500) * (OS.get_screen_dpi() / 100))
 			filter.grab_focus()
 			_delayed_one_key_press = false
 		else:
@@ -49,6 +49,7 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 				return
 			timer.start()
 			_jump_to_and_delete_next_marker(code_editor)
+
 
 
 func _on_main_screen_changed(new_screen : String) -> void:
@@ -122,7 +123,7 @@ func _paste_code_snippet(snippet_name : String) -> void:
 
 func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 	code_editor.deselect() # placeholders
-	yield(get_tree().create_timer(.01), "timeout") # placeholders
+	yield(get_tree(), "idle_frame") # placeholders
 	
 	if _delayed_one_key_press: # place the mirror vars after the keyboard shortcut was pressed
 		var mirror_var = _get_mirror_var(code_editor)
@@ -152,20 +153,15 @@ func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 			
 			if placeholder: # the PopupMenu needs to be called even if just one place holder is there; otherwise buggy (for ex: mirror example)
 				drop_down.code_editor = code_editor
-				code_editor.insert_text_at_cursor(placeholder if placeholder.find(",") == -1 else placeholder.split(",")[0])
-				code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + (placeholder.length() if placeholder.find(",") == -1 \
-						else placeholder.split(",")[0].length()))
+				drop_down.rect_global_position = _get_cursor_position()
 				drop_down.emit_signal("fill_list", placeholder)
-				var font_size = INTERFACE.get_editor_settings().get_setting("interface/editor/code_font_size")
-				print(code_editor.cursor_get_column())
-				drop_down.rect_global_position = code_editor.rect_global_position + Vector2((code_editor.cursor_get_column() - placeholder.split(",")[0].length()) * font_size + 65, (code_editor.cursor_get_line() \
-						- code_editor.scroll_vertical) * (font_size + 8)) # this assumes that scroll_vertical() = firt visible line
 				drop_down.popup()
 				placeholder = ""
 			else:
 				var tmp = OS.clipboard
 				code_editor.cut()
 				OS.clipboard = tmp
+			
 			jump_stack[0] -= 1
 
 
@@ -269,3 +265,17 @@ func _on_Edit_pressed() -> void:
 	snippet_file.close()
 	
 	snippet_editor.edit_snippet(txt)
+
+
+func _get_cursor_position() -> Vector2:
+	var code_editor = _get_current_code_editor()
+	var editor_height = code_editor.get_child(1).max_value / code_editor.get_child(1).page * code_editor.rect_size.y
+	var line_height = editor_height / code_editor.get_line_count()
+	
+	var code_font = get_font("source", "EditorFonts") if not INTERFACE.get_editor_settings().get_setting("interface/editor/code_font") else load("interface/editor/code_font")
+	var curr_line = code_editor.get_line(code_editor.get_selection_from_line() if code_editor.get_selection_text() else code_editor.cursor_get_line()).replace("\t", "    ")
+	var line_size = code_font.get_string_size(curr_line.substr(0, curr_line.find("[@")) if code_editor.get_selection_text() else code_editor.get_line(code_editor.cursor_get_line()).substr(0, \
+			code_editor.cursor_get_column()).replace("\t", "    "))
+	
+	return code_editor.rect_global_position + Vector2(line_size.x + 80, ((code_editor.get_selection_from_line() + 1 if code_editor.get_selection_text() else code_editor.cursor_get_line()) \
+			- code_editor.scroll_vertical) * line_height) # this assumes that scroll_vertical() = first visible line
