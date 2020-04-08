@@ -26,6 +26,7 @@ var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [li
 var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 var drop_down : PopupMenu
+var screen_factor : int = OS.get_screen_dpi() / 100
 
 
 func _ready() -> void:
@@ -39,7 +40,7 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.as_text() == keyboard_shortcut and current_main_screen == "Script":
 		if jump_stack[0] <= 0:
 			_update_popup_list()
-			popup_centered_clamped(Vector2(750, 500) * (OS.get_screen_dpi() / 100))
+			popup_centered_clamped(Vector2(750, 500) * screen_factor)
 			filter.grab_focus()
 			_delayed_one_key_press = false
 		else:
@@ -49,7 +50,6 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 				return
 			timer.start()
 			_jump_to_and_delete_next_marker(code_editor)
-
 
 
 func _on_main_screen_changed(new_screen : String) -> void:
@@ -152,9 +152,11 @@ func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 			code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + snippet_jump_marker.length() + (placeholder.length() + 1 if placeholder else 0))
 			
 			if placeholder: # the PopupMenu needs to be called even if just one place holder is there; otherwise buggy (for ex: mirror example)
+				code_editor.insert_text_at_cursor(snippet_jump_marker)
+				code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + snippet_jump_marker.length())
 				drop_down.code_editor = code_editor
 				drop_down.rect_global_position = _get_cursor_position()
-				drop_down.emit_signal("fill_list", placeholder)
+				drop_down.emit_signal("show_options", placeholder)
 				drop_down.popup()
 				placeholder = ""
 			else:
@@ -192,11 +194,11 @@ func _set_current_marker() -> void:
 func _adapt_list_height() -> void:
 	if adapt_popup_height:
 		var script_icon = get_icon("Script", "EditorIcons")
-		var row_height = script_icon.get_size().y + (8 * (OS.get_screen_dpi() / 100))
+		var row_height = script_icon.get_size().y + (8 * screen_factor)
 		var rows = max(item_list.get_item_count() / item_list.max_columns, 1) + 1
 		var margin = filter.rect_size.y + $MarginContainer.margin_top + abs($MarginContainer.margin_bottom)
 		var height = row_height * rows + margin
-		rect_size.y = clamp(height, 0, 500 * (OS.get_screen_dpi() / 100))
+		rect_size.y = clamp(height, 0, 500 * screen_factor)
 
 
 func _get_current_code_editor() -> TextEdit:
@@ -269,13 +271,13 @@ func _on_Edit_pressed() -> void:
 
 func _get_cursor_position() -> Vector2:
 	var code_editor = _get_current_code_editor()
-	var editor_height = code_editor.get_child(1).max_value / code_editor.get_child(1).page * code_editor.rect_size.y
-	var line_height = editor_height / code_editor.get_line_count()
-	
 	var code_font = get_font("source", "EditorFonts") if not INTERFACE.get_editor_settings().get_setting("interface/editor/code_font") else load("interface/editor/code_font")
 	var curr_line = code_editor.get_line(code_editor.get_selection_from_line() if code_editor.get_selection_text() else code_editor.cursor_get_line()).replace("\t", "    ")
 	var line_size = code_font.get_string_size(curr_line.substr(0, curr_line.find("[@")) if code_editor.get_selection_text() else code_editor.get_line(code_editor.cursor_get_line()).substr(0, \
 			code_editor.cursor_get_column()).replace("\t", "    "))
+			
+	var editor_height = code_editor.get_child(1).max_value / code_editor.get_child(1).page * code_editor.rect_size.y
+	var line_height = editor_height / code_editor.get_line_count() if code_editor.get_child(1).visible else line_size.y + 6.5 * screen_factor # else: in case there is no scrollbar 
 	
-	return code_editor.rect_global_position + Vector2(line_size.x + 80, ((code_editor.get_selection_from_line() + 1 if code_editor.get_selection_text() else code_editor.cursor_get_line()) \
-			- code_editor.scroll_vertical) * line_height) # this assumes that scroll_vertical() = first visible line
+	return code_editor.rect_global_position + Vector2(line_size.x + 80 * screen_factor, ((code_editor.get_selection_from_line() + 1 if code_editor.get_selection_text() \
+			else code_editor.cursor_get_line()) - code_editor.scroll_vertical) * line_height) # this assumes that scroll_vertical() = first visible line

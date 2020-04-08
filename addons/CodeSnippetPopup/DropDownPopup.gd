@@ -1,7 +1,7 @@
 tool
 extends PopupMenu
 
-signal fill_list
+signal show_options
 var code_editor : TextEdit
 var main : PopupPanel
 var placeholder : String

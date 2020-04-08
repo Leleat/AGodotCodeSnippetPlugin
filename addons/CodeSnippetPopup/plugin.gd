@@ -31,7 +31,7 @@ func _init_palette() -> void:
 	
 	drop_down = load("res://addons/CodeSnippetPopup/DropDownPopup.tscn").instance()
 	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, drop_down)
-	drop_down.connect("fill_list", drop_down, "_on_DropDown_shown")
+	drop_down.connect("show_options", drop_down, "_on_DropDown_shown")
 	drop_down.main = code_snippet_popup
 	code_snippet_popup.drop_down = drop_down
 	
