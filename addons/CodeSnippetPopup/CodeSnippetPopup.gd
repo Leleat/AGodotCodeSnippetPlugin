@@ -10,7 +10,6 @@ onready var filter : LineEdit = $MarginContainer/VBoxContainer/HBoxContainer/Fil
 onready var copy_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Copy
 onready var edit_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Edit
 onready var snippet_editor : WindowDialog = $TextEditPopupPanel
-onready var timer : Timer = $JumpStackTimer
 	
 export (String) var custom_keyboard_shortcut # go to "Editor > Editor Settings... > Shortcuts > Bindings" to see how a keyboard_shortcut looks as a String 
 export (bool) var adapt_popup_height = true
@@ -22,7 +21,7 @@ var placeholder : String
 	
 var keyboard_shortcut : String = "Control+Tab" 
 var current_main_screen : String = ""
-var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [line, column] to search for markers; can be cleared by quickly double tapping the shortcut
+var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [line, column] to search for markers
 var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 var drop_down : PopupMenu
@@ -45,11 +44,11 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 			_delayed_one_key_press = false
 		else:
 			var code_editor : TextEdit = _get_current_code_editor()
-			if not timer.is_stopped():
-				jump_stack[0] = 0
-				return
-			timer.start()
 			_jump_to_and_delete_next_marker(code_editor)
+	
+	if event.is_action_pressed("ui_cancel") and not drop_down.visible and jump_stack[0] != 0:
+		jump_stack[0] = 0
+		placeholder = ""
 
 
 func _on_main_screen_changed(new_screen : String) -> void:
@@ -83,7 +82,7 @@ func _update_popup_list() -> void:
 	edit_button.visible = true
 	var counter = 0
 	for snippet_name in code_snippets.get_sections():
-		if search_string and not snippet_name.match("*" + search_string + "*"):
+		if search_string and not snippet_name.match("*" + search_string + "*") and not search_string.is_subsequence_ofi(snippet_name):
 			continue
 		item_list.add_item(" " + String(counter) + "  :: ", null, false)
 		item_list.add_item(snippet_name)

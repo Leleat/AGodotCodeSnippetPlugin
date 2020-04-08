@@ -21,7 +21,7 @@ size = Vector2( 16, 16 )
 [node name="CodeSnippetPopup" type="PopupPanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = 106496.0
+margin_right = 107520.0
 margin_bottom = -254.0
 script = ExtResource( 1 )
 __meta__ = {
@@ -40,7 +40,7 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-margin_right = 107512.0
+margin_right = 108536.0
 margin_bottom = 338.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
@@ -88,10 +88,6 @@ margin_left = 4.0
 margin_top = 4.0
 margin_right = -4.0
 margin_bottom = -4.0
-
-[node name="JumpStackTimer" type="Timer" parent="."]
-wait_time = 0.3
-one_shot = true
 [connection signal="popup_hide" from="." to="." method="_on_CodeSnippetPopup_popup_hide"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
 [connection signal="text_entered" from="MarginContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_entered"]

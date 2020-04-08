@@ -23,7 +23,7 @@ __meta__ = {
 margin_right = 1016.0
 margin_bottom = 31.0
 text = "INI-style structure. The [section] is the snippet name. \"body\" is the only key which has to be defined. Use [@X], where X is an integer, to mark the position(s) the cursor jumps to when pressing the shortcut after insertion. If you use a number multiple times, the code you used for the first X will be mirrored to the other markers. You can add a placeholder and dropdown options like this [@1:Option1,Option2].
-Quickly double tap the shortcut, if you want to abort the jumping)."
+Press Esc while the choice options isn't visible, will abort the jumping."
 autowrap = true
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
