@@ -24,6 +24,7 @@ var current_main_screen : String = ""
 var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [line, column] to search for markers
 var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
+const UTIL = preload("res://addons/CodeSnippetPopup/util.gd")
 var drop_down : PopupMenu
 var screen_factor : int = OS.get_screen_dpi() / 100
 
@@ -43,7 +44,7 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 			filter.grab_focus()
 			_delayed_one_key_press = false
 		else:
-			var code_editor : TextEdit = _get_current_code_editor()
+			var code_editor : TextEdit = UTIL.get_current_script_texteditor(EDITOR)
 			_jump_to_and_delete_next_marker(code_editor)
 	
 	if event.is_action_pressed("ui_cancel") and not drop_down.visible and jump_stack[0] != 0:
@@ -100,7 +101,7 @@ func _update_popup_list() -> void:
 
 
 func _paste_code_snippet(snippet_name : String) -> void:
-	var code_editor : TextEdit = _get_current_code_editor()
+	var code_editor : TextEdit = UTIL.get_current_script_texteditor(EDITOR)
 	var use_type_hints = INTERFACE.get_editor_settings().get_setting("text_editor/completion/add_type_hints")
 	var tab_count = code_editor.get_line(code_editor.cursor_get_line()).count("\t")
 	var tabs = "\t".repeat(tab_count)
@@ -200,15 +201,6 @@ func _adapt_list_height() -> void:
 		rect_size.y = clamp(height, 0, 500 * screen_factor)
 
 
-func _get_current_code_editor() -> TextEdit:
-	var script_index = 0
-	for script in EDITOR.get_open_scripts():
-		if script == EDITOR.get_current_script():
-			break
-		script_index += 1
-	return EDITOR.get_child(0).get_child(1).get_child(1).get_child(script_index).get_child(0).get_child(0).get_child(0) as TextEdit # :(
-
-
 func _on_Filter_text_changed(new_text: String) -> void:
 	_update_popup_list()
 
@@ -269,7 +261,7 @@ func _on_Edit_pressed() -> void:
 
 
 func _get_cursor_position() -> Vector2:
-	var code_editor = _get_current_code_editor()
+	var code_editor = UTIL.get_current_script_texteditor(EDITOR)
 	var code_font = get_font("source", "EditorFonts") if not INTERFACE.get_editor_settings().get_setting("interface/editor/code_font") else load("interface/editor/code_font")
 	var curr_line = code_editor.get_line(code_editor.get_selection_from_line() if code_editor.get_selection_text() else code_editor.cursor_get_line()).replace("\t", "    ")
 	var line_size = code_font.get_string_size(curr_line.substr(0, curr_line.find("[@")) if code_editor.get_selection_text() else code_editor.get_line(code_editor.cursor_get_line()).substr(0, \
