@@ -10,14 +10,8 @@ You can define "tabstops", "mirrorable variables" and "placeholders/dropdown cho
 
 *New:*
 
-- added subsequence matching for the search_string (for ex. "exre" will match the snippet "_exit_tree")
+- the numerical order of the tabstop markers will now be respected when jumping
 - Esc will now abort the tabstop jumping (previously on double tapping of the shortcut)
-- bugfix: position of the choice popup when there is no scrollbar appears now correctly (or at least at a better position)
-- ~~multiple tabstops will cause the error *modules/gdscript/gdscript_tokenizer.cpp:1129 - Condition "tk_rb[ofs].type != TK_IDENTIFIER" is true. Returned: StringName()*. It does not hinder the functionality though.~~ fixed
-- activating a dropdown choice will now jump to the next tabstop
-- ~~"Esc"-aping the dropdown choice options without changing the placeholder will mess up the formatting of the snippet.~~ workaround implemented
-- ~~The position of the dropdown options isn't right. I need a better way to position it.~~ fixed; needs more testing for different resolutions though.
-
 
 **Installation**:
 

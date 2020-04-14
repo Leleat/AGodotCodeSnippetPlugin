@@ -14,14 +14,16 @@ onready var snippet_editor : WindowDialog = $TextEditPopupPanel
 export (String) var custom_keyboard_shortcut # go to "Editor > Editor Settings... > Shortcuts > Bindings" to see how a keyboard_shortcut looks as a String 
 export (bool) var adapt_popup_height = true
 	
-var snippet_jump_marker = "" # [@X] -> X needs to be an integer. Using the same X multiple times will replace them by whatever you typed for the first X (after a shortcut press)
+var snippet_jump_marker = "" # [@X] -> X should be an integer. Using the same X multiple times will replace them by whatever you typed for the first X (after a shortcut press)
 var current_snippet = ""
-var _delayed_one_key_press : bool = false
+var delayed_one_key_press : bool = false
 var placeholder : String
+var starting_pos : Array # pos, where snippet was inserted
+var curr_snippet_pos : Array # pos, where the current tabstop marker was
+var tabstop_numbers : Array # technically doesn't have to be an int
 	
 var keyboard_shortcut : String = "Control+Tab" 
 var current_main_screen : String = ""
-var jump_stack : Array = [0, 0] # [0] = how many jumps left, [1] = start_pos [line, column] to search for markers
 var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 const UTIL = preload("res://addons/CodeSnippetPopup/util.gd")
@@ -38,17 +40,17 @@ func _ready() -> void:
 
 func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.as_text() == keyboard_shortcut and current_main_screen == "Script":
-		if jump_stack[0] <= 0:
+		if tabstop_numbers.empty():
 			_update_popup_list()
 			popup_centered_clamped(Vector2(750, 500) * screen_factor)
 			filter.grab_focus()
-			_delayed_one_key_press = false
+			delayed_one_key_press = false
 		else:
 			var code_editor : TextEdit = UTIL.get_current_script_texteditor(EDITOR)
 			_jump_to_and_delete_next_marker(code_editor)
 	
-	if event.is_action_pressed("ui_cancel") and not drop_down.visible and jump_stack[0] != 0:
-		jump_stack[0] = 0
+	if event.is_action_pressed("ui_cancel") and not drop_down.visible and not tabstop_numbers.empty():
+		tabstop_numbers.clear()
 		placeholder = ""
 
 
@@ -113,47 +115,61 @@ func _paste_code_snippet(snippet_name : String) -> void:
 		current_snippet += code_snippets.get_value(snippet_name, "no_type_hint")
 	current_snippet = current_snippet.replace("\n", "\n" + tabs)
 	
-	var curr_pos = [code_editor.cursor_get_line(), code_editor.cursor_get_column()]
+	starting_pos = [code_editor.cursor_get_line(), code_editor.cursor_get_column()]
 	code_editor.insert_text_at_cursor(current_snippet)
-	jump_stack[0] = current_snippet.count("[@")
-	if jump_stack[0]:
-		jump_stack[1] = curr_pos
+	
+	tabstop_numbers = _setup_tabstop_numbers()
+	if tabstop_numbers:
 		_jump_to_and_delete_next_marker(code_editor)
+
+
+func _setup_tabstop_numbers() -> Array:
+	var array : Array
+	var pos = current_snippet.find("[@")
+	while pos != -1:
+		var mid_pos = current_snippet.find(":", pos + 2)
+		var end_pos = current_snippet.find("]", pos + 2)
+		if end_pos == -1:
+			push_warning("Code Snippet Plugin: Jump marker is not set up properly. The format is [@X:place,holder,s] where X should be an integer and \":place,holder,s\" is/are optional")
+			return []
+		var number = current_snippet.substr(pos + 2, (mid_pos if mid_pos != -1 and mid_pos < end_pos else end_pos) - pos - 2)
+		if not number in array:
+			array.push_back(number)
+		pos = current_snippet.find("[@", pos + 2)
+	array.sort()
+	return array
 
 
 func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 	code_editor.deselect() # placeholders
 	yield(get_tree(), "idle_frame") # placeholders
 	
-	if _delayed_one_key_press: # place the mirror vars after the keyboard shortcut was pressed
+	if delayed_one_key_press: # place the mirror vars after the keyboard shortcut was pressed
 		var mirror_var = _get_mirror_var(code_editor)
-		var specific_marker_count = current_snippet.count(snippet_jump_marker) - 1
-		jump_stack[0] -= specific_marker_count
+		var specific_marker_count = max(current_snippet.count(snippet_jump_marker) - 1, 0)
+		var pos = [curr_snippet_pos[0], curr_snippet_pos[1]]
 		while specific_marker_count:
-			var res = code_editor.search(snippet_jump_marker, 1, jump_stack[1][0], jump_stack[1][1])
+			var res = code_editor.search(snippet_jump_marker, 1, pos[0], pos[1])
 			if res:
 				code_editor.select(res[TextEdit.SEARCH_RESULT_LINE], res[TextEdit.SEARCH_RESULT_COLUMN], res[TextEdit.SEARCH_RESULT_LINE], res[TextEdit.SEARCH_RESULT_COLUMN] \
 						+ snippet_jump_marker.length())
 				code_editor.insert_text_at_cursor(mirror_var)
+				pos = [res[TextEdit.SEARCH_RESULT_LINE], res[TextEdit.SEARCH_RESULT_COLUMN]]
 			specific_marker_count -= 1
 		current_snippet = current_snippet.replace(snippet_jump_marker, mirror_var)
 	
-	if jump_stack[0]:
-		var result = code_editor.search("[@", 1, jump_stack[1][0], jump_stack[1][1])
+	if not tabstop_numbers.empty():
+		var number = tabstop_numbers.pop_front()
+		var result = code_editor.search("[@" + number, 1, starting_pos[0], starting_pos[1])
 		if result.size() > 0:
-			if result[TextEdit.SEARCH_RESULT_LINE] < jump_stack[1][0]:
-				# EOF reached, for example because user manually deleted markers
-				jump_stack[0] = 0
-				return
-			_set_current_marker()
-			_delayed_one_key_press = true
-			jump_stack[1][0] = result[TextEdit.SEARCH_RESULT_LINE]
-			jump_stack[1][1] = result[TextEdit.SEARCH_RESULT_COLUMN]
-			code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + snippet_jump_marker.length() + (placeholder.length() + 1 if placeholder else 0))
+			_set_current_marker("[@" + number)
+			delayed_one_key_press = true
+			curr_snippet_pos = [result[TextEdit.SEARCH_RESULT_LINE], result[TextEdit.SEARCH_RESULT_COLUMN]]
+			code_editor.select(curr_snippet_pos[0], curr_snippet_pos[1], curr_snippet_pos[0], curr_snippet_pos[1] + snippet_jump_marker.length() + (placeholder.length() + 1 if placeholder else 0))
 			
 			if placeholder: # the PopupMenu needs to be called even if just one place holder is there; otherwise buggy (for ex: mirror example)
 				code_editor.insert_text_at_cursor(snippet_jump_marker)
-				code_editor.select(jump_stack[1][0], jump_stack[1][1], jump_stack[1][0], jump_stack[1][1] + snippet_jump_marker.length())
+				code_editor.select(curr_snippet_pos[0], curr_snippet_pos[1], curr_snippet_pos[0], curr_snippet_pos[1] + snippet_jump_marker.length())
 				drop_down.code_editor = code_editor
 				drop_down.rect_global_position = _get_cursor_position()
 				drop_down.emit_signal("show_options", placeholder)
@@ -163,12 +179,10 @@ func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 				var tmp = OS.clipboard
 				code_editor.cut()
 				OS.clipboard = tmp
-			
-			jump_stack[0] -= 1
 
 
 func _get_mirror_var(code_editor : TextEdit) -> String:
-	code_editor.select(0, 0, jump_stack[1][0], jump_stack[1][1])
+	code_editor.select(0, 0, curr_snippet_pos[0], curr_snippet_pos[1])
 	var _code_before_marker = code_editor.get_selection_text()
 	var pos = current_snippet.find(snippet_jump_marker)
 	var _text_in_snippet_after_marker = current_snippet.substr(pos + snippet_jump_marker.length() + 1)
@@ -177,18 +191,24 @@ func _get_mirror_var(code_editor : TextEdit) -> String:
 	return code_editor.text.substr(_code_before_marker.length(), _end_of_mirror_var - _code_before_marker.length() - 1) 
 
 
-func _set_current_marker() -> void:
-	var pos = current_snippet.find("[@")
-	var mid_pos = current_snippet.find(":", pos + 2)
-	var end_pos = current_snippet.find("]", pos)
-	if mid_pos != -1 and mid_pos < end_pos:
-		placeholder = current_snippet.substr(mid_pos + 1, end_pos - mid_pos - 1)
-		current_snippet.erase(mid_pos, placeholder.length() + 1)
-		end_pos = current_snippet.find("]", pos)
-	if current_snippet.substr(pos + 2, end_pos - pos - 2).is_valid_integer():
-		snippet_jump_marker = current_snippet.substr(pos, end_pos - pos + 1)
-	else:
-		push_warning("Code Snippet Plugin: Jump marker is not set up properly. The format is [@X] where X needs to be an integer")
+func _set_current_marker(marker : String) -> void:
+	var pos = current_snippet.find(marker)
+	var end_pos = current_snippet.find("]", pos + marker.length())
+	
+	if pos != -1 and end_pos != -1:
+		if current_snippet[pos + marker.length()] == ":":
+			var mid_pos = pos + marker.length()
+			placeholder = current_snippet.substr(mid_pos + 1, end_pos - mid_pos - 1)
+			current_snippet.erase(mid_pos, placeholder.length() + 1)
+			snippet_jump_marker = current_snippet.substr(pos, mid_pos - pos + 1)
+			return
+		elif current_snippet[pos + marker.length()] == "]":
+			snippet_jump_marker = current_snippet.substr(pos, end_pos - pos + 1)
+			return
+	# this should only be reached if the user manually changed markers since _setup_tabstop_numbers() checks if the tabstops are setup properly initially
+	push_warning("Code Snippet Plugin: Jump marker is not set up properly. The format is [@X:place,holder,s] where X should be an integer and \":place,holder,s\" is/are optional")
+	tabstop_numbers.clear()
+	placeholder = ""
 
 
 func _adapt_list_height() -> void:
@@ -260,7 +280,7 @@ func _on_Edit_pressed() -> void:
 	snippet_editor.edit_snippet(txt)
 
 
-func _get_cursor_position() -> Vector2:
+func _get_cursor_position() -> Vector2: # approx.
 	var code_editor = UTIL.get_current_script_texteditor(EDITOR)
 	var code_font = get_font("source", "EditorFonts") if not INTERFACE.get_editor_settings().get_setting("interface/editor/code_font") else load("interface/editor/code_font")
 	var curr_line = code_editor.get_line(code_editor.get_selection_from_line() if code_editor.get_selection_text() else code_editor.cursor_get_line()).replace("\t", "    ")

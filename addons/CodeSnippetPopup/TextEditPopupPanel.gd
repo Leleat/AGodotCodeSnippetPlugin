@@ -12,7 +12,7 @@ signal snippets_changed
 
 # called via the main plugin CodeSnippetPopup.tscn/.gd
 func edit_snippet(snippets : String) -> void:
-	popup_centered_clamped(Vector2(750, 1000) * (OS.get_screen_dpi() / 100), 0.75)
+	popup_centered_clamped(Vector2(850, 1000) * (OS.get_screen_dpi() / 100), 0.75)
 	
 	text_edit.text = snippets
 	text_edit.grab_focus()
