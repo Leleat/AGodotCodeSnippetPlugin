@@ -8,6 +8,7 @@ This plugin for Godot 3.2.X adds a popup which lists all available code snippets
 - mirrorable variables
 - placeholders/dropdown choice (see gif)
 - The snippets can be filtered by a search_string. Ending the seach_string with " X" will jump to the X-th item in the snippet list. 
+
 **See the examples in the plugin for more details.**
 
 **Installation**:
