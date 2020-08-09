@@ -39,25 +39,6 @@ func _ready() -> void:
 	load_cfg()
 
 
-func _on_shortcut_changed(new_text) -> void:
-	keyboard_shortcut = new_text
-
-
-func _on_main_height_changed(new_h) -> void:
-	pop_size.y = new_h
-
-
-func _on_main_width_changed(new_w) -> void:
-	pop_size.x = new_w
-
-func _on_editor_height_changed(new_h) -> void:
-	editor_size.y = new_h
-
-
-func _on_editor_width_changed(new_w) -> void:
-	editor_size.x = new_w
-
-
 func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.as_text() == keyboard_shortcut and current_main_screen == "Script":
 		if tabstop_numbers.empty():
