@@ -9,10 +9,13 @@ onready var save_button = $VBoxContainer/HBoxContainer/SaveButton
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 signal snippets_changed
 
+func _ready() -> void:
+	$VBoxContainer/HelpButton.icon = get_icon("Issue", "EditorIcons")
+
 
 # called via the main plugin CodeSnippetPopup.tscn/.gd
-func edit_snippet(snippets : String) -> void:
-	popup_centered_clamped(Vector2(850, 1000) * (OS.get_screen_dpi() / 100), 0.75)
+func edit_snippet(snippets : String, size : Vector2) -> void:
+	popup_centered_clamped(size, 0.75)
 	
 	text_edit.text = snippets
 	text_edit.grab_focus()
@@ -33,3 +36,8 @@ func _on_SaveButton_pressed() -> void:
 	file.close()
 	hide()
 	emit_signal("snippets_changed")
+
+
+func _on_HelpButton_pressed() -> void:
+	$Help.popup_centered()
+

@@ -1,12 +1,30 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://addons/CodeSnippetPopup/TextEditPopupPanel.gd" type="Script" id=1]
+
+[sub_resource type="Image" id=1]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=2]
+flags = 4
+flags = 4
+image = SubResource( 1 )
+size = Vector2( 16, 16 )
 
 [node name="TextEditPopupPanel" type="WindowDialog"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 window_title = "Snippet Editor"
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -19,15 +37,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label" type="Label" parent="VBoxContainer"]
-margin_right = 1016.0
-margin_bottom = 31.0
-text = "INI-style structure. The [section] is the snippet name. \"body\" is the only key which has to be defined. Use [@X], where X is an integer, to mark the position(s) the cursor jumps to when pressing the shortcut after insertion. The order of the numbers will be respected. If you use a number multiple times, the code you used for the first X will be mirrored to the other markers. You can add a placeholder and dropdown options like this [@1:Option1,Option2].
-Press Esc while the choice options isn't visible, will abort the jumping."
-autowrap = true
+[node name="HelpButton" type="ToolButton" parent="VBoxContainer"]
+margin_right = 61.0
+margin_bottom = 35.0
+rect_min_size = Vector2( 0, 35 )
+size_flags_horizontal = 0
+text = "Help"
+icon = SubResource( 2 )
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 35.0
+margin_top = 39.0
 margin_right = 1016.0
 margin_bottom = 553.0
 size_flags_horizontal = 3
@@ -40,7 +59,7 @@ custom_constants/margin_left = 5
 margin_left = 5.0
 margin_top = 10.0
 margin_right = 1011.0
-margin_bottom = 518.0
+margin_bottom = 514.0
 highlight_current_line = true
 draw_tabs = true
 smooth_scrolling = true
@@ -75,5 +94,69 @@ margin_bottom = 27.0
 rect_min_size = Vector2( 65, 0 )
 size_flags_vertical = 4
 text = "Save"
+
+[node name="Help" type="WindowDialog" parent="."]
+visible = true
+margin_right = 1000.0
+margin_bottom = 500.0
+window_title = "Help"
+resizable = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="Help"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -20.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="TextEdit" parent="Help/MarginContainer"]
+margin_right = 960.0
+margin_bottom = 460.0
+text = "INI-style structure.
+
+The [section] is the snippet name and it is the name which will appear in the list.
+
+\"body\" (without quotations marks) is the only key which has to be defined. Optional keys are:
+\"type_hint\" will be inserted after \"body\" only if type hints are enabled in Godot's editor settings. 
+\"no_type_hint\" will be inserted after \"body\" only if type hints are disabled in Godot's editor settings. 
+\"additional_info\" will appear in the snippet list but greyed out. It won't be inserted anywhere  when activating a snippet. 
+
+Use [@X] in your snippets, where X is an integer, to mark the position(s) the cursor jumps to when pressing the shortcut after snippet insertion. The order of the numbers will be respected. If you use a number multiple times, the code you used for the first X will be mirrored to the other markers. 
+
+You can add a placeholder/dropdown options by separating the options by commas. For example: [@1:OptionA,OptionB] will be the first position the cursor will jump to after the snippet has been inserted. A popup window will open with \"OptionA\" and \"OptionB\" as choices under the text cursor position.
+
+Press Esc  will abort the tabstop jumping for the current snippet. If the dropdown choice popup is visible you will need to press Esc twice (one to escape the choice popup and a second time to escape the jumping).
+
+--------------------------------
+
+Examples:
+
+[Example1]
+body=\"\\\"This is the main body, which gets inserted.  [@1] HERE is the first mark the cursor position jumps to after the snippet has been inserted. The mark will however not be included during the insertion.. 
+You can have multiple jump positions. For ex. After THIS [@3] is the second jump position. You can escape the jumping by pressing Esc.\"
+type_hint=\"
+If 'Add Type Hint'[@4] is enabled in the EditorSettings and this key is defined, it will be inserted right after the body.\\\"\"
+no_type_hint=\"
+If 'Add Type Hint'[@4] is not enabled in the EditorSettings and this key is defined, it will be inserted right after the body.\\\"\"
+additional_info=\"Click the 'Edit' button to see how I work. Feel free to delete me!\"
+
+[---- Mirrored/dropdown var example. ----]
+body = \"var [@1:array,arr,test] : Array
+for [@2:i] in [@1].size(): # mirrored from the line above
+	print([@2])
+return [@1] # then jump to here [@7] and next
+# no [@4:nom,nim,num,nam] test [@4][@8]\"
+additional_info=\"Just another example you can delete.\""
+readonly = true
+wrap_enabled = true
+scroll_vertical = 14.0
+[connection signal="pressed" from="VBoxContainer/HelpButton" to="." method="_on_HelpButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/CancelButton" to="." method="_on_CancelButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/SaveButton" to="." method="_on_SaveButton_pressed"]

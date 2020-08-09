@@ -10,10 +10,12 @@ onready var filter : LineEdit = $MarginContainer/VBoxContainer/HBoxContainer/Fil
 onready var copy_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Copy
 onready var edit_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Edit
 onready var snippet_editor : WindowDialog = $TextEditPopupPanel
-	
-export (String) var custom_keyboard_shortcut # go to "Editor > Editor Settings... > Shortcuts > Bindings" to see how a keyboard_shortcut looks as a String 
-export (bool) var adapt_popup_height = true
-export (Vector2) var pop_size = Vector2(750, 500)
+onready var settings_popup : WindowDialog = $SettingsPopup
+# settings vars
+var keyboard_shortcut : String
+var adapt_popup_height : bool
+var pop_size : Vector2
+var editor_size : Vector2
 	
 var curr_tabstop_marker = "" # [@X] -> X should be an integer. Using the same X multiple times will replace them by whatever you typed for the first X (after a shortcut press)
 var current_snippet = ""
@@ -23,7 +25,6 @@ var starting_pos : Array # pos, where snippet was inserted
 var curr_snippet_pos : Array # pos, where the current tabstop marker was
 var tabstop_numbers : Array # technically doesn't have to be an int
 	
-var keyboard_shortcut : String = "Control+Tab" 
 var current_main_screen : String = ""
 var code_snippets : ConfigFile
 const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
@@ -32,10 +33,29 @@ var drop_down : PopupMenu
 
 
 func _ready() -> void:
-	keyboard_shortcut = custom_keyboard_shortcut if custom_keyboard_shortcut else keyboard_shortcut
 	filter.right_icon = get_icon("Search", "EditorIcons")
 	_update_snippets()
 	snippet_editor.connect("snippets_changed", self, "_update_snippets")
+	load_cfg()
+
+
+func _on_shortcut_changed(new_text) -> void:
+	keyboard_shortcut = new_text
+
+
+func _on_main_height_changed(new_h) -> void:
+	pop_size.y = new_h
+
+
+func _on_main_width_changed(new_w) -> void:
+	pop_size.x = new_w
+
+func _on_editor_height_changed(new_h) -> void:
+	editor_size.y = new_h
+
+
+func _on_editor_width_changed(new_w) -> void:
+	editor_size.x = new_w
 
 
 func _unhandled_key_input(event : InputEventKey) -> void:
@@ -275,7 +295,7 @@ func _on_Edit_pressed() -> void:
 	var txt = snippet_file.get_as_text()
 	snippet_file.close()
 	
-	snippet_editor.edit_snippet(txt)
+	snippet_editor.edit_snippet(txt, editor_size)
 
 
 func _get_cursor_position() -> Vector2: # approx.
@@ -298,3 +318,81 @@ func _custom_search(code_editor : TextEdit, search_string : String, flags : int,
 		# EOF reached and search started from the top again
 		return PoolIntArray([])
 	return result
+
+
+############# Setting signals #################
+
+func _on_Settings_pressed() -> void:
+	settings_popup.popup_centered_clamped(Vector2(600, 300), .75)
+
+
+func _on_CheckBox_toggled(button_pressed: bool) -> void:
+	adapt_popup_height = button_pressed
+
+
+func _on_LineEdit_text_changed(new_text: String) -> void:
+	keyboard_shortcut = new_text
+
+
+func _on_SpinBox_value_changed(value: float) -> void:
+	pop_size.y = value
+
+
+func _on_SpinBox2_value_changed(value: float) -> void:
+	pop_size.x = value
+
+
+func _on_SpinBox3_value_changed(value: float) -> void:
+	editor_size.y = value
+
+
+func _on_SpinBox4_value_changed(value: float) -> void:
+	editor_size.x = value
+
+
+func _on_SettingsPopup_popup_hide() -> void:
+	save_cfg()
+
+
+func load_cfg():
+	var config = ConfigFile.new()
+	var error = config.load("user://code_snippets_settings.cfg")
+	
+	if error == ERR_FILE_NOT_FOUND:
+		load_default_settings()
+		save_cfg()
+	
+	elif error == OK:
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text = config.get_value("Settings", "shortcut") as String
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed = config.get_value("Settings", "adaptive_height") as bool
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox.value = config.get_value("Settings", "main_h") as int
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value = config.get_value("Settings", "main_w") as int
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value = config.get_value("Settings", "editor_h") as int
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value = config.get_value("Settings", "editor_w") as int
+	
+	keyboard_shortcut = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text
+	adapt_popup_height = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed
+	pop_size.y = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox.value
+	pop_size.x = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value
+	editor_size.y = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value
+	editor_size.x = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value
+
+
+func load_default_settings():
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text = "Control+Tab"
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed = true
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox.value = 500
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value = 750
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value = 1000
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value = 850
+
+
+func save_cfg():
+	var config = ConfigFile.new()
+	config.set_value("Settings", "shortcut", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text)
+	config.set_value("Settings", "adaptive_height", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed if $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed else "") 
+	config.set_value("Settings", "main_h", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox.value)
+	config.set_value("Settings", "main_w", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value)
+	config.set_value("Settings", "editor_h", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value)
+	config.set_value("Settings", "editor_w", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value) 
+	config.save("user://code_snippets_settings.cfg")
