@@ -6,12 +6,14 @@ onready var text_edit = $VBoxContainer/MarginContainer/TextEdit
 onready var cancel_button = $VBoxContainer/HBoxContainer/CancelButton
 onready var save_button = $VBoxContainer/HBoxContainer/SaveButton
 	
-const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 signal snippets_changed
 
 func _ready() -> void:
-	$VBoxContainer/HelpButton.icon = get_icon("Issue", "EditorIcons")
-
+	$VBoxContainer/HBoxContainer2/HelpButton.icon = get_icon("Issue", "EditorIcons")
+	yield(get_tree(), "idle_frame")
+	if owner:
+		$VBoxContainer/HBoxContainer2/Label.text = "v." + owner.version_number
+	
 
 # called via the main plugin CodeSnippetPopup.tscn/.gd
 func edit_snippet(snippets : String, size : Vector2) -> void:
@@ -28,7 +30,7 @@ func _on_CancelButton_pressed() -> void:
 
 func _on_SaveButton_pressed() -> void:
 	var file : File = File.new()
-	var error = file.open("res://addons/CodeSnippetPopup/CodeSnippets.cfg", File.WRITE)
+	var error = file.open(owner.snippet_config, File.WRITE)
 	if error != OK:
 		push_warning("Code Snippet Plugin: Error saving the code_snippets. Error code: %s." % error)
 		return
