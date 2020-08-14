@@ -21,6 +21,7 @@ size = Vector2( 16, 16 )
 [node name="CodeSnippetPopup" type="PopupPanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_right = 2048.0
 margin_bottom = -292.0
 script = ExtResource( 1 )
 __meta__ = {
@@ -39,7 +40,7 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-margin_right = 1016.0
+margin_right = 3064.0
 margin_bottom = 300.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
@@ -56,7 +57,7 @@ Within the snippet editor is a \"Help\" page. Please look at it to see how to fo
 size_flags_horizontal = 3
 clear_button_enabled = true
 right_icon = SubResource( 2 )
-placeholder_text = "Look at this tooltip for help."
+placeholder_text = "Look at tooltips for help."
 caret_blink = true
 caret_blink_speed = 0.5
 
@@ -97,9 +98,10 @@ margin_right = -4.0
 margin_bottom = -4.0
 
 [node name="SettingsPopup" type="WindowDialog" parent="."]
+visible = true
 margin_left = 4.0
 margin_top = 4.0
-margin_right = 1020.0
+margin_right = 3068.0
 margin_bottom = 304.0
 rect_min_size = Vector2( 600, 300 )
 window_title = "Settings"
@@ -120,7 +122,7 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SettingsPopup/MarginContainer"]
-margin_right = 976.0
+margin_right = 3024.0
 margin_bottom = 260.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
@@ -140,6 +142,7 @@ margin_left = 776.0
 margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
+hint_tooltip = " Check Godot's shortcut to see what the proper format is (Editor >Editor Settings > Shortcuts)."
 size_flags_horizontal = 10
 text = "Control+Tab"
 align = 2
@@ -163,6 +166,7 @@ text = "Adaptive height"
 margin_left = 952.0
 margin_right = 976.0
 margin_bottom = 24.0
+hint_tooltip = "Change the height of the popup based on the number of items in the list."
 size_flags_horizontal = 10
 pressed = true
 align = 2
@@ -255,6 +259,44 @@ size_flags_horizontal = 10
 max_value = 6000.0
 value = 850.0
 align = 2
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+margin_top = 168.0
+margin_right = 976.0
+margin_bottom = 192.0
+
+[node name="EditorWidth3" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
+margin_top = 5.0
+margin_right = 200.0
+margin_bottom = 19.0
+hint_tooltip = "The default path saves the snippet file in the directory where Godot's saves a project's settings. 
+
+See Godot's documentation for get_user_data_dir() in the OS class."
+mouse_filter = 1
+text = "File path of snippet cfg file"
+
+[node name="LineEdit2" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
+margin_left = 776.0
+margin_right = 976.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "The default path saves the snippet file in the directory where Godot's saves a project's settings. 
+
+See Godot's documentation for get_user_data_dir() in the OS class."
+size_flags_horizontal = 10
+text = "user://../CodeSnippets.cfg"
+align = 2
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="SaveButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+margin_left = 467.0
+margin_top = 532.0
+margin_right = 508.0
+margin_bottom = 552.0
+size_flags_horizontal = 4
+size_flags_vertical = 10
+text = "Save"
 [connection signal="popup_hide" from="." to="." method="_on_CodeSnippetPopup_popup_hide"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
 [connection signal="text_entered" from="MarginContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_entered"]
@@ -269,3 +311,5 @@ align = 2
 [connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2" to="." method="_on_SpinBox2_value_changed"]
 [connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3" to="." method="_on_SpinBox3_value_changed"]
 [connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4" to="." method="_on_SpinBox4_value_changed"]
+[connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2" to="." method="_on_LineEdit2_text_changed"]
+[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/SaveButton" to="." method="_on_SaveButton_pressed"]

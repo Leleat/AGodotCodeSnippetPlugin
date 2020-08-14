@@ -16,6 +16,7 @@ var keyboard_shortcut : String
 var adapt_popup_height : bool
 var pop_size : Vector2
 var editor_size : Vector2
+var snippet_config : String 
 	
 var curr_tabstop_marker = "" # [@X] -> X should be an integer. Using the same X multiple times will replace them by whatever you typed for the first X (after a shortcut press)
 var current_snippet = ""
@@ -27,16 +28,23 @@ var tabstop_numbers : Array # technically doesn't have to be an int
 	
 var current_main_screen : String = ""
 var code_snippets : ConfigFile
-const snippet_config = "res://addons/CodeSnippetPopup/CodeSnippets.cfg"
 const UTIL = preload("res://addons/CodeSnippetPopup/util.gd")
 var drop_down : PopupMenu
+var version_number 
+var prev_file_path := ""
 
 
 func _ready() -> void:
+	var ver_nr = ConfigFile.new()
+	var error = ver_nr.load("res://addons/CodeSnippetPopup/plugin.cfg")
+	if error != OK:
+		push_warning("Error %s getting version number." % error)
+	else:
+		version_number = ver_nr.get_value("plugin", "version", "?")
+	load_cfg()
 	filter.right_icon = get_icon("Search", "EditorIcons")
 	_update_snippets()
 	snippet_editor.connect("snippets_changed", self, "_update_snippets")
-	load_cfg()
 
 
 func _unhandled_key_input(event : InputEventKey) -> void:
@@ -46,6 +54,7 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 			popup_centered_clamped(pop_size)
 			filter.grab_focus()
 			delayed_one_key_press = false
+			print(snippet_config)
 		else:
 			var code_editor : TextEdit = UTIL.get_current_script_texteditor(EDITOR)
 			_jump_to_and_delete_next_marker(code_editor)
@@ -62,8 +71,14 @@ func _on_main_screen_changed(new_screen : String) -> void:
 func _update_snippets() -> void:
 	var file = ConfigFile.new()
 	var error = file.load(snippet_config)
-	if error != OK:
+	if error == ERR_FILE_NOT_FOUND:
+		file.save(snippet_config)
+		load_snippets()
+		_update_snippets()
+		return
+	elif error != OK:
 		push_warning("Code Snippet Plugin: Error loading the code_snippets. Error code: %s." % error)
+		return
 	code_snippets = file
 	filter.grab_focus()
 	_update_popup_list()
@@ -299,9 +314,11 @@ func _custom_search(code_editor : TextEdit, search_string : String, flags : int,
 		# EOF reached and search started from the top again
 		return PoolIntArray([])
 	return result
+	
 
 
 ############# Setting signals #################
+
 
 func _on_Settings_pressed() -> void:
 	settings_popup.popup_centered_clamped(Vector2(600, 300), .75)
@@ -331,17 +348,42 @@ func _on_SpinBox4_value_changed(value: float) -> void:
 	editor_size.x = value
 
 
-func _on_SettingsPopup_popup_hide() -> void:
+func _on_LineEdit2_text_changed(new_text: String) -> void:
+	if not prev_file_path:
+		prev_file_path = snippet_config
+	snippet_config = new_text
+
+
+func _on_SaveButton_pressed() -> void:
 	save_cfg()
+	if prev_file_path: # file path for snippets was changed
+		var new_file = File.new()
+		var err = new_file.open(snippet_config, File.READ_WRITE)
+		if err == ERR_FILE_NOT_FOUND:
+			new_file.open(snippet_config, File.WRITE_READ)
+		if new_file.get_as_text() == "":
+			var file = File.new()
+			file.open(prev_file_path, File.READ)
+			new_file.store_string(file.get_as_text())
+			file.close()
+			new_file.close()
+		_update_snippets()
+		prev_file_path = ""
+	$SettingsPopup.hide()
+
+
+func _on_SettingsPopup_popup_hide() -> void:
+	load_cfg() # reset made changes if not saved
 
 
 func load_cfg():
 	var config = ConfigFile.new()
-	var error = config.load("user://code_snippets_settings.cfg")
+	var error = config.load("user://../code_snippets_settings%s.cfg" % version_number)
 	
 	if error == ERR_FILE_NOT_FOUND:
 		load_default_settings()
 		save_cfg()
+		
 	
 	elif error == OK:
 		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text = config.get_value("Settings", "shortcut") as String
@@ -350,6 +392,7 @@ func load_cfg():
 		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value = config.get_value("Settings", "main_w") as int
 		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value = config.get_value("Settings", "editor_h") as int
 		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value = config.get_value("Settings", "editor_w") as int
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text = config.get_value("Settings", "file_path") as String
 	
 	keyboard_shortcut = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text
 	adapt_popup_height = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed
@@ -357,6 +400,7 @@ func load_cfg():
 	pop_size.x = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value
 	editor_size.y = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value
 	editor_size.x = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value
+	snippet_config = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text
 
 
 func load_default_settings():
@@ -366,6 +410,7 @@ func load_default_settings():
 	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value = 750
 	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value = 1000
 	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value = 850
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text = "user://../CodeSnippets.cfg"
 
 
 func save_cfg():
@@ -376,4 +421,19 @@ func save_cfg():
 	config.set_value("Settings", "main_w", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value)
 	config.set_value("Settings", "editor_h", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value)
 	config.set_value("Settings", "editor_w", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value) 
-	config.save("user://code_snippets_settings.cfg")
+	config.set_value("Settings", "file_path", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text) 
+	config.save("user://../code_snippets_settings%s.cfg" % version_number)
+
+
+func load_snippets(sn = "") -> void:
+	var file = File.new()
+	file.open(snippet_config, File.WRITE)
+	var snippets
+	if not sn:
+		var default_snippets = File.new()
+		default_snippets.open("res://addons/CodeSnippetPopup/DefaultCodeSnippets.cfg", File.READ)
+		snippets = default_snippets.get_as_text()
+		default_snippets.close()
+	file.store_string(snippets) 
+	file.close()
+
