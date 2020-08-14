@@ -1,0 +1,15 @@
+[gd_scene format=2]
+
+[node name="SnippetEditor" type="WindowDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+window_title = "Snippet Editor"
+resizable = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -10.0

@@ -42,9 +42,10 @@ func _ready() -> void:
 	else:
 		version_number = ver_nr.get_value("plugin", "version", "?")
 	load_cfg()
-	filter.right_icon = get_icon("Search", "EditorIcons")
 	_update_snippets()
 	snippet_editor.connect("snippets_changed", self, "_update_snippets")
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/Button.icon = get_icon("Folder", "EditorIcons")
+	filter.right_icon = get_icon("Search", "EditorIcons")
 
 
 func _unhandled_key_input(event : InputEventKey) -> void:
@@ -54,7 +55,6 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 			popup_centered_clamped(pop_size)
 			filter.grab_focus()
 			delayed_one_key_press = false
-			print(snippet_config)
 		else:
 			var code_editor : TextEdit = UTIL.get_current_script_texteditor(EDITOR)
 			_jump_to_and_delete_next_marker(code_editor)
@@ -62,6 +62,7 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.is_action_pressed("ui_cancel") and not drop_down.visible and not tabstop_numbers.empty():
 		tabstop_numbers.clear()
 		placeholder = ""
+		
 
 
 func _on_main_screen_changed(new_screen : String) -> void:
@@ -73,7 +74,7 @@ func _update_snippets() -> void:
 	var error = file.load(snippet_config)
 	if error == ERR_FILE_NOT_FOUND:
 		file.save(snippet_config)
-		load_snippets()
+		load_default_snippets()
 		_update_snippets()
 		return
 	elif error != OK:
@@ -361,9 +362,15 @@ func _on_SaveButton_pressed() -> void:
 		var err = new_file.open(snippet_config, File.READ_WRITE)
 		if err == ERR_FILE_NOT_FOUND:
 			new_file.open(snippet_config, File.WRITE_READ)
+		elif err != OK:
+			push_warning("Code Snippet Plugin: Error saving the code_snippets. Error code: %s." % err)
+			return
 		if new_file.get_as_text() == "":
 			var file = File.new()
-			file.open(prev_file_path, File.READ)
+			var error = file.open(prev_file_path, File.READ)
+			if error != OK:
+				push_warning("Code Snippet Plugin: Error saving the code_snippets. Error code: %s." % error)
+				return
 			new_file.store_string(file.get_as_text())
 			file.close()
 			new_file.close()
@@ -422,18 +429,39 @@ func save_cfg():
 	config.set_value("Settings", "editor_h", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value)
 	config.set_value("Settings", "editor_w", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value) 
 	config.set_value("Settings", "file_path", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text) 
-	config.save("user://../code_snippets_settings%s.cfg" % version_number)
+	var err = config.save("user://../code_snippets_settings%s.cfg" % version_number)
+	if err != OK:
+		push_warning("Code Snippet Plugin: Error saving code_snippets. Error code: %s." % err)
+		return
 
 
-func load_snippets(sn = "") -> void:
+func load_default_snippets() -> void:
 	var file = File.new()
-	file.open(snippet_config, File.WRITE)
+	var err = file.open(snippet_config, File.WRITE)
+	if err != OK:
+		push_warning("Code Snippet Plugin: Error loading default code_snippets. Error code: %s." % err)
+		return
 	var snippets
-	if not sn:
-		var default_snippets = File.new()
-		default_snippets.open("res://addons/CodeSnippetPopup/DefaultCodeSnippets.cfg", File.READ)
-		snippets = default_snippets.get_as_text()
-		default_snippets.close()
+	var default_snippets = File.new()
+	var error = default_snippets.open("res://addons/CodeSnippetPopup/DefaultCodeSnippets.cfg", File.READ)
+	if error != OK:
+		push_warning("Code Snippet Plugin: Error loading default code_snippets. Error code: %s." % error)
+		return
+	snippets = default_snippets.get_as_text()
+	default_snippets.close()
 	file.store_string(snippets) 
 	file.close()
 
+
+func _on_Button_pressed() -> void:
+	$FileDialog.popup_centered()
+
+
+func _on_FileDialog_dir_selected(dir: String) -> void:
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text = dir + "/CodeSnippets.cfg"
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.emit_signal("text_changed", dir + "/CodeSnippets.cfg")
+
+
+func _on_FileDialog_file_selected(path: String) -> void:
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text = path
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.emit_signal("text_changed", path)

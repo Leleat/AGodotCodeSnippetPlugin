@@ -43,3 +43,17 @@ func _on_SaveButton_pressed() -> void:
 func _on_HelpButton_pressed() -> void:
 	$Help.popup_centered()
 
+
+func _on_TextEdit_gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		cancel_button.grab_focus()
+
+
+func _on_CancelButton_gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		hide()
+		yield(get_tree(), "idle_frame")
+		owner._update_popup_list()
+		owner.popup_centered_clamped(owner.pop_size)
+		owner.filter.grab_focus()
+		owner.delayed_one_key_press = false
