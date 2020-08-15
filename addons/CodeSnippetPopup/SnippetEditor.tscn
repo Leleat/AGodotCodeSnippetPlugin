@@ -1,15 +1,349 @@
-[gd_scene format=2]
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/CodeSnippetPopup/SnippetEditor.gd" type="Script" id=1]
+
+[sub_resource type="Image" id=1]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=2]
+flags = 4
+flags = 4
+image = SubResource( 1 )
+size = Vector2( 16, 16 )
 
 [node name="SnippetEditor" type="WindowDialog"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+popup_exclusive = true
 window_title = "Snippet Editor"
-resizable = true
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 15.0
+margin_top = 15.0
+margin_right = -15.0
+margin_bottom = -10.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_right = 994.0
+margin_bottom = 575.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+margin_right = 994.0
+margin_bottom = 531.0
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_right = 491.0
+margin_bottom = 531.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_right = 491.0
+margin_bottom = 26.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Filter" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 259.0
+margin_bottom = 26.0
+hint_tooltip = "Quick access via F key."
+focus_neighbour_left = NodePath("../../../../HBoxContainer2/SaveButton")
+size_flags_horizontal = 3
+clear_button_enabled = true
+right_icon = SubResource( 2 )
+placeholder_text = "Filter..."
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="AddButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 263.0
+margin_right = 318.0
+margin_bottom = 26.0
+hint_tooltip = "Quick acces via A key.
+
+Add a snippet."
+text = "Add"
+icon = SubResource( 2 )
+
+[node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 322.0
+margin_right = 374.0
+margin_bottom = 26.0
+hint_tooltip = "Quick access via Del key.
+
+Deletes one or multiple (selection via LMB+shift) snippets."
+text = "Del"
+icon = SubResource( 2 )
+
+[node name="SrcButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 378.0
+margin_right = 427.0
+margin_bottom = 26.0
+hint_tooltip = "Quick acces via C key.
+
+Open the folder where the snippet config fle is saved. 
+By default the config and the settings file are saved in user://../ (see Godot's get_user_data_dir() documentation)"
+text = "Src"
+icon = SubResource( 2 )
+
+[node name="HelpButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 431.0
+margin_right = 491.0
+margin_bottom = 26.0
+text = "Help"
+icon = SubResource( 2 )
+
+[node name="ItemList" type="ItemList" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_top = 30.0
+margin_right = 491.0
+margin_bottom = 531.0
+size_flags_vertical = 3
+auto_height = true
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+modulate = Color( 0, 0, 0, 0 )
+margin_left = 495.0
+margin_right = 499.0
+margin_bottom = 531.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 503.0
+margin_right = 994.0
+margin_bottom = 531.0
+size_flags_horizontal = 3
+
+[node name="TextEdit" type="TextEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+margin_right = 491.0
+margin_bottom = 237.0
+hint_tooltip = "[@X] = Jump markers; use of the same number will mirror code
+
+[@X:OptionA,OptionB] = Dropdown options
+
+Press Esc to abort the jumping"
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_colors/symbol_color = Color( 1, 0.937255, 0.211765, 1 )
+highlight_current_line = true
+syntax_highlighting = true
+show_line_numbers = true
+draw_tabs = true
+highlight_all_occurrences = true
+wrap_enabled = true
+caret_blink = true
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+modulate = Color( 1, 1, 1, 0.521569 )
+margin_top = 241.0
+margin_right = 491.0
+margin_bottom = 255.0
+hint_tooltip = "Quick access via Q key.
+
+The QuickInfo is optional and will appear in the snippet list but greyed out. It won't be inserted when activating a snippet. It should be short. Otherwise the snippet list will have trouble formatting correctly."
+mouse_filter = 1
+text = "Quick note:"
+valign = 1
+
+[node name="AdditionalInfo" type="TextEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+margin_top = 259.0
+margin_right = 491.0
+margin_bottom = 309.0
+rect_min_size = Vector2( 0, 50 )
+hint_tooltip = "Quick access via Q key.
+
+The QuickInfo is optional and will appear in the snippet list but greyed out. It won't be inserted when activating a snippet. It should be short. Otherwise the snippet list will have trouble formatting correctly."
+draw_tabs = true
+highlight_all_occurrences = true
+caret_blink = true
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+modulate = Color( 1, 1, 1, 0.521569 )
+margin_top = 313.0
+margin_right = 491.0
+margin_bottom = 327.0
+hint_tooltip = "The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here."
+mouse_filter = 1
+text = "Other information:"
+valign = 1
+
+[node name="AdditionalInfo2" type="TextEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+margin_top = 331.0
+margin_right = 491.0
+margin_bottom = 531.0
+rect_min_size = Vector2( 0, 200 )
+hint_tooltip = "The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here."
+draw_tabs = true
+highlight_all_occurrences = true
+caret_blink = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+margin_left = 397.0
+margin_top = 535.0
+margin_right = 597.0
+margin_bottom = 575.0
+rect_min_size = Vector2( 200, 40 )
+size_flags_horizontal = 4
+
+[node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+margin_left = 13.0
+margin_top = 9.0
+margin_right = 85.0
+margin_bottom = 31.0
+rect_min_size = Vector2( 65, 0 )
+hint_tooltip = "Quick access via Esc key."
+focus_neighbour_left = NodePath("../../HBoxContainer/TextEdit")
+focus_neighbour_right = NodePath("../SaveButton")
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Cancel"
+icon = SubResource( 2 )
+
+[node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+margin_left = 118.0
+margin_top = 9.0
+margin_right = 183.0
+margin_bottom = 31.0
+rect_min_size = Vector2( 65, 0 )
+hint_tooltip = "Quick acces via S key."
+focus_neighbour_left = NodePath("../CancelButton")
+focus_neighbour_right = NodePath("../../HBoxContainer/VBoxContainer/HBoxContainer/Filter")
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Save"
+icon = SubResource( 2 )
+
+[node name="Help" type="WindowDialog" parent="."]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 1020.0
+margin_bottom = 596.0
+window_title = "Help"
+resizable = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="Help"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 20.0
 margin_top = 20.0
 margin_right = -20.0
+margin_bottom = -20.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/MarginContainer"]
+margin_right = 976.0
+margin_bottom = 552.0
+
+[node name="Label" type="Label" parent="Help/MarginContainer/VBoxContainer"]
+margin_right = 960.0
+margin_bottom = 14.0
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextEdit" type="TextEdit" parent="Help/MarginContainer/VBoxContainer"]
+margin_top = 18.0
+margin_right = 960.0
+margin_bottom = 460.0
+size_flags_vertical = 3
+text = "The snippet file uses a INI-style structure. If you  want to edit the snippet file manually:
+The [section] is the snippet name and it is the name which will appear in the snippet list.
+\"body\" (without quotations marks) is the only key which has to be defined. 
+\"additional_info\" is optional and will appear in the snippet list but greyed out. It won't be inserted when activating a snippet. 
+\"other_info\" is also optional and will only be shown when opening the snippets editor. 
+
+Use [@X] in your snippets, where X is an integer, to mark the position(s) the cursor jumps to. Once the snippet has been inserted into the code editor, you can jump with the cursor to the [@x] marker in the text using the shortcut key (Ctrl+Tab by default). The numerical order of the tabstops will be respected. If you use a number multiple times, the code you used at the first jump marker will be mirrored to the other markers with the same number. 
+
+You can add a placeholder/dropdown options by separating the options by commas. For example: [@1:OptionA,OptionB] will be the first position the cursor will jump to after the snippet has been inserted. A popup window will open with \"OptionA\" and \"OptionB\" as choices under the text cursor position.
+
+If you use multiple jump markers, DON'T manually navigate around in the code editor as this may mess it up. Use the auto-jumping instead. If you want to abort the jumping, press Esc. If the dropdown choice popup is visible, you will need to press Esc twice (once to escape the choice popup and a second time to escape the jumping).
+
+--------------------------------
+
+Examples:
+
+[Example1]
+body=\"\\\"This is the main body, which gets inserted.  [@1] HERE is the first mark the cursor position jumps to after the snippet has been inserted. The mark will however not be included during the insertion.. 
+You can have multiple jump positions. For ex. After THIS [@3] is the second jump position. You can escape the jumping by pressing Esc.\"
+additional_info=\"Click the 'Edit' button to see how I work. Feel free to delete me!\"
+
+[---- Mirrored/dropdown var example. ----]
+body = \"var [@1:array,arr,test] : Array
+for [@2:i] in [@1].size(): # mirrored from the line above
+	print([@2])
+return [@1] # then jump to here [@7] and next
+# no [@4:nom,nim,num,nam] test [@4][@8]\"
+additional_info=\"Just another example you can delete.\""
+readonly = true
+wrap_enabled = true
+
+[node name="SnippetNameDialog" type="WindowDialog" parent="."]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 1020.0
+margin_bottom = 596.0
+rect_min_size = Vector2( 200, 50 )
+window_title = "Snippet name"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="SnippetNameDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
 margin_bottom = -10.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LineEdit" type="LineEdit" parent="SnippetNameDialog/MarginContainer"]
+margin_top = 274.0
+margin_right = 996.0
+margin_bottom = 298.0
+size_flags_vertical = 6
+clear_button_enabled = true
+caret_blink = true
+caret_blink_speed = 0.5
+[connection signal="popup_hide" from="." to="." method="_on_SnippetEditor_popup_hide"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/AddButton" to="." method="_on_AddButton_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/DeleteButton" to="." method="_on_DeleteButton_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/SrcButton" to="." method="_on_Button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/HelpButton" to="." method="_on_HelpButton_pressed"]
+[connection signal="gui_input" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_gui_input"]
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_item_selected"]
+[connection signal="multi_selected" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_multi_selected"]
+[connection signal="focus_exited" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/TextEdit" to="." method="_on_TextEdit_focus_exited"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/TextEdit" to="." method="_on_TextEdit_text_changed"]
+[connection signal="focus_exited" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo" to="." method="_on_AdditionalInfo_focus_exited"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo" to="." method="_on_AdditionalInfo_text_changed"]
+[connection signal="focus_exited" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo2" to="." method="_on_AdditionalInfo2_focus_exited"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo2" to="." method="_on_AdditionalInfo2_text_changed"]
+[connection signal="gui_input" from="MarginContainer/VBoxContainer/HBoxContainer2/CancelButton" to="." method="_on_CancelButton_gui_input"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/CancelButton" to="." method="_on_CancelButton_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/SaveButton" to="." method="_on_SaveButton_pressed"]
+[connection signal="popup_hide" from="SnippetNameDialog" to="." method="_on_SnippetNameDialog_popup_hide"]
+[connection signal="text_entered" from="SnippetNameDialog/MarginContainer/LineEdit" to="." method="_on_LineEdit_text_entered"]

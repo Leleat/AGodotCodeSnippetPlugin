@@ -1,6 +1,6 @@
 # A Godot Code Snippet Plugin
 
-This plugin for Godot 3.2.X adds a popup which lists predefined code snippets. You can add your own snippets using a built-in editor. The popup is shown with **Control+Tab**. Read the built-in help page to see how to use this plugin.
+This plugin adds code snipptes to Godot 3.2.X. The popup is shown with **Control+Tab**. Read the built-in help page and the tooltips to see how to use this plugin correctly and efficiently.
 
 **Features**:
 

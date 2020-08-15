@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/CodeSnippetPopup/CodeSnippetPopup.gd" type="Script" id=1]
-[ext_resource path="res://addons/CodeSnippetPopup/TextEditPopupPanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/CodeSnippetPopup/SnippetEditor.tscn" type="PackedScene" id=2]
 
 [sub_resource type="Image" id=1]
 data = {
@@ -22,11 +22,8 @@ size = Vector2( 16, 16 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = 5120.0
-margin_bottom = 808.0
+margin_bottom = -267.0
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0
@@ -41,19 +38,20 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 margin_right = 6136.0
-margin_bottom = 1400.0
+margin_bottom = 325.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-margin_right = 3064.0
+margin_right = 1016.0
 margin_bottom = 26.0
 
 [node name="Filter" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-margin_right = 2910.0
+margin_right = 808.0
 margin_bottom = 26.0
 hint_tooltip = "Ending the search_string with \" X\" (space + integer) will jump to the X-th item in the list.
 
 Click the \"Edit\" button to edit the code snippets. 
-Within the snippet editor is a \"Help\" page. Please look at it to see how to format snippets and how to use tabstops etc."
+Within the snippet editor is a \"Help\" page. Please look at it to see how to format snippets and how to use tabstops etc.
+Most control nodes (Labels, Buttons & TextEdits) also have tooltips."
 size_flags_horizontal = 3
 clear_button_enabled = true
 right_icon = SubResource( 2 )
@@ -62,27 +60,33 @@ caret_blink = true
 caret_blink_speed = 0.5
 
 [node name="Copy" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-margin_left = 2914.0
-margin_right = 2957.0
+margin_left = 812.0
+margin_right = 873.0
 margin_bottom = 26.0
+hint_tooltip = "Copy the selected snippet to your clipboard. The copy will include all jump markers/tabstops WITHOUT the ability to use the jumping."
 text = "Copy"
+icon = SubResource( 2 )
 
 [node name="Edit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-margin_left = 2961.0
-margin_right = 2997.0
+margin_left = 877.0
+margin_right = 931.0
 margin_bottom = 26.0
+hint_tooltip = "Open the built-in SnippetEditor"
 text = "Edit"
+icon = SubResource( 2 )
 
 [node name="Settings" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-margin_left = 3001.0
-margin_right = 3064.0
+margin_left = 935.0
+margin_right = 1016.0
 margin_bottom = 26.0
+hint_tooltip = " Configuration options for this plugin."
 text = "Settings"
+icon = SubResource( 2 )
 
 [node name="ItemList" type="ItemList" parent="MarginContainer/VBoxContainer"]
 margin_top = 30.0
-margin_right = 3064.0
-margin_bottom = 300.0
+margin_right = 1016.0
+margin_bottom = 592.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 items = [ " 0  :: ", null, false, "_ready", null, false, "", null, true, " 1  :: ", null, false, "_enter_tree", null, false, "", null, true, " 2  :: ", null, false, "_exit_tree", null, false, "", null, true, " 3  :: ", null, false, "_physics_process", null, false, " (delta : float)", null, true, " 4  :: ", null, false, "_process", null, false, " (delta : float)", null, true, " 5  :: ", null, false, "_input", null, false, " (event : InputEvent)", null, true, " 6  :: ", null, false, "_unhandled_input", null, false, " (event : InputEvent)", null, true, " 7  :: ", null, false, "_unhandled_key_input", null, false, " (event : InputEventKey)", null, true, " 8  :: ", null, false, "_gui_input", null, false, " (event : InputEvent)", null, true, " 9  :: ", null, false, "_draw", null, false, "", null, true ]
@@ -91,19 +95,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TextEditPopupPanel" parent="." instance=ExtResource( 2 )]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = -4.0
-margin_bottom = -4.0
-
 [node name="SettingsPopup" type="WindowDialog" parent="."]
 visible = true
 margin_left = 4.0
 margin_top = 4.0
 margin_right = 6140.0
-margin_bottom = 1404.0
-rect_min_size = Vector2( 600, 300 )
+margin_bottom = 329.0
+rect_min_size = Vector2( 600, 325 )
+popup_exclusive = true
 window_title = "Settings"
 resizable = true
 __meta__ = {
@@ -123,10 +122,10 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SettingsPopup/MarginContainer"]
 margin_right = 6096.0
-margin_bottom = 1360.0
+margin_bottom = 285.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
-margin_right = 3024.0
+margin_right = 976.0
 margin_bottom = 24.0
 
 [node name="CustomShortcut" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer"]
@@ -140,7 +139,7 @@ text = "Keyboard shortcut"
 
 [node name="LineEdit" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer"]
 margin_left = 254.0
-margin_right = 3024.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 hint_tooltip = " Check Godot's shortcut to see what the proper format is (Editor >Editor Settings > Shortcuts)."
@@ -152,7 +151,7 @@ caret_blink_speed = 0.5
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
 margin_top = 28.0
-margin_right = 3024.0
+margin_right = 976.0
 margin_bottom = 52.0
 
 [node name="AdaptiveHeight" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2"]
@@ -165,8 +164,8 @@ mouse_filter = 1
 text = "Adaptive height"
 
 [node name="CheckBox" type="CheckBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2"]
-margin_left = 3000.0
-margin_right = 3024.0
+margin_left = 952.0
+margin_right = 976.0
 margin_bottom = 24.0
 hint_tooltip = "Change the height of the popup based on the number of items in the list."
 size_flags_horizontal = 10
@@ -174,10 +173,30 @@ pressed = true
 align = 2
 expand_icon = true
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer8" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
 margin_top = 56.0
-margin_right = 3024.0
+margin_right = 976.0
 margin_bottom = 80.0
+
+[node name="Label" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8"]
+margin_top = 5.0
+margin_right = 250.0
+margin_bottom = 19.0
+hint_tooltip = "Instead of appearing at the screen center, the popup will apear at the text cursor position (or at least tries to)."
+mouse_filter = 1
+text = "Main popup at cursor position (approx.)"
+
+[node name="AtCenter" type="CheckBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8"]
+margin_left = 952.0
+margin_right = 976.0
+margin_bottom = 24.0
+hint_tooltip = "Instead of appearing at the screen center, the popup will apear at the text cursor position (or at least tries to)."
+size_flags_horizontal = 10
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+margin_top = 84.0
+margin_right = 976.0
+margin_bottom = 108.0
 
 [node name="PopupHeight" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3"]
 margin_top = 5.0
@@ -189,7 +208,7 @@ text = "Main popup's height"
 
 [node name="SpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3"]
 margin_left = 254.0
-margin_right = 3024.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 11
@@ -198,9 +217,9 @@ value = 500.0
 align = 2
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
-margin_top = 84.0
-margin_right = 3024.0
-margin_bottom = 108.0
+margin_top = 112.0
+margin_right = 976.0
+margin_bottom = 136.0
 
 [node name="PopupWidth" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4"]
 margin_top = 5.0
@@ -212,7 +231,7 @@ text = "Main popup's width"
 
 [node name="SpinBox2" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4"]
 margin_left = 254.0
-margin_right = 3024.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 11
@@ -221,9 +240,9 @@ value = 750.0
 align = 2
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
-margin_top = 112.0
-margin_right = 3024.0
-margin_bottom = 136.0
+margin_top = 140.0
+margin_right = 976.0
+margin_bottom = 164.0
 
 [node name="EditorHeight" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5"]
 margin_top = 5.0
@@ -235,18 +254,18 @@ text = "Snippet editor's popup height"
 
 [node name="SpinBox3" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5"]
 margin_left = 254.0
-margin_right = 3024.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 11
 max_value = 6000.0
-value = 1000.0
+value = 800.0
 align = 2
 
 [node name="HBoxContainer6" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
-margin_top = 140.0
-margin_right = 3024.0
-margin_bottom = 164.0
+margin_top = 168.0
+margin_right = 976.0
+margin_bottom = 192.0
 
 [node name="EditorWidth2" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6"]
 margin_top = 5.0
@@ -258,18 +277,18 @@ text = "Snippet editor's popup width"
 
 [node name="SpinBox4" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6"]
 margin_left = 254.0
-margin_right = 3024.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 11
 max_value = 6000.0
-value = 850.0
+value = 1000.0
 align = 2
 
 [node name="HBoxContainer7" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
-margin_top = 168.0
-margin_right = 3024.0
-margin_bottom = 192.0
+margin_top = 196.0
+margin_right = 976.0
+margin_bottom = 220.0
 
 [node name="EditorWidth3" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
 margin_top = 5.0
@@ -280,20 +299,20 @@ hint_tooltip = "The default path saves the snippet file in the directory where G
 
 See Godot's documentation for get_user_data_dir() in the OS class.
 
-You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it.
+You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it.
 "
 mouse_filter = 1
 text = "File path of snippet cfg file"
 
 [node name="LineEdit2" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
 margin_left = 254.0
-margin_right = 2985.0
+margin_right = 944.0
 margin_bottom = 24.0
 hint_tooltip = "The default path saves the snippet file in the directory where Godot's saves a project's settings (user://../CodeSnippets.cfg). 
 
 See Godot's documentation for get_user_data_dir() in the OS class.
 
-You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it."
+You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it."
 size_flags_horizontal = 11
 text = "user://../CodeSnippets.cfg"
 align = 2
@@ -301,30 +320,47 @@ caret_blink = true
 caret_blink_speed = 0.5
 
 [node name="Button" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
-margin_left = 2989.0
-margin_right = 3017.0
-margin_bottom = 22.0
+margin_left = 948.0
+margin_right = 976.0
+margin_bottom = 24.0
 hint_tooltip = "The default path saves the snippet file in the directory where Godot's saves a project's settings (user://../CodeSnippets.cfg). 
 
 See Godot's documentation for get_user_data_dir() in the OS class.
 
-You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it."
+You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it."
 icon = SubResource( 2 )
 
-[node name="SaveButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer"]
-margin_left = 1491.0
-margin_top = 240.0
-margin_right = 1532.0
-margin_bottom = 260.0
+[node name="HBoxContainer9" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+margin_left = 388.0
+margin_top = 530.0
+margin_right = 588.0
+margin_bottom = 552.0
+rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 4
 size_flags_vertical = 10
-text = "Save"
 
-[node name="FileDialog" type="FileDialog" parent="."]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 804.0
-margin_bottom = 804.0
+[node name="CancelButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9"]
+margin_left = 9.0
+margin_right = 89.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 80, 0 )
+hint_tooltip = "Quick access via Esc key."
+size_flags_horizontal = 6
+text = "Cancel"
+icon = SubResource( 2 )
+
+[node name="SaveButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9"]
+margin_left = 111.0
+margin_right = 170.0
+margin_bottom = 22.0
+size_flags_horizontal = 6
+size_flags_vertical = 10
+text = "Save"
+icon = SubResource( 2 )
+
+[node name="FileDialog" type="FileDialog" parent="SettingsPopup"]
+margin_right = 800.0
+margin_bottom = 800.0
 rect_min_size = Vector2( 800, 800 )
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -337,6 +373,12 @@ access = 2
 show_hidden_files = true
 current_dir = "/home/toni/Godot/New Game Project"
 current_path = "/home/toni/Godot/New Game Project/"
+
+[node name="SnippetEditor" parent="." instance=ExtResource( 2 )]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
 [connection signal="popup_hide" from="." to="." method="_on_CodeSnippetPopup_popup_hide"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
 [connection signal="text_entered" from="MarginContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_entered"]
@@ -347,12 +389,14 @@ current_path = "/home/toni/Godot/New Game Project/"
 [connection signal="popup_hide" from="SettingsPopup" to="." method="_on_SettingsPopup_popup_hide"]
 [connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit" to="." method="_on_LineEdit_text_changed"]
 [connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox" to="." method="_on_CheckBox_toggled"]
+[connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCenter" to="." method="_on_AtCenter_toggled"]
 [connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox" to="." method="_on_SpinBox_value_changed"]
 [connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2" to="." method="_on_SpinBox2_value_changed"]
 [connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3" to="." method="_on_SpinBox3_value_changed"]
 [connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4" to="." method="_on_SpinBox4_value_changed"]
 [connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2" to="." method="_on_LineEdit2_text_changed"]
 [connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/Button" to="." method="_on_Button_pressed"]
-[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/SaveButton" to="." method="_on_SaveButton_pressed"]
-[connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
-[connection signal="file_selected" from="FileDialog" to="." method="_on_FileDialog_file_selected"]
+[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/CancelButton" to="." method="_on_CancelButton_pressed"]
+[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/SaveButton" to="." method="_on_SaveButton_pressed"]
+[connection signal="dir_selected" from="SettingsPopup/FileDialog" to="." method="_on_FileDialog_dir_selected"]
+[connection signal="file_selected" from="SettingsPopup/FileDialog" to="." method="_on_FileDialog_file_selected"]

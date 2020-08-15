@@ -9,7 +9,8 @@ onready var item_list = $MarginContainer/VBoxContainer/ItemList
 onready var filter : LineEdit = $MarginContainer/VBoxContainer/HBoxContainer/Filter
 onready var copy_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Copy
 onready var edit_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/Edit
-onready var snippet_editor : WindowDialog = $TextEditPopupPanel
+onready var snippet_editor : WindowDialog = $SnippetEditor
+onready var settings_button = $MarginContainer/VBoxContainer/HBoxContainer/Settings
 onready var settings_popup : WindowDialog = $SettingsPopup
 # settings vars
 var keyboard_shortcut : String
@@ -17,6 +18,7 @@ var adapt_popup_height : bool
 var pop_size : Vector2
 var editor_size : Vector2
 var snippet_config : String 
+var popup_at_center : bool
 	
 var curr_tabstop_marker = "" # [@X] -> X should be an integer. Using the same X multiple times will replace them by whatever you typed for the first X (after a shortcut press)
 var current_snippet = ""
@@ -34,35 +36,53 @@ var version_number
 var prev_file_path := ""
 
 
+# TODO refactoring for readability & simplicity
+
 func _ready() -> void:
 	var ver_nr = ConfigFile.new()
 	var error = ver_nr.load("res://addons/CodeSnippetPopup/plugin.cfg")
 	if error != OK:
 		push_warning("Error %s getting version number." % error)
 	else:
-		version_number = ver_nr.get_value("plugin", "version", "?")
+		version_number = ver_nr.get_value("plugin", "version", "?") 
 	load_cfg()
 	_update_snippets()
 	snippet_editor.connect("snippets_changed", self, "_update_snippets")
 	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/Button.icon = get_icon("Folder", "EditorIcons")
 	filter.right_icon = get_icon("Search", "EditorIcons")
+	copy_button.icon = get_icon("ActionCopy", "EditorIcons")
+	edit_button.icon = get_icon("Edit", "EditorIcons")
+	settings_button.icon = get_icon("Tools", "EditorIcons")
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/SaveButton.icon = get_icon("Save", "EditorIcons")
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/CancelButton.icon = get_icon("Close", "EditorIcons")
 
 
 func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.as_text() == keyboard_shortcut and current_main_screen == "Script":
 		if tabstop_numbers.empty():
 			_update_popup_list()
-			popup_centered_clamped(pop_size)
+			if popup_at_center:
+				rect_global_position = _get_cursor_position()
+				rect_size = pop_size
+				popup()
+			else:
+				popup_centered_clamped(pop_size)
 			filter.grab_focus()
 			delayed_one_key_press = false
 		else:
 			var code_editor : TextEdit = UTIL.get_current_script_texteditor(EDITOR)
 			_jump_to_and_delete_next_marker(code_editor)
 	
-	if event.is_action_pressed("ui_cancel") and not drop_down.visible and not tabstop_numbers.empty():
-		tabstop_numbers.clear()
-		placeholder = ""
+	if event.scancode == KEY_ESCAPE and event.pressed:
+		if not tabstop_numbers.empty() and not drop_down.visible:
+			tabstop_numbers.clear()
+			placeholder = ""
 		
+		elif $SettingsPopup.visible:
+			if $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/CancelButton.has_focus():
+				$SettingsPopup.hide()
+			else:
+				$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/CancelButton.grab_focus()
 
 
 func _on_main_screen_changed(new_screen : String) -> void:
@@ -104,7 +124,7 @@ func _update_popup_list() -> void:
 			continue
 		item_list.add_item(" " + String(counter) + "  :: ", null, false)
 		item_list.add_item(snippet_name)
-		item_list.add_item(code_snippets.get_value(snippet_name, "additional_info"), null, false) \
+		item_list.add_item(code_snippets.get_value(snippet_name, "additional_info").replace("\\\"", "\""), null, false) \
 				if code_snippets.has_section_key(snippet_name, "additional_info") else item_list.add_item("", null, false)
 		item_list.set_item_disabled(item_list.get_item_count() - 1, true)
 		counter += 1
@@ -119,15 +139,10 @@ func _update_popup_list() -> void:
 
 func _paste_code_snippet(snippet_name : String) -> void:
 	var code_editor : TextEdit = UTIL.get_current_script_texteditor(EDITOR)
-	var use_type_hints = INTERFACE.get_editor_settings().get_setting("text_editor/completion/add_type_hints")
 	var tab_count = code_editor.get_line(code_editor.cursor_get_line()).count("\t")
 	var tabs = "\t".repeat(tab_count)
 	
-	current_snippet = code_snippets.get_value(snippet_name, "body") 
-	if use_type_hints and code_snippets.has_section_key(snippet_name, "type_hint"):
-		current_snippet += code_snippets.get_value(snippet_name, "type_hint")
-	elif not use_type_hints and code_snippets.has_section_key(snippet_name, "no_type_hint"):
-		current_snippet += code_snippets.get_value(snippet_name, "no_type_hint")
+	current_snippet = code_snippets.get_value(snippet_name, "body").replace("\\\"", "\"")
 	current_snippet = current_snippet.replace("\n", "\n" + tabs)
 	
 	starting_pos = [code_editor.cursor_get_line(), code_editor.cursor_get_column()]
@@ -181,7 +196,6 @@ func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 			delayed_one_key_press = true
 			curr_snippet_pos = [result[TextEdit.SEARCH_RESULT_LINE], result[TextEdit.SEARCH_RESULT_COLUMN]]
 			code_editor.select(curr_snippet_pos[0], curr_snippet_pos[1], curr_snippet_pos[0], curr_snippet_pos[1] + curr_tabstop_marker.length() + (placeholder.length() + 1 if placeholder else 0))
-			
 			if placeholder: # the PopupMenu needs to be called even if just one place holder is there; otherwise buggy (for ex: mirror example)
 				code_editor.insert_text_at_cursor(curr_tabstop_marker)
 				code_editor.select(curr_snippet_pos[0], curr_snippet_pos[1], curr_snippet_pos[0], curr_snippet_pos[1] + curr_tabstop_marker.length())
@@ -194,6 +208,8 @@ func _jump_to_and_delete_next_marker(code_editor : TextEdit) -> void:
 				var tmp = OS.clipboard
 				code_editor.cut()
 				OS.clipboard = tmp
+	else:
+		code_editor.deselect() # if last marker gives options, _get_mirror_var will make a selection
 
 
 func _get_mirror_var(code_editor : TextEdit) -> String:
@@ -265,13 +281,11 @@ func _activate_item(selected_index : int = -1) -> void:
 func _on_Copy_pressed() -> void:
 	var selection = item_list.get_selected_items()
 	if selection:
-		var use_type_hints = INTERFACE.get_editor_settings().get_setting("text_editor/completion/add_type_hints")
+		var code_editor : TextEdit = UTIL.get_current_script_texteditor(EDITOR)
+		var tab_count = code_editor.get_line(code_editor.cursor_get_line()).count("\t")
+		var tabs = "\t".repeat(tab_count)
 		var snippet_name = item_list.get_item_text(selection[0])
-		var snippet : String = code_snippets.get_value(snippet_name, "body")
-		if use_type_hints and code_snippets.has_section_key(snippet_name, "type_hint"):
-			snippet += code_snippets.get_value(snippet_name, "type_hint")
-		elif not use_type_hints and code_snippets.has_section_key(snippet_name, "no_type_hint"):
-			snippet += code_snippets.get_value(snippet_name, "no_type_hint")
+		var snippet : String = code_snippets.get_value(snippet_name, "body", "").replace("\\\"", "\"").replace("\n", "\n" + tabs)
 		var marker_pos = snippet.find(curr_tabstop_marker)
 		if marker_pos != -1:
 			snippet.erase(marker_pos, curr_tabstop_marker.length()) 
@@ -292,7 +306,7 @@ func _on_Edit_pressed() -> void:
 	var txt = snippet_file.get_as_text()
 	snippet_file.close()
 	
-	snippet_editor.edit_snippet(txt, editor_size)
+	snippet_editor.edit_snippet(txt, editor_size) 
 
 
 func _get_cursor_position() -> Vector2: # approx.
@@ -315,7 +329,6 @@ func _custom_search(code_editor : TextEdit, search_string : String, flags : int,
 		# EOF reached and search started from the top again
 		return PoolIntArray([])
 	return result
-	
 
 
 ############# Setting signals #################
@@ -323,10 +336,15 @@ func _custom_search(code_editor : TextEdit, search_string : String, flags : int,
 
 func _on_Settings_pressed() -> void:
 	settings_popup.popup_centered_clamped(Vector2(600, 300), .75)
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.grab_focus()
 
 
 func _on_CheckBox_toggled(button_pressed: bool) -> void:
 	adapt_popup_height = button_pressed
+
+
+func _on_AtCenter_toggled(button_pressed: bool) -> void:
+	popup_at_center = button_pressed
 
 
 func _on_LineEdit_text_changed(new_text: String) -> void:
@@ -355,7 +373,7 @@ func _on_LineEdit2_text_changed(new_text: String) -> void:
 	snippet_config = new_text
 
 
-func _on_SaveButton_pressed() -> void:
+func _on_SaveButton_pressed() -> void: # settings button
 	save_cfg()
 	if prev_file_path: # file path for snippets was changed
 		var new_file = File.new()
@@ -379,8 +397,13 @@ func _on_SaveButton_pressed() -> void:
 	$SettingsPopup.hide()
 
 
+func _on_CancelButton_pressed() -> void:
+	$SettingsPopup.hide() # does call signal
+
+
 func _on_SettingsPopup_popup_hide() -> void:
 	load_cfg() # reset made changes if not saved
+	filter.grab_focus()
 
 
 func load_cfg():
@@ -393,16 +416,18 @@ func load_cfg():
 		
 	
 	elif error == OK:
-		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text = config.get_value("Settings", "shortcut") as String
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text = config.get_value("Settings", "shortcut").replace("\\\"", "\"")
 		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed = config.get_value("Settings", "adaptive_height") as bool
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCenter.pressed= config.get_value("Settings", "popup_at_center") as bool
 		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox.value = config.get_value("Settings", "main_h") as int
 		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value = config.get_value("Settings", "main_w") as int
 		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value = config.get_value("Settings", "editor_h") as int
 		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value = config.get_value("Settings", "editor_w") as int
-		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text = config.get_value("Settings", "file_path") as String
+		$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text = config.get_value("Settings", "file_path").replace("\\\"", "\"")
 	
 	keyboard_shortcut = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text
 	adapt_popup_height = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed
+	popup_at_center = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCenter.pressed
 	pop_size.y = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox.value
 	pop_size.x = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value
 	editor_size.y = $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value
@@ -413,17 +438,19 @@ func load_cfg():
 func load_default_settings():
 	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text = "Control+Tab"
 	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed = true
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCenter.pressed = false
 	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox.value = 500
 	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value = 750
-	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value = 1000
-	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value = 850
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value = 800
+	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4.value = 1000
 	$SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2.text = "user://../CodeSnippets.cfg"
 
 
 func save_cfg():
 	var config = ConfigFile.new()
 	config.set_value("Settings", "shortcut", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit.text)
-	config.set_value("Settings", "adaptive_height", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed if $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed else "") 
+	config.set_value("Settings", "adaptive_height", "true" if $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox.pressed else "") 
+	config.set_value("Settings", "popup_at_center", "true" if $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCenter.pressed else "") 
 	config.set_value("Settings", "main_h", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox.value)
 	config.set_value("Settings", "main_w", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2.value)
 	config.set_value("Settings", "editor_h", $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3.value)
@@ -454,7 +481,7 @@ func load_default_snippets() -> void:
 
 
 func _on_Button_pressed() -> void:
-	$FileDialog.popup_centered()
+	$SettingsPopup/FileDialog.popup_centered_clamped(Vector2(800, 900), .8)
 
 
 func _on_FileDialog_dir_selected(dir: String) -> void:
