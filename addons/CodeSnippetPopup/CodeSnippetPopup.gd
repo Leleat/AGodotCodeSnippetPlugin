@@ -13,6 +13,7 @@ onready var settings_button = $Main/VBoxContainer/HBoxContainer/Settings
 onready var SNIPPET_EDITOR : WindowDialog = $SnippetEditor
 onready var SETTINGS : WindowDialog = $SettingsPopup
 onready var OPTIONS_POPUP : PopupMenu = $OptionsPopup # popup for a snippet with options; for ex. [@1:OptionA,OptionB]
+onready var settings_editshortcut_button := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/EditShortcutButton
 onready var settings_shortcut_lineedit := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/ShortcutLineEdit
 onready var settings_filedialog_button := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/FileDialogButton
 onready var settings_filedialog := $SettingsPopup/FileDialog
@@ -45,6 +46,7 @@ var current_main_screen : String = ""
 var code_snippets : ConfigFile
 var version_number 
 var prev_file_path := ""
+var prev_shortcut := ""
 
 
 func _ready() -> void:
@@ -64,13 +66,14 @@ func _ready() -> void:
 	settings_filedialog_button.icon = get_icon("Folder", "EditorIcons")
 	settings_save_button.icon = get_icon("Save", "EditorIcons")
 	settings_cancel_button.icon = get_icon("Close", "EditorIcons")
+	settings_editshortcut_button.icon = get_icon("Edit", "EditorIcons")
 	
 	_load_settings()
 	_update_snippets()
 
 
 func _unhandled_key_input(event : InputEventKey) -> void:
-	if event.as_text() == keyboard_shortcut and current_main_screen == "Script":
+	if event.as_text() == keyboard_shortcut and current_main_screen == "Script" and not SETTINGS.visible:
 		if tabstop_numbers.empty():
 			_update_popup_list()
 			if popup_at_cursor_pos:
@@ -92,6 +95,8 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 		elif SETTINGS.visible:
 			if settings_cancel_button.has_focus():
 				SETTINGS.hide()
+			elif settings_editshortcut_button.icon == get_icon("DebugSkipBreakpointsOff", "EditorIcons"):
+				settings_editshortcut_button.icon = get_icon("Edit", "EditorIcons")
 			else:
 				settings_cancel_button.grab_focus()
 
@@ -306,6 +311,7 @@ func _on_Copy_pressed() -> void:
 
 func _on_CodeSnippetPopup_popup_hide() -> void:
 	filter.clear()
+	_get_current_script_texteditor().grab_focus()
 
 
 func _on_Edit_pressed() -> void:
@@ -354,7 +360,30 @@ func _get_current_script_texteditor() -> TextEdit:
 
 func _on_SettingsButton_pressed() -> void:
 	SETTINGS.popup_centered_clamped(Vector2(600, 300), .75)
-	settings_shortcut_lineedit.grab_focus()
+	settings_editshortcut_button.grab_focus()
+
+
+func _on_ShortcutLineEdit_text_changed(new_text: String) -> void:
+	if not prev_shortcut:
+		prev_shortcut = keyboard_shortcut
+	keyboard_shortcut = new_text
+
+
+func _on_ShortcutEditButton_pressed() -> void:
+	if settings_editshortcut_button.icon == get_icon("Edit", "EditorIcons"):
+		settings_editshortcut_button.set_deferred("icon", get_icon("DebugSkipBreakpointsOff", "EditorIcons"))
+
+
+func _on_ShortcutEditButton_gui_input(event: InputEvent) -> void:
+	if settings_editshortcut_button.icon == get_icon("DebugSkipBreakpointsOff", "EditorIcons") and event is InputEventKey and not event.pressed:
+		settings_editshortcut_button.icon = get_icon("Edit", "EditorIcons")
+		settings_shortcut_lineedit.text = event.as_text()
+		keyboard_shortcut = event.as_text()
+
+
+func _on_EditShortcutButton_focus_exited() -> void:
+	if settings_editshortcut_button.icon == get_icon("DebugSkipBreakpointsOff", "EditorIcons"):
+		settings_editshortcut_button.icon = get_icon("Edit", "EditorIcons")
 
 
 func _on_AdaptiveHeightCheckBox_toggled(button_pressed: bool) -> void:
@@ -363,13 +392,6 @@ func _on_AdaptiveHeightCheckBox_toggled(button_pressed: bool) -> void:
 
 func _on_AtCursorCheckbox_toggled(button_pressed: bool) -> void:
 	popup_at_cursor_pos = button_pressed
-
-
-func _on_ShortcutLineEdit_text_changed(new_text: String) -> void:
-	if new_text:
-		keyboard_shortcut = new_text
-	else:
-		settings_shortcut_lineedit.text = keyboard_shortcut
 
 
 func _on_MainHeightSpinBox_value_changed(value: float) -> void:
@@ -409,26 +431,40 @@ func _on_FileDialog_file_selected(path: String) -> void:
 
 
 func _on_SettingsSaveButton_pressed() -> void: # settings button
-	_save_settings()
 	if prev_file_path: # file path for snippets was changed
-		var new_file = File.new()
-		var err = new_file.open(snippet_config_path, File.READ_WRITE)
-		if err == ERR_FILE_NOT_FOUND:
-			new_file.open(snippet_config_path, File.WRITE_READ)
-		elif err != OK:
-			push_warning("Error saving the code_snippets. Error code: %s." % err)
-			return
-		if new_file.get_as_text() == "":
-			var file = File.new()
-			var error = file.open(prev_file_path, File.READ)
-			if error != OK:
-				push_warning("Error saving the code_snippets. Error code: %s." % error)
+		if not ProjectSettings.globalize_path(snippet_config_path).get_base_dir(): # invalid path... sorta
+			settings_file_path_lineedit.text = prev_file_path
+			snippet_config_path = prev_file_path
+			push_warning("Invalid file path for code snippets." )
+		else:
+			var new_file = File.new()
+			var err = new_file.open(snippet_config_path, File.READ_WRITE)
+			if err == ERR_FILE_NOT_FOUND:
+				new_file.open(snippet_config_path, File.WRITE_READ)
+			elif err != OK:
+				push_warning("Error saving the code_snippets. Error code: %s." % err)
 				return
-			new_file.store_string(file.get_as_text())
-			file.close()
-			new_file.close()
-		_update_snippets()
+			if new_file.get_as_text() == "":
+				var file = File.new()
+				var error = file.open(prev_file_path, File.READ)
+				if error != OK:
+					push_warning("Error saving the code_snippets. Error code: %s." % error)
+					return
+				new_file.store_string(file.get_as_text())
+				file.close()
+				new_file.close()
 		prev_file_path = ""
+		_update_snippets()
+		
+	if prev_shortcut: # keyboard shortcut was changed
+		for key in keyboard_shortcut.split("+"):
+			if not OS.find_scancode_from_string(key):
+				settings_shortcut_lineedit.text = prev_shortcut
+				keyboard_shortcut = prev_shortcut
+				push_warning("Invalid keyboard shortcut for code snippets." )
+		prev_shortcut = ""
+	
+	_save_settings()
 	SETTINGS.hide()
 
 

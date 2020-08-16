@@ -86,7 +86,7 @@ icon = SubResource( 2 )
 [node name="ItemList" type="ItemList" parent="Main/VBoxContainer"]
 margin_top = 30.0
 margin_right = 1016.0
-margin_bottom = 592.0
+margin_bottom = 325.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 items = [ " 0  :: ", null, false, "_ready", null, false, "", null, true, " 1  :: ", null, false, "_enter_tree", null, false, "", null, true, " 2  :: ", null, false, "_exit_tree", null, false, "", null, true, " 3  :: ", null, false, "_physics_process", null, false, " (delta : float)", null, true, " 4  :: ", null, false, "_process", null, false, " (delta : float)", null, true, " 5  :: ", null, false, "_input", null, false, " (event : InputEvent)", null, true, " 6  :: ", null, false, "_unhandled_input", null, false, " (event : InputEvent)", null, true, " 7  :: ", null, false, "_unhandled_key_input", null, false, " (event : InputEventKey)", null, true, " 8  :: ", null, false, "_gui_input", null, false, " (event : InputEvent)", null, true, " 9  :: ", null, false, "_draw", null, false, "", null, true ]
@@ -133,23 +133,35 @@ margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 250, 0 )
-hint_tooltip = "Check Godot's shortcut to see what the proper format is (Editor >Editor Settings > Shortcuts). 
+hint_tooltip = "The EditButton will record the next pressed Keyboard input. It can however not interrupt input (e.g. you can tab out). In that case, you can manually enter the keyboard shortcut.
+Check Godot's shortcuts to see what the proper format is (Editor >Editor Settings > Shortcuts). 
 Make sure you do it correctly. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
 mouse_filter = 1
 text = "Keyboard shortcut"
 
 [node name="ShortcutLineEdit" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer"]
 margin_left = 254.0
-margin_right = 976.0
+margin_right = 942.0
 margin_bottom = 24.0
-rect_min_size = Vector2( 200, 0 )
-hint_tooltip = "Check Godot's shortcut to see what the proper format is (Editor >Editor Settings > Shortcuts). 
+rect_min_size = Vector2( 165, 0 )
+hint_tooltip = "The EditButton will record the next pressed Keyboard input. It can however not interrupt input (e.g. you can tab out). In that case, you can manually enter the keyboard shortcut.
+Check Godot's shortcuts to see what the proper format is (Editor >Editor Settings > Shortcuts). 
 Make sure you do it correctly. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
+mouse_filter = 1
 size_flags_horizontal = 11
-text = "Control+Tab"
+text = "Control+T"
 align = 2
-caret_blink = true
-caret_blink_speed = 0.5
+
+[node name="EditShortcutButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 946.0
+margin_right = 974.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 29, 0 )
+hint_tooltip = "The EditButton will record the next pressed Keyboard input. It can however not interrupt input (e.g. you can tab out). In that case, you can manually enter the keyboard shortcut.
+Check Godot's shortcuts to see what the proper format is (Editor >Editor Settings > Shortcuts). 
+Make sure you do it correctly. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
+size_flags_horizontal = 8
+icon = SubResource( 2 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
 margin_top = 28.0
@@ -339,9 +351,9 @@ icon = SubResource( 2 )
 
 [node name="HBoxContainer9" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
 margin_left = 388.0
-margin_top = 530.0
+margin_top = 263.0
 margin_right = 588.0
-margin_bottom = 552.0
+margin_bottom = 285.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 4
 size_flags_vertical = 10
@@ -378,8 +390,8 @@ dialog_autowrap = true
 mode = 3
 access = 2
 show_hidden_files = true
-current_dir = "/home/toni/Godot/CodeSn"
-current_path = "/home/toni/Godot/CodeSn/"
+current_dir = "/home/toni/Godot/Test"
+current_path = "/home/toni/Godot/Test/"
 
 [node name="SnippetEditor" parent="." instance=ExtResource( 2 )]
 margin_left = 4.0
@@ -401,6 +413,9 @@ margin_bottom = -4.0
 [connection signal="item_activated" from="Main/VBoxContainer/ItemList" to="." method="_on_ItemList_item_activated"]
 [connection signal="popup_hide" from="SettingsPopup" to="." method="_on_SettingsPopup_popup_hide"]
 [connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/ShortcutLineEdit" to="." method="_on_ShortcutLineEdit_text_changed"]
+[connection signal="focus_exited" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/EditShortcutButton" to="." method="_on_EditShortcutButton_focus_exited"]
+[connection signal="gui_input" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/EditShortcutButton" to="." method="_on_ShortcutEditButton_gui_input"]
+[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/EditShortcutButton" to="." method="_on_ShortcutEditButton_pressed"]
 [connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/AdaptiveHeightCheckBox" to="." method="_on_AdaptiveHeightCheckBox_toggled"]
 [connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCursorCheckbox" to="." method="_on_AtCursorCheckbox_toggled"]
 [connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/PopupHeightSpinBox" to="." method="_on_MainHeightSpinBox_value_changed"]
