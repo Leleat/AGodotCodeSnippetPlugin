@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://addons/CodeSnippetPopup/CodeSnippetPopup.gd" type="Script" id=1]
-[ext_resource path="res://addons/CodeSnippetPopup/SnippetEditor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/CodeSnippetPopup/Secondary/SnippetEditor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/CodeSnippetPopup/Secondary/DropDownPopup.tscn" type="PackedScene" id=3]
 
 [sub_resource type="Image" id=1]
 data = {
@@ -21,11 +22,10 @@ size = Vector2( 16, 16 )
 [node name="CodeSnippetPopup" type="PopupPanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = 5120.0
 margin_bottom = -267.0
 script = ExtResource( 1 )
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Main" type="MarginContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -36,15 +36,15 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-margin_right = 6136.0
+[node name="VBoxContainer" type="VBoxContainer" parent="Main"]
+margin_right = 1016.0
 margin_bottom = 325.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/VBoxContainer"]
 margin_right = 1016.0
 margin_bottom = 26.0
 
-[node name="Filter" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Filter" type="LineEdit" parent="Main/VBoxContainer/HBoxContainer"]
 margin_right = 808.0
 margin_bottom = 26.0
 hint_tooltip = "Ending the search_string with \" X\" (space + integer) will jump to the X-th item in the list.
@@ -59,7 +59,7 @@ placeholder_text = "Look at tooltips for help."
 caret_blink = true
 caret_blink_speed = 0.5
 
-[node name="Copy" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Copy" type="Button" parent="Main/VBoxContainer/HBoxContainer"]
 margin_left = 812.0
 margin_right = 873.0
 margin_bottom = 26.0
@@ -67,7 +67,7 @@ hint_tooltip = "Copy the selected snippet to your clipboard. The copy will inclu
 text = "Copy"
 icon = SubResource( 2 )
 
-[node name="Edit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Edit" type="Button" parent="Main/VBoxContainer/HBoxContainer"]
 margin_left = 877.0
 margin_right = 931.0
 margin_bottom = 26.0
@@ -75,7 +75,7 @@ hint_tooltip = "Open the built-in SnippetEditor"
 text = "Edit"
 icon = SubResource( 2 )
 
-[node name="Settings" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Settings" type="Button" parent="Main/VBoxContainer/HBoxContainer"]
 margin_left = 935.0
 margin_right = 1016.0
 margin_bottom = 26.0
@@ -83,7 +83,7 @@ hint_tooltip = " Configuration options for this plugin."
 text = "Settings"
 icon = SubResource( 2 )
 
-[node name="ItemList" type="ItemList" parent="MarginContainer/VBoxContainer"]
+[node name="ItemList" type="ItemList" parent="Main/VBoxContainer"]
 margin_top = 30.0
 margin_right = 1016.0
 margin_bottom = 592.0
@@ -99,7 +99,7 @@ __meta__ = {
 visible = true
 margin_left = 4.0
 margin_top = 4.0
-margin_right = 6140.0
+margin_right = 1020.0
 margin_bottom = 329.0
 rect_min_size = Vector2( 600, 325 )
 popup_exclusive = true
@@ -121,7 +121,7 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SettingsPopup/MarginContainer"]
-margin_right = 6096.0
+margin_right = 976.0
 margin_bottom = 285.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
@@ -133,16 +133,18 @@ margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 250, 0 )
-hint_tooltip = " Check Godot's shortcut to see what the proper format is (Editor >Editor Settings > Shortcuts)."
+hint_tooltip = "Check Godot's shortcut to see what the proper format is (Editor >Editor Settings > Shortcuts). 
+Make sure you do it correctly. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
 mouse_filter = 1
 text = "Keyboard shortcut"
 
-[node name="LineEdit" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ShortcutLineEdit" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer"]
 margin_left = 254.0
 margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
-hint_tooltip = " Check Godot's shortcut to see what the proper format is (Editor >Editor Settings > Shortcuts)."
+hint_tooltip = "Check Godot's shortcut to see what the proper format is (Editor >Editor Settings > Shortcuts). 
+Make sure you do it correctly. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
 size_flags_horizontal = 11
 text = "Control+Tab"
 align = 2
@@ -163,7 +165,7 @@ hint_tooltip = "Change the height of the popup based on the number of items in t
 mouse_filter = 1
 text = "Adaptive height"
 
-[node name="CheckBox" type="CheckBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="AdaptiveHeightCheckBox" type="CheckBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2"]
 margin_left = 952.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -186,7 +188,7 @@ hint_tooltip = "Instead of appearing at the screen center, the popup will apear 
 mouse_filter = 1
 text = "Main popup at cursor position (approx.)"
 
-[node name="AtCenter" type="CheckBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8"]
+[node name="AtCursorCheckbox" type="CheckBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8"]
 margin_left = 952.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -206,7 +208,7 @@ rect_min_size = Vector2( 250, 0 )
 mouse_filter = 1
 text = "Main popup's height"
 
-[node name="SpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3"]
+[node name="PopupHeightSpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3"]
 margin_left = 254.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -229,7 +231,7 @@ rect_min_size = Vector2( 250, 0 )
 mouse_filter = 1
 text = "Main popup's width"
 
-[node name="SpinBox2" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4"]
+[node name="PopupWidthSpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4"]
 margin_left = 254.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -252,7 +254,7 @@ rect_min_size = Vector2( 250, 0 )
 mouse_filter = 1
 text = "Snippet editor's popup height"
 
-[node name="SpinBox3" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5"]
+[node name="EditorHeightSpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5"]
 margin_left = 254.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -275,7 +277,7 @@ rect_min_size = Vector2( 250, 0 )
 mouse_filter = 1
 text = "Snippet editor's popup width"
 
-[node name="SpinBox4" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6"]
+[node name="EditorWidthSpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6"]
 margin_left = 254.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -300,11 +302,12 @@ hint_tooltip = "The default path saves the snippet file in the directory where G
 See Godot's documentation for get_user_data_dir() in the OS class.
 
 You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it.
-"
+
+Make sure the path exist otherwise it may cause Godot to crash. In that case you need to remove/redownload the plugin or manually edit the settings.cfg file to reset the settings."
 mouse_filter = 1
 text = "File path of snippet cfg file"
 
-[node name="LineEdit2" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
+[node name="FilepathLineEdit" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
 margin_left = 254.0
 margin_right = 944.0
 margin_bottom = 24.0
@@ -312,14 +315,16 @@ hint_tooltip = "The default path saves the snippet file in the directory where G
 
 See Godot's documentation for get_user_data_dir() in the OS class.
 
-You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it."
+You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it.
+
+Make sure the path exist otherwise it may cause Godot to crash. In that case you need to remove/redownload the plugin or manually edit the settings.cfg file to reset the settings."
 size_flags_horizontal = 11
 text = "user://../CodeSnippets.cfg"
 align = 2
 caret_blink = true
 caret_blink_speed = 0.5
 
-[node name="Button" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
+[node name="FileDialogButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
 margin_left = 948.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -327,7 +332,9 @@ hint_tooltip = "The default path saves the snippet file in the directory where G
 
 See Godot's documentation for get_user_data_dir() in the OS class.
 
-You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it."
+You can manually enter a file path (file name is part of the file path) or use the FileDialog. If you choose a directory a CodeSnippets.cfg file will be created and the old snippets will be copied into the new file. If you choose an existing file, the plugin will try to load it.
+
+Make sure the path exist otherwise it may cause Godot to crash. In that case you need to remove/redownload the plugin or manually edit the settings.cfg file to reset the settings."
 icon = SubResource( 2 )
 
 [node name="HBoxContainer9" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
@@ -350,8 +357,8 @@ text = "Cancel"
 icon = SubResource( 2 )
 
 [node name="SaveButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9"]
-margin_left = 111.0
-margin_right = 170.0
+margin_left = 121.0
+margin_right = 180.0
 margin_bottom = 22.0
 size_flags_horizontal = 6
 size_flags_vertical = 10
@@ -371,32 +378,38 @@ dialog_autowrap = true
 mode = 3
 access = 2
 show_hidden_files = true
-current_dir = "/home/toni/Godot/New Game Project"
-current_path = "/home/toni/Godot/New Game Project/"
+current_dir = "/home/toni/Godot/CodeSn"
+current_path = "/home/toni/Godot/CodeSn/"
 
 [node name="SnippetEditor" parent="." instance=ExtResource( 2 )]
 margin_left = 4.0
 margin_top = 4.0
 margin_right = -4.0
 margin_bottom = -4.0
+
+[node name="OptionsPopup" parent="." instance=ExtResource( 3 )]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
 [connection signal="popup_hide" from="." to="." method="_on_CodeSnippetPopup_popup_hide"]
-[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
-[connection signal="text_entered" from="MarginContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_entered"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Copy" to="." method="_on_Copy_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Edit" to="." method="_on_Edit_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Settings" to="." method="_on_Settings_pressed"]
-[connection signal="item_activated" from="MarginContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_item_activated"]
+[connection signal="text_changed" from="Main/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
+[connection signal="text_entered" from="Main/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_entered"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/Copy" to="." method="_on_Copy_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/Edit" to="." method="_on_Edit_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/Settings" to="." method="_on_SettingsButton_pressed"]
+[connection signal="item_activated" from="Main/VBoxContainer/ItemList" to="." method="_on_ItemList_item_activated"]
 [connection signal="popup_hide" from="SettingsPopup" to="." method="_on_SettingsPopup_popup_hide"]
-[connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/LineEdit" to="." method="_on_LineEdit_text_changed"]
-[connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/CheckBox" to="." method="_on_CheckBox_toggled"]
-[connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCenter" to="." method="_on_AtCenter_toggled"]
-[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/SpinBox" to="." method="_on_SpinBox_value_changed"]
-[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/SpinBox2" to="." method="_on_SpinBox2_value_changed"]
-[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/SpinBox3" to="." method="_on_SpinBox3_value_changed"]
-[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/SpinBox4" to="." method="_on_SpinBox4_value_changed"]
-[connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/LineEdit2" to="." method="_on_LineEdit2_text_changed"]
-[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/Button" to="." method="_on_Button_pressed"]
-[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/CancelButton" to="." method="_on_CancelButton_pressed"]
-[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/SaveButton" to="." method="_on_SaveButton_pressed"]
+[connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/ShortcutLineEdit" to="." method="_on_ShortcutLineEdit_text_changed"]
+[connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/AdaptiveHeightCheckBox" to="." method="_on_AdaptiveHeightCheckBox_toggled"]
+[connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCursorCheckbox" to="." method="_on_AtCursorCheckbox_toggled"]
+[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/PopupHeightSpinBox" to="." method="_on_MainHeightSpinBox_value_changed"]
+[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/PopupWidthSpinBox" to="." method="_on_MainWidthSpinBox_value_changed"]
+[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/EditorHeightSpinBox" to="." method="_on_EditorHeightSpinBox_value_changed"]
+[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/EditorWidthSpinBox" to="." method="_on_EditorWidthSpinBox_value_changed"]
+[connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/FilepathLineEdit" to="." method="_on_FilepathLineEdit_text_changed"]
+[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/FileDialogButton" to="." method="_on_FileDialogButton_pressed"]
+[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/CancelButton" to="." method="_on_SettingsCancelButton_pressed"]
+[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/SaveButton" to="." method="_on_SettingsSaveButton_pressed"]
 [connection signal="dir_selected" from="SettingsPopup/FileDialog" to="." method="_on_FileDialog_dir_selected"]
 [connection signal="file_selected" from="SettingsPopup/FileDialog" to="." method="_on_FileDialog_file_selected"]

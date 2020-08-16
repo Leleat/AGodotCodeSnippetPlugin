@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://addons/CodeSnippetPopup/SnippetEditor.gd" type="Script" id=1]
+[ext_resource path="res://addons/CodeSnippetPopup/Secondary/SnippetEditor.gd" type="Script" id=1]
 
 [sub_resource type="Image" id=1]
 data = {
@@ -27,7 +27,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Main" type="MarginContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 15.0
@@ -38,28 +38,28 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Main"]
 margin_right = 994.0
 margin_bottom = 575.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/VBoxContainer"]
 margin_right = 994.0
 margin_bottom = 531.0
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Main/VBoxContainer/HBoxContainer"]
 margin_right = 491.0
 margin_bottom = 531.0
 size_flags_horizontal = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer"]
 margin_right = 491.0
 margin_bottom = 26.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Filter" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Filter" type="LineEdit" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_right = 259.0
 margin_bottom = 26.0
 hint_tooltip = "Quick access via F key."
@@ -71,7 +71,7 @@ placeholder_text = "Filter..."
 caret_blink = true
 caret_blink_speed = 0.5
 
-[node name="AddButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="AddButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_left = 263.0
 margin_right = 318.0
 margin_bottom = 26.0
@@ -81,7 +81,7 @@ Add a snippet."
 text = "Add"
 icon = SubResource( 2 )
 
-[node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="DeleteButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_left = 322.0
 margin_right = 374.0
 margin_bottom = 26.0
@@ -91,7 +91,7 @@ Deletes one or multiple (selection via LMB+shift) snippets."
 text = "Del"
 icon = SubResource( 2 )
 
-[node name="SrcButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="SrcButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_left = 378.0
 margin_right = 427.0
 margin_bottom = 26.0
@@ -102,33 +102,33 @@ By default the config and the settings file are saved in user://../ (see Godot's
 text = "Src"
 icon = SubResource( 2 )
 
-[node name="HelpButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="HelpButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_left = 431.0
 margin_right = 491.0
 margin_bottom = 26.0
 text = "Help"
 icon = SubResource( 2 )
 
-[node name="ItemList" type="ItemList" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="ItemList" type="ItemList" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer"]
 margin_top = 30.0
 margin_right = 491.0
 margin_bottom = 531.0
 size_flags_vertical = 3
 auto_height = true
 
-[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="Main/VBoxContainer/HBoxContainer"]
 modulate = Color( 0, 0, 0, 0 )
 margin_left = 495.0
 margin_right = 499.0
 margin_bottom = 531.0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Main/VBoxContainer/HBoxContainer"]
 margin_left = 503.0
 margin_right = 994.0
 margin_bottom = 531.0
 size_flags_horizontal = 3
 
-[node name="TextEdit" type="TextEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="MainTextEdit" type="TextEdit" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_right = 491.0
 margin_bottom = 237.0
 hint_tooltip = "[@X] = Jump markers; use of the same number will mirror code
@@ -147,7 +147,7 @@ highlight_all_occurrences = true
 wrap_enabled = true
 caret_blink = true
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="QuickNoteLabel" type="Label" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer2"]
 modulate = Color( 1, 1, 1, 0.521569 )
 margin_top = 241.0
 margin_right = 491.0
@@ -159,7 +159,7 @@ mouse_filter = 1
 text = "Quick note:"
 valign = 1
 
-[node name="AdditionalInfo" type="TextEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="AdditionalInfo" type="TextEdit" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 259.0
 margin_right = 491.0
 margin_bottom = 309.0
@@ -171,7 +171,7 @@ draw_tabs = true
 highlight_all_occurrences = true
 caret_blink = true
 
-[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="OtherInfoLabel" type="Label" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer2"]
 modulate = Color( 1, 1, 1, 0.521569 )
 margin_top = 313.0
 margin_right = 491.0
@@ -181,7 +181,7 @@ mouse_filter = 1
 text = "Other information:"
 valign = 1
 
-[node name="AdditionalInfo2" type="TextEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="OtherInfo" type="TextEdit" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 331.0
 margin_right = 491.0
 margin_bottom = 531.0
@@ -191,7 +191,7 @@ draw_tabs = true
 highlight_all_occurrences = true
 caret_blink = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Main/VBoxContainer"]
 margin_left = 397.0
 margin_top = 535.0
 margin_right = 597.0
@@ -199,7 +199,7 @@ margin_bottom = 575.0
 rect_min_size = Vector2( 200, 40 )
 size_flags_horizontal = 4
 
-[node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="CancelButton" type="Button" parent="Main/VBoxContainer/HBoxContainer2"]
 margin_left = 13.0
 margin_top = 9.0
 margin_right = 85.0
@@ -213,7 +213,7 @@ size_flags_vertical = 4
 text = "Cancel"
 icon = SubResource( 2 )
 
-[node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="SaveButton" type="Button" parent="Main/VBoxContainer/HBoxContainer2"]
 margin_left = 118.0
 margin_top = 9.0
 margin_right = 183.0
@@ -270,13 +270,13 @@ text = "The snippet file uses a INI-style structure. If you  want to edit the sn
 The [section] is the snippet name and it is the name which will appear in the snippet list.
 \"body\" (without quotations marks) is the only key which has to be defined. 
 \"additional_info\" is optional and will appear in the snippet list but greyed out. It won't be inserted when activating a snippet. 
-\"other_info\" is also optional and will only be shown when opening the snippets editor. 
+\"other_info\" is also optional and will be shown as a tooltip in the snippet list.
 
 Use [@X] in your snippets, where X is an integer, to mark the position(s) the cursor jumps to. Once the snippet has been inserted into the code editor, you can jump with the cursor to the [@x] marker in the text using the shortcut key (Ctrl+Tab by default). The numerical order of the tabstops will be respected. If you use a number multiple times, the code you used at the first jump marker will be mirrored to the other markers with the same number. 
 
 You can add a placeholder/dropdown options by separating the options by commas. For example: [@1:OptionA,OptionB] will be the first position the cursor will jump to after the snippet has been inserted. A popup window will open with \"OptionA\" and \"OptionB\" as choices under the text cursor position.
 
-If you use multiple jump markers, DON'T manually navigate around in the code editor as this may mess it up. Use the auto-jumping instead. If you want to abort the jumping, press Esc. If the dropdown choice popup is visible, you will need to press Esc twice (once to escape the choice popup and a second time to escape the jumping).
+If you use multiple jump markers, DON'T manually navigate around in the code editor or edit the jump markers as this may mess it up. Use the auto-jumping instead. If you want to abort the jumping, press Esc. If the dropdown choice popup is visible, you will need to press Esc twice (once to escape the choice popup and a second time to escape the jumping).
 
 --------------------------------
 
@@ -328,22 +328,22 @@ clear_button_enabled = true
 caret_blink = true
 caret_blink_speed = 0.5
 [connection signal="popup_hide" from="." to="." method="_on_SnippetEditor_popup_hide"]
-[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/AddButton" to="." method="_on_AddButton_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/DeleteButton" to="." method="_on_DeleteButton_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/SrcButton" to="." method="_on_Button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/HelpButton" to="." method="_on_HelpButton_pressed"]
-[connection signal="gui_input" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_gui_input"]
-[connection signal="item_selected" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_item_selected"]
-[connection signal="multi_selected" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_multi_selected"]
-[connection signal="focus_exited" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/TextEdit" to="." method="_on_TextEdit_focus_exited"]
-[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/TextEdit" to="." method="_on_TextEdit_text_changed"]
-[connection signal="focus_exited" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo" to="." method="_on_AdditionalInfo_focus_exited"]
-[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo" to="." method="_on_AdditionalInfo_text_changed"]
-[connection signal="focus_exited" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo2" to="." method="_on_AdditionalInfo2_focus_exited"]
-[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo2" to="." method="_on_AdditionalInfo2_text_changed"]
-[connection signal="gui_input" from="MarginContainer/VBoxContainer/HBoxContainer2/CancelButton" to="." method="_on_CancelButton_gui_input"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/CancelButton" to="." method="_on_CancelButton_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/SaveButton" to="." method="_on_SaveButton_pressed"]
+[connection signal="text_changed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/AddButton" to="." method="_on_AddButton_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/DeleteButton" to="." method="_on_DeleteButton_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/SrcButton" to="." method="_on_SrcButton_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/HelpButton" to="." method="_on_HelpButton_pressed"]
+[connection signal="gui_input" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_gui_input"]
+[connection signal="item_selected" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_item_selected"]
+[connection signal="multi_selected" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_multi_selected"]
+[connection signal="focus_exited" from="Main/VBoxContainer/HBoxContainer/VBoxContainer2/MainTextEdit" to="." method="_on_MainTextEdit_focus_exited"]
+[connection signal="text_changed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer2/MainTextEdit" to="." method="_on_TextEditors_text_changed"]
+[connection signal="focus_exited" from="Main/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo" to="." method="_on_AdditionalInfo_focus_exited"]
+[connection signal="text_changed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer2/AdditionalInfo" to="." method="_on_TextEditors_text_changed"]
+[connection signal="focus_exited" from="Main/VBoxContainer/HBoxContainer/VBoxContainer2/OtherInfo" to="." method="_on_OtherInfo_focus_exited"]
+[connection signal="text_changed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer2/OtherInfo" to="." method="_on_TextEditors_text_changed"]
+[connection signal="gui_input" from="Main/VBoxContainer/HBoxContainer2/CancelButton" to="." method="_on_CancelButton_gui_input"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer2/CancelButton" to="." method="_on_CancelButton_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer2/SaveButton" to="." method="_on_SaveButton_pressed"]
 [connection signal="popup_hide" from="SnippetNameDialog" to="." method="_on_SnippetNameDialog_popup_hide"]
-[connection signal="text_entered" from="SnippetNameDialog/MarginContainer/LineEdit" to="." method="_on_LineEdit_text_entered"]
+[connection signal="text_entered" from="SnippetNameDialog/MarginContainer/LineEdit" to="." method="_on_SnippetNameLineEdit_text_entered"]

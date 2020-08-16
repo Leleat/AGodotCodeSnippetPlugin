@@ -3,7 +3,6 @@ extends PopupMenu
 
 signal show_options
 var code_editor : TextEdit
-var main : PopupPanel
 var placeholder : String
 
 
@@ -39,4 +38,4 @@ func _on_DropDownPopup_index_pressed(index: int) -> void:
 	code_editor.insert_text_at_cursor(text)
 	placeholder = ""
 	hide()
-	main._jump_to_and_delete_next_marker(code_editor)
+	owner._jump_to_and_delete_next_marker(code_editor)
