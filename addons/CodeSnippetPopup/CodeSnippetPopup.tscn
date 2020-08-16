@@ -96,7 +96,6 @@ __meta__ = {
 }
 
 [node name="SettingsPopup" type="WindowDialog" parent="."]
-visible = true
 margin_left = 4.0
 margin_top = 4.0
 margin_right = 1020.0
@@ -109,7 +108,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MarginContainer" type="MarginContainer" parent="SettingsPopup"]
+[node name="Main" type="MarginContainer" parent="SettingsPopup"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 20.0
@@ -120,55 +119,55 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPopup/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPopup/Main"]
 margin_right = 976.0
 margin_bottom = 285.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_right = 976.0
 margin_bottom = 24.0
 
-[node name="CustomShortcut" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="CustomShortcut" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer"]
 margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 250, 0 )
-hint_tooltip = "The EditButton will record the next pressed Keyboard input. It can however not interrupt input (e.g. you can tab out). In that case, you can manually enter the keyboard shortcut.
+hint_tooltip = "Clicking the EditButton will record the next pressed Keyboard input. You can also manually enter the keyboard shortcut.
 Check Godot's shortcuts to see what the proper format is (Editor >Editor Settings > Shortcuts). 
-Make sure you do it correctly. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
+Make sure you do it right. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
 mouse_filter = 1
 text = "Keyboard shortcut"
 
-[node name="ShortcutLineEdit" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ShortcutLineEdit" type="LineEdit" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer"]
 margin_left = 254.0
-margin_right = 942.0
+margin_right = 943.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 165, 0 )
-hint_tooltip = "The EditButton will record the next pressed Keyboard input. It can however not interrupt input (e.g. you can tab out). In that case, you can manually enter the keyboard shortcut.
+hint_tooltip = "Clicking the EditButton will record the next pressed Keyboard input. You can also manually enter the keyboard shortcut.
 Check Godot's shortcuts to see what the proper format is (Editor >Editor Settings > Shortcuts). 
-Make sure you do it correctly. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
+Make sure you do it right. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
 mouse_filter = 1
 size_flags_horizontal = 11
-text = "Control+T"
+text = "Control+Tab"
 align = 2
 
-[node name="EditShortcutButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer"]
-margin_left = 946.0
-margin_right = 974.0
-margin_bottom = 22.0
+[node name="EditShortcutButton" type="Button" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer"]
+margin_left = 947.0
+margin_right = 976.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 29, 0 )
-hint_tooltip = "The EditButton will record the next pressed Keyboard input. It can however not interrupt input (e.g. you can tab out). In that case, you can manually enter the keyboard shortcut.
+hint_tooltip = "Clicking the EditButton will record the next pressed Keyboard input. You can also manually enter the keyboard shortcut.
 Check Godot's shortcuts to see what the proper format is (Editor >Editor Settings > Shortcuts). 
-Make sure you do it correctly. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
+Make sure you do it right. Otherwise you won't be able to open the plugin anymore. In that case you need to redownload the plugin or manually edit the settings.cfg file to reset the settings."
 size_flags_horizontal = 8
 icon = SubResource( 2 )
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 28.0
 margin_right = 976.0
 margin_bottom = 52.0
 
-[node name="AdaptiveHeight" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="AdaptiveHeight" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer2"]
 margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
@@ -177,7 +176,7 @@ hint_tooltip = "Change the height of the popup based on the number of items in t
 mouse_filter = 1
 text = "Adaptive height"
 
-[node name="AdaptiveHeightCheckBox" type="CheckBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="AdaptiveHeightCheckBox" type="CheckBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer2"]
 margin_left = 952.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -187,12 +186,12 @@ pressed = true
 align = 2
 expand_icon = true
 
-[node name="HBoxContainer8" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer8" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 56.0
 margin_right = 976.0
 margin_bottom = 80.0
 
-[node name="Label" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8"]
+[node name="Label" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer8"]
 margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
@@ -200,19 +199,19 @@ hint_tooltip = "Instead of appearing at the screen center, the popup will apear 
 mouse_filter = 1
 text = "Main popup at cursor position (approx.)"
 
-[node name="AtCursorCheckbox" type="CheckBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8"]
+[node name="AtCursorCheckbox" type="CheckBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer8"]
 margin_left = 952.0
 margin_right = 976.0
 margin_bottom = 24.0
 hint_tooltip = "Instead of appearing at the screen center, the popup will apear at the text cursor position (or at least tries to)."
 size_flags_horizontal = 10
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 84.0
 margin_right = 976.0
 margin_bottom = 108.0
 
-[node name="PopupHeight" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3"]
+[node name="PopupHeight" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer3"]
 margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
@@ -220,7 +219,7 @@ rect_min_size = Vector2( 250, 0 )
 mouse_filter = 1
 text = "Main popup's height"
 
-[node name="PopupHeightSpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3"]
+[node name="PopupHeightSpinBox" type="SpinBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer3"]
 margin_left = 254.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -230,12 +229,12 @@ max_value = 6000.0
 value = 500.0
 align = 2
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 112.0
 margin_right = 976.0
 margin_bottom = 136.0
 
-[node name="PopupWidth" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4"]
+[node name="PopupWidth" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer4"]
 margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
@@ -243,7 +242,7 @@ rect_min_size = Vector2( 250, 0 )
 mouse_filter = 1
 text = "Main popup's width"
 
-[node name="PopupWidthSpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4"]
+[node name="PopupWidthSpinBox" type="SpinBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer4"]
 margin_left = 254.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -253,12 +252,12 @@ max_value = 6000.0
 value = 750.0
 align = 2
 
-[node name="HBoxContainer5" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer5" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 140.0
 margin_right = 976.0
 margin_bottom = 164.0
 
-[node name="EditorHeight" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5"]
+[node name="EditorHeight" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer5"]
 margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
@@ -266,7 +265,7 @@ rect_min_size = Vector2( 250, 0 )
 mouse_filter = 1
 text = "Snippet editor's popup height"
 
-[node name="EditorHeightSpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5"]
+[node name="EditorHeightSpinBox" type="SpinBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer5"]
 margin_left = 254.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -276,12 +275,12 @@ max_value = 6000.0
 value = 800.0
 align = 2
 
-[node name="HBoxContainer6" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer6" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 168.0
 margin_right = 976.0
 margin_bottom = 192.0
 
-[node name="EditorWidth2" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6"]
+[node name="EditorWidth2" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer6"]
 margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
@@ -289,7 +288,7 @@ rect_min_size = Vector2( 250, 0 )
 mouse_filter = 1
 text = "Snippet editor's popup width"
 
-[node name="EditorWidthSpinBox" type="SpinBox" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6"]
+[node name="EditorWidthSpinBox" type="SpinBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer6"]
 margin_left = 254.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -299,12 +298,12 @@ max_value = 6000.0
 value = 1000.0
 align = 2
 
-[node name="HBoxContainer7" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer7" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 196.0
 margin_right = 976.0
 margin_bottom = 220.0
 
-[node name="EditorWidth3" type="Label" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
+[node name="EditorWidth3" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer7"]
 margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 19.0
@@ -319,7 +318,7 @@ Make sure the path exist otherwise it may cause Godot to crash. In that case you
 mouse_filter = 1
 text = "File path of snippet cfg file"
 
-[node name="FilepathLineEdit" type="LineEdit" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
+[node name="FilepathLineEdit" type="LineEdit" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer7"]
 margin_left = 254.0
 margin_right = 944.0
 margin_bottom = 24.0
@@ -336,7 +335,7 @@ align = 2
 caret_blink = true
 caret_blink_speed = 0.5
 
-[node name="FileDialogButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7"]
+[node name="FileDialogButton" type="Button" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer7"]
 margin_left = 948.0
 margin_right = 976.0
 margin_bottom = 24.0
@@ -349,7 +348,7 @@ You can manually enter a file path (file name is part of the file path) or use t
 Make sure the path exist otherwise it may cause Godot to crash. In that case you need to remove/redownload the plugin or manually edit the settings.cfg file to reset the settings."
 icon = SubResource( 2 )
 
-[node name="HBoxContainer9" type="HBoxContainer" parent="SettingsPopup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer9" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_left = 388.0
 margin_top = 263.0
 margin_right = 588.0
@@ -358,7 +357,7 @@ rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 4
 size_flags_vertical = 10
 
-[node name="CancelButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9"]
+[node name="CancelButton" type="Button" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer9"]
 margin_left = 9.0
 margin_right = 89.0
 margin_bottom = 22.0
@@ -368,7 +367,7 @@ size_flags_horizontal = 6
 text = "Cancel"
 icon = SubResource( 2 )
 
-[node name="SaveButton" type="Button" parent="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9"]
+[node name="SaveButton" type="Button" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer9"]
 margin_left = 121.0
 margin_right = 180.0
 margin_bottom = 22.0
@@ -390,8 +389,32 @@ dialog_autowrap = true
 mode = 3
 access = 2
 show_hidden_files = true
-current_dir = "/home/toni/Godot/Test"
-current_path = "/home/toni/Godot/Test/"
+current_dir = "/home/toni/Godot/New Game Project"
+current_path = "/home/toni/Godot/New Game Project/"
+
+[node name="EnterShortcutPopup" type="WindowDialog" parent="SettingsPopup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+window_title = "Enter Keyboard Shortcut"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="SettingsPopup/EnterShortcutPopup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ShortcutLabel" type="Label" parent="SettingsPopup/EnterShortcutPopup/MarginContainer"]
+margin_left = 468.0
+margin_top = 155.0
+margin_right = 548.0
+margin_bottom = 169.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+text = "Press keys..."
 
 [node name="SnippetEditor" parent="." instance=ExtResource( 2 )]
 margin_left = 4.0
@@ -412,19 +435,20 @@ margin_bottom = -4.0
 [connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/Settings" to="." method="_on_SettingsButton_pressed"]
 [connection signal="item_activated" from="Main/VBoxContainer/ItemList" to="." method="_on_ItemList_item_activated"]
 [connection signal="popup_hide" from="SettingsPopup" to="." method="_on_SettingsPopup_popup_hide"]
-[connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/ShortcutLineEdit" to="." method="_on_ShortcutLineEdit_text_changed"]
-[connection signal="focus_exited" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/EditShortcutButton" to="." method="_on_EditShortcutButton_focus_exited"]
-[connection signal="gui_input" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/EditShortcutButton" to="." method="_on_ShortcutEditButton_gui_input"]
-[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/EditShortcutButton" to="." method="_on_ShortcutEditButton_pressed"]
-[connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/AdaptiveHeightCheckBox" to="." method="_on_AdaptiveHeightCheckBox_toggled"]
-[connection signal="toggled" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCursorCheckbox" to="." method="_on_AtCursorCheckbox_toggled"]
-[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/PopupHeightSpinBox" to="." method="_on_MainHeightSpinBox_value_changed"]
-[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/PopupWidthSpinBox" to="." method="_on_MainWidthSpinBox_value_changed"]
-[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/EditorHeightSpinBox" to="." method="_on_EditorHeightSpinBox_value_changed"]
-[connection signal="value_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/EditorWidthSpinBox" to="." method="_on_EditorWidthSpinBox_value_changed"]
-[connection signal="text_changed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/FilepathLineEdit" to="." method="_on_FilepathLineEdit_text_changed"]
-[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/FileDialogButton" to="." method="_on_FileDialogButton_pressed"]
-[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/CancelButton" to="." method="_on_SettingsCancelButton_pressed"]
-[connection signal="pressed" from="SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/SaveButton" to="." method="_on_SettingsSaveButton_pressed"]
+[connection signal="text_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer/ShortcutLineEdit" to="." method="_on_ShortcutLineEdit_text_changed"]
+[connection signal="pressed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer/EditShortcutButton" to="." method="_on_ShortcutEditButton_pressed"]
+[connection signal="toggled" from="SettingsPopup/Main/VBoxContainer/HBoxContainer2/AdaptiveHeightCheckBox" to="." method="_on_AdaptiveHeightCheckBox_toggled"]
+[connection signal="toggled" from="SettingsPopup/Main/VBoxContainer/HBoxContainer8/AtCursorCheckbox" to="." method="_on_AtCursorCheckbox_toggled"]
+[connection signal="value_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer3/PopupHeightSpinBox" to="." method="_on_MainHeightSpinBox_value_changed"]
+[connection signal="value_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer4/PopupWidthSpinBox" to="." method="_on_MainWidthSpinBox_value_changed"]
+[connection signal="value_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer5/EditorHeightSpinBox" to="." method="_on_EditorHeightSpinBox_value_changed"]
+[connection signal="value_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer6/EditorWidthSpinBox" to="." method="_on_EditorWidthSpinBox_value_changed"]
+[connection signal="text_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer7/FilepathLineEdit" to="." method="_on_FilepathLineEdit_text_changed"]
+[connection signal="pressed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer7/FileDialogButton" to="." method="_on_FileDialogButton_pressed"]
+[connection signal="pressed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer9/CancelButton" to="." method="_on_SettingsCancelButton_pressed"]
+[connection signal="pressed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer9/SaveButton" to="." method="_on_SettingsSaveButton_pressed"]
 [connection signal="dir_selected" from="SettingsPopup/FileDialog" to="." method="_on_FileDialog_dir_selected"]
 [connection signal="file_selected" from="SettingsPopup/FileDialog" to="." method="_on_FileDialog_file_selected"]
+[connection signal="hide" from="SettingsPopup/EnterShortcutPopup" to="." method="_on_EnterShortcutPopup_modal_closed_or_hide"]
+[connection signal="modal_closed" from="SettingsPopup/EnterShortcutPopup" to="." method="_on_EnterShortcutPopup_modal_closed_or_hide"]
+[connection signal="popup_hide" from="SettingsPopup/EnterShortcutPopup" to="." method="_on_EnterShortcutPopup_modal_closed_or_hide"]

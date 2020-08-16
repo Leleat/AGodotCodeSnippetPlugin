@@ -13,19 +13,21 @@ onready var settings_button = $Main/VBoxContainer/HBoxContainer/Settings
 onready var SNIPPET_EDITOR : WindowDialog = $SnippetEditor
 onready var SETTINGS : WindowDialog = $SettingsPopup
 onready var OPTIONS_POPUP : PopupMenu = $OptionsPopup # popup for a snippet with options; for ex. [@1:OptionA,OptionB]
-onready var settings_editshortcut_button := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/EditShortcutButton
-onready var settings_shortcut_lineedit := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer/ShortcutLineEdit
-onready var settings_filedialog_button := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/FileDialogButton
+onready var settings_editshortcut_button := $SettingsPopup/Main/VBoxContainer/HBoxContainer/EditShortcutButton
+onready var settings_shortcut_lineedit := $SettingsPopup/Main/VBoxContainer/HBoxContainer/ShortcutLineEdit
+onready var settings_filedialog_button := $SettingsPopup/Main/VBoxContainer/HBoxContainer7/FileDialogButton
 onready var settings_filedialog := $SettingsPopup/FileDialog
-onready var settings_file_path_lineedit := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer7/FilepathLineEdit
-onready var settings_cancel_button := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/CancelButton
-onready var settings_save_button := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer9/SaveButton
-onready var settings_adaptive_height_checkbox := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer2/AdaptiveHeightCheckBox
-onready var settings_popup_at_cursor_pos_checkbox := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer8/AtCursorCheckbox
-onready var settings_main_height_spinbox := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer3/PopupHeightSpinBox
-onready var settings_main_width_spinbox := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer4/PopupWidthSpinBox
-onready var settings_editor_height_spinbox := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer5/EditorHeightSpinBox
-onready var settings_editor_width_spinbox := $SettingsPopup/MarginContainer/VBoxContainer/HBoxContainer6/EditorWidthSpinBox
+onready var settings_file_path_lineedit := $SettingsPopup/Main/VBoxContainer/HBoxContainer7/FilepathLineEdit
+onready var settings_cancel_button := $SettingsPopup/Main/VBoxContainer/HBoxContainer9/CancelButton
+onready var settings_save_button := $SettingsPopup/Main/VBoxContainer/HBoxContainer9/SaveButton
+onready var settings_adaptive_height_checkbox := $SettingsPopup/Main/VBoxContainer/HBoxContainer2/AdaptiveHeightCheckBox
+onready var settings_popup_at_cursor_pos_checkbox := $SettingsPopup/Main/VBoxContainer/HBoxContainer8/AtCursorCheckbox
+onready var settings_main_height_spinbox := $SettingsPopup/Main/VBoxContainer/HBoxContainer3/PopupHeightSpinBox
+onready var settings_main_width_spinbox := $SettingsPopup/Main/VBoxContainer/HBoxContainer4/PopupWidthSpinBox
+onready var settings_editor_height_spinbox := $SettingsPopup/Main/VBoxContainer/HBoxContainer5/EditorHeightSpinBox
+onready var settings_editor_width_spinbox := $SettingsPopup/Main/VBoxContainer/HBoxContainer6/EditorWidthSpinBox
+onready var settings_enter_shortcut_popup := $SettingsPopup/EnterShortcutPopup
+onready var settings_shortcut_label := $SettingsPopup/EnterShortcutPopup/MarginContainer/ShortcutLabel
 # settings vars
 var keyboard_shortcut : String
 var adapt_popup_height : bool
@@ -99,6 +101,11 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 				settings_editshortcut_button.icon = get_icon("Edit", "EditorIcons")
 			else:
 				settings_cancel_button.grab_focus()
+	
+	if settings_enter_shortcut_popup.visible and not event.pressed:
+		settings_shortcut_lineedit.text = event.as_text()
+		keyboard_shortcut = event.as_text()
+		settings_enter_shortcut_popup.hide()
 
 
 func _on_main_screen_changed(new_screen : String) -> void:
@@ -372,18 +379,17 @@ func _on_ShortcutLineEdit_text_changed(new_text: String) -> void:
 func _on_ShortcutEditButton_pressed() -> void:
 	if settings_editshortcut_button.icon == get_icon("Edit", "EditorIcons"):
 		settings_editshortcut_button.set_deferred("icon", get_icon("DebugSkipBreakpointsOff", "EditorIcons"))
+		var size = Vector2(300, 100)
+		settings_enter_shortcut_popup.rect_size = size
+		settings_enter_shortcut_popup.rect_global_position = OS.get_screen_size() / 2 - size / 2
+		get_focus_owner().release_focus()
+		settings_enter_shortcut_popup.call_deferred("show_modal")
 
 
-func _on_ShortcutEditButton_gui_input(event: InputEvent) -> void:
-	if settings_editshortcut_button.icon == get_icon("DebugSkipBreakpointsOff", "EditorIcons") and event is InputEventKey and not event.pressed:
+func _on_EnterShortcutPopup_modal_closed_or_hide() -> void:
+	if settings_editshortcut_button:
 		settings_editshortcut_button.icon = get_icon("Edit", "EditorIcons")
-		settings_shortcut_lineedit.text = event.as_text()
-		keyboard_shortcut = event.as_text()
-
-
-func _on_EditShortcutButton_focus_exited() -> void:
-	if settings_editshortcut_button.icon == get_icon("DebugSkipBreakpointsOff", "EditorIcons"):
-		settings_editshortcut_button.icon = get_icon("Edit", "EditorIcons")
+		settings_editshortcut_button.grab_focus()
 
 
 func _on_AdaptiveHeightCheckBox_toggled(button_pressed: bool) -> void:
