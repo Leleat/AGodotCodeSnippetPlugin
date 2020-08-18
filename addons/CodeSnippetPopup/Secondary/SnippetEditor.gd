@@ -67,11 +67,8 @@ func _on_SnippetEditor_about_to_show() -> void:
 		return
 	
 	set_process_unhandled_key_input(true)
-	filter.clear() # this does call the signal, which resets TextEditors and the ItemList.
+	filter.clear() # this does call the signal, which resets TextEditors and the ItemList. It also fills the list with items.
 	filter.call_deferred("grab_focus")
-	
-	for section in tmp_cfg.get_sections():
-		itemlist.add_item(section)
 	
 	if itemlist.get_item_count():
 		itemlist.select(0)
