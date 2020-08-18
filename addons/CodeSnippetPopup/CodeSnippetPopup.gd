@@ -359,6 +359,12 @@ func _jump_to_next_marker(code_editor : TextEdit) -> void:
 		# last marker doesn't get mirrored
 		if not tabstop_numbers:
 			emit_signal("snippet_insertion_done")
+			# if the last marker is marker (i.e. it hasn't been replaced by a variable) delete it
+			var selection : String = code_editor.get_selection_text()
+			if  selection and selection.begins_with("[@") and selection.ends_with("]"):
+				var tmp = OS.clipboard
+				code_editor.cut()
+				OS.clipboard = tmp
 	
 	# last marker was mirrored
 	else:
