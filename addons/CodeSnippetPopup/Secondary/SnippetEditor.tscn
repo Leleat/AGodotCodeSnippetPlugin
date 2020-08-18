@@ -327,6 +327,7 @@ size_flags_vertical = 6
 clear_button_enabled = true
 caret_blink = true
 caret_blink_speed = 0.5
+[connection signal="about_to_show" from="." to="." method="_on_SnippetEditor_about_to_show"]
 [connection signal="popup_hide" from="." to="." method="_on_SnippetEditor_popup_hide"]
 [connection signal="text_changed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
 [connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/AddButton" to="." method="_on_AddButton_pressed"]

@@ -26,6 +26,7 @@ func _init_palette() -> void:
 	code_snippet_popup = load("res://addons/CodeSnippetPopup/CodeSnippetPopup.tscn").instance()
 	code_snippet_popup.INTERFACE = get_editor_interface()
 	code_snippet_popup.EDITOR = get_editor_interface().get_script_editor()
+	code_snippet_popup.EDITOR_SETTINGS = get_editor_interface().get_editor_settings()
 	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, code_snippet_popup)
 	
 	connect("main_screen_changed", code_snippet_popup, "_on_main_screen_changed")

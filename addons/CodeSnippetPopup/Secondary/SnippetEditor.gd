@@ -17,8 +17,9 @@ onready var snippet_name_dialog := $SnippetNameDialog
 onready var snippet_name_lineedit := $SnippetNameDialog/MarginContainer/LineEdit
 onready var version_label := $Help/MarginContainer/VBoxContainer/Label
 onready var help_popup := $Help
-var text_changed := false
-var tmp_cfg : ConfigFile # copy of snippets config; to do reversible changes to the config
+	
+var texteditor_text_changed := false
+var tmp_cfg : ConfigFile # copy of snippets config
 
 
 func _ready() -> void:
@@ -30,6 +31,8 @@ func _ready() -> void:
 	save_button.icon = get_icon("Save", "EditorIcons")
 	filter.right_icon = get_icon("Search", "EditorIcons")
 	help_button.icon = get_icon("Issue", "EditorIcons")
+	
+	# setup version number in help page. Owner needs to be checked otherwise error during Godot's startup (which doesn't effect usability though)
 	yield(get_tree(), "idle_frame")
 	if owner:
 		version_label.text = "v." + owner.version_number
@@ -39,6 +42,7 @@ func _unhandled_key_input(event: InputEventKey) -> void:
 	if event.scancode == KEY_ESCAPE and event.pressed:
 		cancel_button.grab_focus()
 	
+	# quick access some control nodes when not focusing TextEditors or LineEdits
 	elif itemlist.has_focus() or cancel_button.has_focus() or save_button.has_focus() or add_button.has_focus() or src_button.has_focus() or delete_button.has_focus() or help_button.has_focus():
 		if event.scancode == KEY_DELETE and event.pressed:
 			delete_button.grab_focus()
@@ -54,21 +58,21 @@ func _unhandled_key_input(event: InputEventKey) -> void:
 			add_info.grab_focus()
 
 
-# called via the main plugin CodeSnippetPopup.tscn/.gd
-func edit_snippet(size : Vector2) -> void:
+func _on_SnippetEditor_about_to_show() -> void:
+	# load config in tmp file for easily revertible changes (by just reloading the config file)
 	tmp_cfg = ConfigFile.new()
 	var err = tmp_cfg.load(owner.snippet_config_path)
 	if err != OK:
 		push_warning("Error trying to edit snippets. Error code: %s" % err)
 		return
-	popup_centered_clamped(size, 0.75)
+	
 	set_process_unhandled_key_input(true)
-	filter.clear()
-	filter.grab_focus()
-	itemlist.clear()
-	_reset_texteditors()
+	filter.clear() # this does call the signal, which resets TextEditors and the ItemList.
+	filter.call_deferred("grab_focus")
+	
 	for section in tmp_cfg.get_sections():
 		itemlist.add_item(section)
+	
 	if itemlist.get_item_count():
 		itemlist.select(0)
 		itemlist.emit_signal("item_selected", 0)
@@ -82,9 +86,7 @@ func _on_CancelButton_gui_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.scancode == KEY_ESCAPE:
 		hide()
 		yield(get_tree(), "idle_frame")
-		owner._update_popup_list()
-		owner.popup()
-		owner.delayed_one_key_press = false
+		owner._show_main_popup()
 
 
 func _on_SaveButton_pressed() -> void:
@@ -94,7 +96,7 @@ func _on_SaveButton_pressed() -> void:
 		return
 	else:
 		owner._update_snippets()
-		owner._update_popup_list()
+		owner._show_main_popup()
 		hide()
 
 
@@ -165,21 +167,22 @@ func _on_ItemList_gui_input(event: InputEvent) -> void:
 
 
 func _on_TextEditors_text_changed() -> void:
-	text_changed = true
+	# set this var, so you don't have to save the snippet body after every key press
+	texteditor_text_changed = true
 
 
 func _on_MainTextEdit_focus_exited() -> void:
-	if text_changed and itemlist.get_selected_items().size() == 1:
+	if texteditor_text_changed and itemlist.get_selected_items().size() == 1:
 		tmp_cfg.set_value(itemlist.get_item_text(itemlist.get_selected_items()[0]), "body", main_texteditor.text)
 
 
 func _on_AdditionalInfo_focus_exited() -> void:
-	if text_changed and itemlist.get_selected_items().size() == 1:
+	if texteditor_text_changed and itemlist.get_selected_items().size() == 1:
 		tmp_cfg.set_value(itemlist.get_item_text(itemlist.get_selected_items()[0]), "additional_info", add_info.text)
 
 
 func _on_OtherInfo_focus_exited() -> void:
-	if text_changed and itemlist.get_selected_items().size() == 1:
+	if texteditor_text_changed and itemlist.get_selected_items().size() == 1:
 		tmp_cfg.set_value(itemlist.get_item_text(itemlist.get_selected_items()[0]), "other_info", other_info.text)
 
 
