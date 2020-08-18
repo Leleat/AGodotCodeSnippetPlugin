@@ -32,7 +32,8 @@ onready var settings_editor_width_spinbox := $SettingsPopup/Main/VBoxContainer/H
 onready var settings_enter_shortcut_popup := $SettingsPopup/EnterShortcutPopup
 onready var settings_shortcut_label := $SettingsPopup/EnterShortcutPopup/MarginContainer/ShortcutLabel
 onready var status_popup := $StatusPopup
-onready var status_message := $StatusPopup/MarginContainer/StatusMessage
+onready var status_message := $StatusPopup/MarginContainer/HBoxContainer/StatusMessage
+onready var status_icon := $StatusPopup/MarginContainer/HBoxContainer/StatusIcon
 # settings vars
 var keyboard_shortcut : String
 var adapt_popup_height : bool
@@ -359,7 +360,7 @@ func _jump_to_next_marker(code_editor : TextEdit) -> void:
 		# last marker doesn't get mirrored
 		if not tabstop_numbers:
 			emit_signal("snippet_insertion_done")
-			# if the last marker is marker (i.e. it hasn't been replaced by a variable) delete it
+			# if last marker is marker (i.e. it hasn't been replaced by a variable) delete it
 			var selection : String = code_editor.get_selection_text()
 			if  selection and selection.begins_with("[@") and selection.ends_with("]"):
 				var tmp = OS.clipboard
@@ -474,7 +475,7 @@ func _on_snippet_insertion_aborted() -> void:
 	if status_updates_enabled:
 		status_popup.rect_size = Vector2.ZERO
 		status_popup.rect_global_position = _get_cursor_position()
-		status_message.text = "Snippet insertion aborted."
+		status_icon.icon = get_icon("ImportFail", "EditorIcons")
 		status_popup.popup()
 		yield(get_tree().create_timer(1.2), "timeout")
 		status_popup.hide()
@@ -484,8 +485,8 @@ func _on_snippet_insertion_done() -> void:
 	if status_updates_enabled:
 		status_popup.rect_size = Vector2.ZERO
 		status_popup.rect_global_position = _get_cursor_position()
-		status_message.text = "Snippet sucessfully inserted."
 		status_popup.popup()
+		status_icon.icon = get_icon("ImportCheck", "EditorIcons")
 		yield(get_tree().create_timer(1.2), "timeout")
 		status_popup.hide()
 
