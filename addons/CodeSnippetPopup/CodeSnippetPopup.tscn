@@ -95,7 +95,6 @@ __meta__ = {
 }
 
 [node name="SettingsPopup" type="WindowDialog" parent="."]
-visible = true
 margin_left = 4.0
 margin_top = 4.0
 margin_right = 1916.0
@@ -491,21 +490,21 @@ size_flags_horizontal = 6
 size_flags_vertical = 4
 
 [node name="StatusMessage" type="Label" parent="StatusPopup/MarginContainer/HBoxContainer"]
-margin_top = 3.0
-margin_right = 105.0
-margin_bottom = 17.0
+margin_right = 48.0
+margin_bottom = 14.0
 size_flags_horizontal = 4
 size_flags_vertical = 6
 text = "Snippet"
 align = 1
 
 [node name="StatusIcon" type="Button" parent="StatusPopup/MarginContainer/HBoxContainer"]
-margin_left = 109.0
-margin_right = 121.0
-margin_bottom = 20.0
-size_flags_horizontal = 0
+margin_left = 52.0
+margin_right = 52.0
+margin_bottom = 14.0
+focus_mode = 0
+size_flags_horizontal = 4
 size_flags_vertical = 4
-shortcut_in_tooltip = false
+enabled_focus_mode = 0
 flat = true
 [connection signal="popup_hide" from="." to="." method="_on_CodeSnippetPopup_popup_hide"]
 [connection signal="text_changed" from="Main/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]

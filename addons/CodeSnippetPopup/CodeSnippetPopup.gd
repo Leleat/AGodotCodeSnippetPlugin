@@ -277,6 +277,8 @@ func _paste_code_snippet(snippet_name : String) -> void:
 	
 	if tabstop_numbers.size():
 		_jump_to_next_marker(code_editor)
+	else:
+		emit_signal("snippet_insertion_done")
 
 
 func _get_tabstop_numbers() -> Array:
