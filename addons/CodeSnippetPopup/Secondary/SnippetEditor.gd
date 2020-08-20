@@ -24,6 +24,7 @@ onready var save_confirmation_dialog := $SaveConfirmationDialog # only used when
 	
 var texteditor_text_changed := false # so you don't have to save the snippet body after every character change
 var tmp_cfg : ConfigFile # copy of snippets config for easily discardable changes
+var file_is_corrupted := false
 
 
 func _ready() -> void:
@@ -91,7 +92,9 @@ func _on_SnippetEditor_about_to_show() -> void:
 		itemlist.select(0)
 		itemlist.emit_signal("item_selected", 0)
 	
+	file_is_corrupted = false
 	if _snippet_file_is_corrupted():
+		file_is_corrupted = true
 		push_warning("It looks like your snippet file is wrongly formatted. If you manually edited it, you should also manually recover the proper formatting with your text editor.")
 
 
@@ -107,7 +110,7 @@ func _on_CancelButton_gui_input(event: InputEvent) -> void:
 
 
 func _on_SaveButton_pressed() -> void:
-	if _snippet_file_is_corrupted():
+	if file_is_corrupted:
 		save_confirmation_dialog.popup_centered()
 	else:
 		_save_to_snippet_file()
