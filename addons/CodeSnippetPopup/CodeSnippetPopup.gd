@@ -192,13 +192,13 @@ func _on_Edit_pressed() -> void:
 
 
 func _show_main_popup() -> void:
-	_update_popup_list()
-	if popup_at_cursor_pos:
-		rect_global_position = _get_cursor_position()
+	if popup_at_cursor_pos: 
+		# position is set in _adapt_list_height(); otherwise the position will be off in lower parts of the code editor
 		rect_size = main_popup_size
 		popup()
 	else:
 		popup_centered_clamped(main_popup_size)
+	_update_popup_list()
 
 
 func _update_snippets() -> void:
@@ -417,7 +417,12 @@ func _adapt_list_height() -> void:
 		var rows = max(itemlist.get_item_count() / itemlist.max_columns, 1) + 1
 		var margin = filter.rect_size.y + $Main.margin_top + abs($Main.margin_bottom)
 		var height = row_height * rows + margin
-		rect_size.y = clamp(height, 0, 500)
+		rect_size.y = clamp(height, 0, main_popup_size.y)
+	
+	if popup_at_cursor_pos:
+		rect_global_position = _get_cursor_position()
+		if rect_global_position.y + rect_size.y > OS.get_screen_size().y:
+			rect_global_position.y = OS.get_screen_size().y - rect_size.y
 
 
 func _get_cursor_position() -> Vector2: # approx.; could use help for more precision
