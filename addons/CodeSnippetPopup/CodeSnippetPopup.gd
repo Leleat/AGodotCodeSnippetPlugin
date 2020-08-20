@@ -451,7 +451,7 @@ func _get_cursor_position() -> Vector2: # approx.; could use help for more preci
 	
 	var pos : Vector2
 	pos.x = code_editor.rect_global_position.x + line_width + 80 - hscroll - (15 if not vscroll_bar.visible else 0) # 80 is the value from the left until the code folding symbol // 15 is just a MagicNr which looked right
-	pos.y = code_editor.rect_global_position.y + (code_editor.cursor_get_line() - code_editor.scroll_vertical - hidden_lines - 1) * line_height + 48 # 48 is a MagicNr whch looked right 
+	pos.y = code_editor.rect_global_position.y + (code_editor.cursor_get_line() - code_editor.scroll_vertical - hidden_lines - 1) * line_height + 48 # 48 is a MagicNr which looked right 
 	return pos
 
 
@@ -561,6 +561,7 @@ func _on_FilepathLineEdit_text_changed(new_text: String) -> void:
 
 func _on_FileDialogButton_pressed() -> void:
 	settings_filedialog.popup_centered_clamped(Vector2(800, 900), .8)
+	settings_filedialog.current_dir = ProjectSettings.globalize_path(snippet_config_path.get_base_dir())
 
 
 func _on_FileDialog_dir_selected(dir: String) -> void:
@@ -608,6 +609,7 @@ func _on_SettingsSaveButton_pressed() -> void: # settings button
 		prev_shortcut = ""
 	
 	_save_settings()
+	_update_popup_list()
 	SETTINGS.hide()
 
 
@@ -630,7 +632,7 @@ func _load_settings():
 	settings_main_height_spinbox.value = config.get_value("Settings", "main_h", 500) as int
 	settings_main_width_spinbox.value = config.get_value("Settings", "main_w", 750) as int
 	settings_editor_height_spinbox.value = config.get_value("Settings", "editor_h", 800) as int
-	settings_editor_width_spinbox.value = config.get_value("Settings", "editor_w", 1000) as int
+	settings_editor_width_spinbox.value = config.get_value("Settings", "editor_w", 1200) as int
 	settings_file_path_lineedit.text = config.get_value("Settings", "file_path", "user://../CodeSnippets.cfg")
 	
 	if error == ERR_FILE_NOT_FOUND:

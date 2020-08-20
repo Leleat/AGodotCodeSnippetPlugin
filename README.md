@@ -26,6 +26,11 @@ Either download it from the official Godot AssetLib (within Godot itself) or dow
 
 **Changelog**
 
+[1.2.1]
+- SnippetEditor: added shortcut keys for help button, main TextEditor and other TextEditor (#5)
+- SnippetEditor: added rename, move up and down buttons. increased the default width of the editor to compensate for added buttons. (#5)
+- SnippetEditor: added a (sorta) detection for wrong formatting when saving the snippet file (#5)
+
 [1.2.0]
 - enabled key navigation for the options popup. For example if the OptionsPopup has the options Alpha,Beta and Gamma, pressing "G" will jump to the Gamma option.
 - changed default keyboard shortcut to Ctrl+T as Ctrl+Tab caused conflicts if you had code selected.

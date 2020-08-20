@@ -60,9 +60,9 @@ __meta__ = {
 }
 
 [node name="Filter" type="LineEdit" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
-margin_right = 259.0
+margin_right = 109.0
 margin_bottom = 26.0
-hint_tooltip = "Quick access via F key."
+hint_tooltip = "Quick access via F key (when non-input node is focused)."
 focus_neighbour_left = NodePath("../../../../HBoxContainer2/SaveButton")
 size_flags_horizontal = 3
 clear_button_enabled = true
@@ -72,30 +72,57 @@ caret_blink = true
 caret_blink_speed = 0.5
 
 [node name="AddButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
-margin_left = 263.0
-margin_right = 318.0
+margin_left = 113.0
+margin_right = 168.0
 margin_bottom = 26.0
-hint_tooltip = "Quick acces via A key.
-
-Add a snippet."
+hint_tooltip = "Quick access via A key (when non-input node is focused).
+"
 text = "Add"
 icon = SubResource( 2 )
 
 [node name="DeleteButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
-margin_left = 322.0
+margin_left = 172.0
+margin_right = 224.0
+margin_bottom = 26.0
+hint_tooltip = "Quick access via Del key (when non-input node is focused)."
+text = "Del"
+icon = SubResource( 2 )
+
+[node name="RenameButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 228.0
+margin_right = 310.0
+margin_bottom = 26.0
+hint_tooltip = "Quick access via R key (when non-input node is focused).
+
+Rename the selected snippet (only one at a time)."
+text = "Rename"
+icon = SubResource( 2 )
+
+[node name="MoveUpButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 314.0
+margin_right = 342.0
+margin_bottom = 26.0
+hint_tooltip = "Quick access via W key (when non-input node is focused).
+
+Move 1 item a position up. 
+This is only intended for simple movement. For complex rearrangemnt it is probably easier to directly edit the cfg file. Access it via the Src Button. "
+icon = SubResource( 2 )
+
+[node name="MoveDownButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 346.0
 margin_right = 374.0
 margin_bottom = 26.0
-hint_tooltip = "Quick access via Del key.
+hint_tooltip = "Quick access via S key (when non-input node is focused).
 
-Deletes one or multiple (selection via LMB+shift) snippets."
-text = "Del"
+Move 1 item a position down. 
+This is only intended for simple movement. For complex rearrangment it is probably easier to directly edit the cfg file. Access it via the Src Button. "
 icon = SubResource( 2 )
 
 [node name="SrcButton" type="Button" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_left = 378.0
 margin_right = 427.0
 margin_bottom = 26.0
-hint_tooltip = "Quick acces via C key.
+hint_tooltip = "Quick access via C key (when non-input node is focused).
 
 Open the folder where the snippet config fle is saved. 
 By default the config and the settings file are saved in user://../ (see Godot's get_user_data_dir() documentation)"
@@ -106,6 +133,7 @@ icon = SubResource( 2 )
 margin_left = 431.0
 margin_right = 491.0
 margin_bottom = 26.0
+hint_tooltip = "Quick access via H key (when non-input node is focused)."
 text = "Help"
 icon = SubResource( 2 )
 
@@ -131,7 +159,9 @@ size_flags_horizontal = 3
 [node name="MainTextEdit" type="TextEdit" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_right = 491.0
 margin_bottom = 237.0
-hint_tooltip = "[@X] = Jump markers; use of the same number will mirror code
+hint_tooltip = "Quick access via B key (when non-input node is focused).
+
+[@X] = Jump markers; use of the same number will mirror code
 
 [@X:OptionA,OptionB] = Dropdown options
 
@@ -152,7 +182,7 @@ modulate = Color( 1, 1, 1, 0.521569 )
 margin_top = 241.0
 margin_right = 491.0
 margin_bottom = 255.0
-hint_tooltip = "Quick access via Q key.
+hint_tooltip = "Quick access via Q key (when non-input node is focused).
 
 The QuickInfo is optional and will appear in the snippet list but greyed out. It won't be inserted when activating a snippet. It should be short. Otherwise the snippet list will have trouble formatting correctly."
 mouse_filter = 1
@@ -164,7 +194,7 @@ margin_top = 259.0
 margin_right = 491.0
 margin_bottom = 309.0
 rect_min_size = Vector2( 0, 50 )
-hint_tooltip = "Quick access via Q key.
+hint_tooltip = "Quick access via Q key (when non-input node is focused).
 
 The QuickInfo is optional and will appear in the snippet list but greyed out. It won't be inserted when activating a snippet. It should be short. Otherwise the snippet list will have trouble formatting correctly."
 draw_tabs = true
@@ -176,7 +206,9 @@ modulate = Color( 1, 1, 1, 0.521569 )
 margin_top = 313.0
 margin_right = 491.0
 margin_bottom = 327.0
-hint_tooltip = "The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here."
+hint_tooltip = "Quick access via O key (when non-input node is focused).
+
+The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here."
 mouse_filter = 1
 text = "Other information:"
 valign = 1
@@ -186,7 +218,9 @@ margin_top = 331.0
 margin_right = 491.0
 margin_bottom = 531.0
 rect_min_size = Vector2( 0, 200 )
-hint_tooltip = "The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here."
+hint_tooltip = "Quick access via O key (when non-input node is focused).
+
+The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here."
 draw_tabs = true
 highlight_all_occurrences = true
 caret_blink = true
@@ -219,7 +253,6 @@ margin_top = 9.0
 margin_right = 183.0
 margin_bottom = 31.0
 rect_min_size = Vector2( 65, 0 )
-hint_tooltip = "Quick acces via S key."
 focus_neighbour_left = NodePath("../CancelButton")
 focus_neighbour_right = NodePath("../../HBoxContainer/VBoxContainer/HBoxContainer/Filter")
 size_flags_horizontal = 6
@@ -302,7 +335,7 @@ margin_left = 4.0
 margin_top = 4.0
 margin_right = 1020.0
 margin_bottom = 596.0
-rect_min_size = Vector2( 200, 50 )
+rect_min_size = Vector2( 225, 50 )
 window_title = "Snippet name"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -327,11 +360,35 @@ size_flags_vertical = 6
 clear_button_enabled = true
 caret_blink = true
 caret_blink_speed = 0.5
+
+[node name="SaveConfirmationDialog" type="ConfirmationDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -200.0
+margin_top = -88.5
+margin_right = 200.0
+margin_bottom = 88.5
+rect_min_size = Vector2( 400, 70 )
+window_title = "Potential Error Detected!"
+dialog_text = "It looks like a ConfigFile formatting error creeped in when you edited the snippet file with an external editor.
+
+You shouldn't save now. Instead you should manually recover the proper formatting with your text editor.
+
+If you continue, EVERYTHING after that error will be lost. Are you sure you want to save?"
+dialog_autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="about_to_show" from="." to="." method="_on_SnippetEditor_about_to_show"]
 [connection signal="popup_hide" from="." to="." method="_on_SnippetEditor_popup_hide"]
 [connection signal="text_changed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Filter" to="." method="_on_Filter_text_changed"]
 [connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/AddButton" to="." method="_on_AddButton_pressed"]
 [connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/DeleteButton" to="." method="_on_DeleteButton_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/RenameButton" to="." method="_on_RenameButton_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/MoveUpButton" to="." method="_on_MoveUpButton_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/MoveDownButton" to="." method="_on_MoveDownButton_pressed"]
 [connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/SrcButton" to="." method="_on_SrcButton_pressed"]
 [connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/HelpButton" to="." method="_on_HelpButton_pressed"]
 [connection signal="gui_input" from="Main/VBoxContainer/HBoxContainer/VBoxContainer/ItemList" to="." method="_on_ItemList_gui_input"]
@@ -348,3 +405,4 @@ caret_blink_speed = 0.5
 [connection signal="pressed" from="Main/VBoxContainer/HBoxContainer2/SaveButton" to="." method="_on_SaveButton_pressed"]
 [connection signal="popup_hide" from="SnippetNameDialog" to="." method="_on_SnippetNameDialog_popup_hide"]
 [connection signal="text_entered" from="SnippetNameDialog/MarginContainer/LineEdit" to="." method="_on_SnippetNameLineEdit_text_entered"]
+[connection signal="confirmed" from="SaveConfirmationDialog" to="." method="_on_SaveConfirmationDialog_confirmed"]

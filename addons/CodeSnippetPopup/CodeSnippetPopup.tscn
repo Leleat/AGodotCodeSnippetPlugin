@@ -36,8 +36,8 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Main"]
-margin_right = 1912.0
-margin_bottom = 1072.0
+margin_right = 1016.0
+margin_bottom = 592.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Main/VBoxContainer"]
 margin_right = 1912.0
@@ -54,7 +54,7 @@ Most control nodes (Labels, Buttons & TextEdits) also have tooltips."
 size_flags_horizontal = 3
 clear_button_enabled = true
 right_icon = SubResource( 2 )
-placeholder_text = "Look at tooltips for help."
+placeholder_text = "Look at this tooltip for help."
 caret_blink = true
 caret_blink_speed = 0.5
 
@@ -97,8 +97,8 @@ __meta__ = {
 [node name="SettingsPopup" type="WindowDialog" parent="."]
 margin_left = 4.0
 margin_top = 4.0
-margin_right = 1916.0
-margin_bottom = 1076.0
+margin_right = 1020.0
+margin_bottom = 596.0
 rect_min_size = Vector2( 600, 325 )
 popup_exclusive = true
 window_title = "Settings"
@@ -119,8 +119,8 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SettingsPopup/Main"]
-margin_right = 1872.0
-margin_bottom = 1032.0
+margin_right = 976.0
+margin_bottom = 552.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_right = 1872.0
@@ -318,7 +318,7 @@ margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 11
 max_value = 6000.0
-value = 1000.0
+value = 1200.0
 align = 2
 
 [node name="HBoxContainer7" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
@@ -353,7 +353,7 @@ You can manually enter a file path (file name is part of the file path) or use t
 
 Make sure the path exist otherwise it may cause Godot to crash. In that case you need to remove/redownload the plugin or manually edit the settings.cfg file to reset the settings."
 size_flags_horizontal = 11
-text = "user://../CodeSnippets.cfg"
+text = "/home/toni/.var/app/org.godotengine.Godot/data/godot/app_userdata/CodeSnippetsEnhanced/../Code.cfg"
 align = 2
 caret_blink = true
 caret_blink_speed = 0.5
@@ -431,10 +431,10 @@ __meta__ = {
 }
 
 [node name="ShortcutLabel" type="Label" parent="SettingsPopup/EnterShortcutPopup/MarginContainer"]
-margin_left = 916.0
-margin_top = 529.0
-margin_right = 996.0
-margin_bottom = 543.0
+margin_left = 468.0
+margin_top = 289.0
+margin_right = 548.0
+margin_bottom = 303.0
 size_flags_horizontal = 6
 size_flags_vertical = 6
 text = "Press keys..."
@@ -457,10 +457,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -956.0
-margin_top = -536.0
-margin_right = 956.0
-margin_bottom = 536.0
+margin_left = -508.0
+margin_top = -296.0
+margin_right = 508.0
+margin_bottom = 296.0
 rect_min_size = Vector2( 115, 0 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -482,10 +482,10 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="StatusPopup/MarginContainer"]
-margin_left = 920.0
-margin_top = 522.0
-margin_right = 984.0
-margin_bottom = 542.0
+margin_left = 472.0
+margin_top = 282.0
+margin_right = 536.0
+margin_bottom = 302.0
 size_flags_horizontal = 6
 size_flags_vertical = 4
 
