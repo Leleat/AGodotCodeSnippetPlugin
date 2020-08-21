@@ -95,7 +95,7 @@ func _on_SnippetEditor_about_to_show() -> void:
 	if _snippet_file_is_corrupted():
 		file_was_corrupted = true
 		save_confirmation_dialog.dialog_text = "It looks like a ConfigFile formatting error MAY HAVE creeped in when you edited the snippet file with an external editor." + \
-			"\n\nYou shouldn't maked edits (and save) with the built-in SnippetEditor for now. First you should manually recover the proper formatting with your text editor." + \
+			"\n\nYou shouldn't make edits (and save) with the built-in SnippetEditor for now. First you should manually recover the proper formatting with your text editor." + \
 			"\n\nIf you do save and there is a formatting error, EVERYTHING after the error will be lost. If all snippets loaded properly in the built-in editor, you can ignore this warning."
 		save_confirmation_dialog.rect_size = Vector2.ZERO
 		save_confirmation_dialog.popup_centered()
@@ -454,13 +454,15 @@ func _snippet_file_is_corrupted() -> bool:
 	# get valid ConfigFile content to compare against complete content
 	owner._update_snippets()
 	var cfg_content : String = ""
+	var unused_keys : Array
 	for section in owner.snippets_cfg.get_sections():
 		cfg_content += "[" + section + "]"
 		
 		for key in owner.snippets_cfg.get_section_keys(section):
-			# unused key
-			if not key in ["body", "additional_info", "other_info"]:
-				push_warning("Unknown section key in snippet file. Key: %s. That key has no function." % key)
+			# unused keys
+			if not key in ["body", "additional_info", "other_info"] and not key in unused_keys:
+				unused_keys.push_back(key)
+				push_warning("Unknown section key in snippet file. That key has no function. Key: %s." % key)
 			
 			cfg_content += key + "=\"" + owner.snippets_cfg.get_value(section, key, "") + "\""
 	
