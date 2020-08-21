@@ -353,7 +353,7 @@ You can manually enter a file path (file name is part of the file path) or use t
 
 Make sure the path exist otherwise it may cause Godot to crash. In that case you need to remove/redownload the plugin or manually edit the settings.cfg file to reset the settings."
 size_flags_horizontal = 11
-text = "/home/toni/.var/app/org.godotengine.Godot/data/godot/app_userdata/CodeSnippetsEnhanced/../Code.cfg"
+text = "user://../CodeSnippets.cfg"
 align = 2
 caret_blink = true
 caret_blink_speed = 0.5

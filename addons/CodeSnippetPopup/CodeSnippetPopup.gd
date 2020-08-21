@@ -275,10 +275,7 @@ func _paste_code_snippet(snippet_name : String) -> void:
 	code_editor.insert_text_at_cursor(current_snippet_body)
 	tabstop_numbers = _get_tabstop_numbers()
 	
-	if tabstop_numbers.size():
-		_jump_to_next_marker(code_editor)
-	else:
-		emit_signal("snippet_insertion_done")
+	_jump_to_next_marker(code_editor)
 
 
 func _get_tabstop_numbers() -> Array:
@@ -361,7 +358,8 @@ func _jump_to_next_marker(code_editor : TextEdit) -> void:
 		
 		# last marker doesn't get mirrored
 		if not tabstop_numbers:
-			emit_signal("snippet_insertion_done")
+			if not OPTIONS_POPUP.visible:
+				emit_signal("snippet_insertion_done")
 			# if last marker is marker (i.e. it hasn't been replaced by a variable) delete it
 			var selection : String = code_editor.get_selection_text()
 			if  selection and selection.begins_with("[@") and selection.ends_with("]"):
@@ -369,7 +367,7 @@ func _jump_to_next_marker(code_editor : TextEdit) -> void:
 				code_editor.cut()
 				OS.clipboard = tmp
 	
-	# last marker was mirrored
+	# last marker was mirrored or no markers at all
 	else:
 		emit_signal("snippet_insertion_done")
 
