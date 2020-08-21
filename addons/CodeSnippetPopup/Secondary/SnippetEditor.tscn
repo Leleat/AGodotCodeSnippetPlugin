@@ -372,11 +372,6 @@ margin_right = 200.0
 margin_bottom = 88.5
 rect_min_size = Vector2( 400, 70 )
 window_title = "Potential Error Detected!"
-dialog_text = "It looks like a ConfigFile formatting error creeped in when you edited the snippet file with an external editor.
-
-You shouldn't save now. Instead you should manually recover the proper formatting with your text editor.
-
-If you continue, EVERYTHING after that error will be lost. Are you sure you want to save?"
 dialog_autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -406,3 +401,4 @@ __meta__ = {
 [connection signal="popup_hide" from="SnippetNameDialog" to="." method="_on_SnippetNameDialog_popup_hide"]
 [connection signal="text_entered" from="SnippetNameDialog/MarginContainer/LineEdit" to="." method="_on_SnippetNameLineEdit_text_entered"]
 [connection signal="confirmed" from="SaveConfirmationDialog" to="." method="_on_SaveConfirmationDialog_confirmed"]
+[connection signal="popup_hide" from="SaveConfirmationDialog" to="." method="_on_SaveConfirmationDialog_popup_hide"]

@@ -24,7 +24,7 @@ onready var save_confirmation_dialog := $SaveConfirmationDialog # only used when
 	
 var texteditor_text_changed := false # so you don't have to save the snippet body after every character change
 var tmp_cfg : ConfigFile # copy of snippets config for easily discardable changes
-var file_is_corrupted := false
+var file_was_corrupted := false
 
 
 func _ready() -> void:
@@ -92,10 +92,16 @@ func _on_SnippetEditor_about_to_show() -> void:
 		itemlist.select(0)
 		itemlist.emit_signal("item_selected", 0)
 	
-	file_is_corrupted = false
 	if _snippet_file_is_corrupted():
-		file_is_corrupted = true
-		push_warning("It looks like your snippet file is wrongly formatted. If you manually edited it, you should also manually recover the proper formatting with your text editor.")
+		file_was_corrupted = true
+		save_confirmation_dialog.dialog_text = "It looks like a ConfigFile formatting error creeped in when you edited the snippet file with an external editor." + \
+			"\n\nYou shouldn't maked edits (and save) with the built-in SnippetEditor for now. First you should manually recover the proper formatting with your text editor." + \
+			"\n\nIf you do save, EVERYTHING after the formatting error will be lost."
+		save_confirmation_dialog.rect_size = Vector2.ZERO
+		save_confirmation_dialog.popup_centered()
+	
+	else:
+		file_was_corrupted = false
 
 
 func _on_CancelButton_pressed() -> void:
@@ -110,14 +116,35 @@ func _on_CancelButton_gui_input(event: InputEvent) -> void:
 
 
 func _on_SaveButton_pressed() -> void:
-	if file_is_corrupted:
+	if _snippet_file_is_corrupted():
+		save_confirmation_dialog.dialog_text = "Formatting error! Manually recover the proper formatting with an external editor first." + \
+				" If you continue now, EVERYTHING after that error will be lost. Are you sure you want to save?"
+		save_confirmation_dialog.rect_size = Vector2.ZERO
 		save_confirmation_dialog.popup_centered()
+	
 	else:
+		if file_was_corrupted:
+			file_was_corrupted = false
+			save_confirmation_dialog.dialog_text = "Manually edited the snippet file." + \
+					"\n\nReloading snippets..."
+			save_confirmation_dialog.rect_size = Vector2.ZERO
+			save_confirmation_dialog.popup_centered()
+			yield(get_tree().create_timer(1.8), "timeout")
+			save_confirmation_dialog.hide()
+			return
+		
 		_save_to_snippet_file()
 
 
 func _on_SaveConfirmationDialog_confirmed() -> void:
-	_save_to_snippet_file()
+	if save_confirmation_dialog.dialog_text == "Formatting error! Manually recover the proper formatting with an external editor first." + \
+				" If you continue now, EVERYTHING after that error will be lost. Are you sure you want to save?":
+		_save_to_snippet_file()
+
+
+func _on_SaveConfirmationDialog_popup_hide() -> void:
+	if save_confirmation_dialog.dialog_text == "Manually edited the snippet file.\n\nReloading snippets...":
+		_on_SnippetEditor_about_to_show()
 
 
 func _on_AddButton_pressed() -> void:
@@ -406,10 +433,6 @@ func _on_SnippetNameDialog_popup_hide() -> void:
 	snippet_name_lineedit.clear()
 
 
-func _on_SaveConfirmationDialog_popup_hide() -> void:
-	pass # Replace with function body.
-
-
 func _reset_texteditors() -> void:
 	main_texteditor.text = ""
 	add_info.text = ""
@@ -429,25 +452,25 @@ func _snippet_file_is_corrupted() -> bool:
 	file.close()
 	
 	# get valid ConfigFile content to compare against complete content
+	owner._update_snippets()
 	var cfg_content : String = ""
-	for section in tmp_cfg.get_sections():
+	for section in owner.snippets_cfg.get_sections():
 		cfg_content += "[" + section + "]"
 		
-		for key in tmp_cfg.get_section_keys(section):
+		for key in owner.snippets_cfg.get_section_keys(section):
 			# valid keys
 			if key == "body":
-				cfg_content += "body=\"" + tmp_cfg.get_value(section, "body") + "\""
+				cfg_content += "body=\"" + owner.snippets_cfg.get_value(section, "body") + "\""
 			elif key == "additional_info":
-				cfg_content += "additional_info=\"" + tmp_cfg.get_value(section, "additional_info") + "\""
+				cfg_content += "additional_info=\"" + owner.snippets_cfg.get_value(section, "additional_info") + "\""
 			elif key == "other_info":
-				cfg_content += "other_info=\"" + tmp_cfg.get_value(section, "other_info") + "\""
+				cfg_content += "other_info=\"" + owner.snippets_cfg.get_value(section, "other_info") + "\""
 			
 			# invalid keys
 			else:
 				push_warning("Unknown section key in snippet file. Key: %s" % key)
 				return true
 	cfg_content = cfg_content.strip_escapes().replace(" ", "")
-	
 	return file_content != cfg_content
 
 
