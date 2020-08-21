@@ -174,7 +174,6 @@ syntax_highlighting = true
 show_line_numbers = true
 draw_tabs = true
 highlight_all_occurrences = true
-wrap_enabled = true
 caret_blink = true
 
 [node name="QuickNoteLabel" type="Label" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer2"]
@@ -199,6 +198,7 @@ hint_tooltip = "Quick access via Q key (when non-input node is focused).
 The QuickInfo is optional and will appear in the snippet list but greyed out. It won't be inserted when activating a snippet. It should be short. Otherwise the snippet list will have trouble formatting correctly."
 draw_tabs = true
 highlight_all_occurrences = true
+wrap_enabled = true
 caret_blink = true
 
 [node name="OtherInfoLabel" type="Label" parent="Main/VBoxContainer/HBoxContainer/VBoxContainer2"]
@@ -223,6 +223,7 @@ hint_tooltip = "Quick access via O key (when non-input node is focused).
 The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here."
 draw_tabs = true
 highlight_all_occurrences = true
+wrap_enabled = true
 caret_blink = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Main/VBoxContainer"]

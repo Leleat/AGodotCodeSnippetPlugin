@@ -94,9 +94,9 @@ func _on_SnippetEditor_about_to_show() -> void:
 	
 	if _snippet_file_is_corrupted():
 		file_was_corrupted = true
-		save_confirmation_dialog.dialog_text = "It looks like a ConfigFile formatting error creeped in when you edited the snippet file with an external editor." + \
+		save_confirmation_dialog.dialog_text = "It looks like a ConfigFile formatting error MAY HAVE creeped in when you edited the snippet file with an external editor." + \
 			"\n\nYou shouldn't maked edits (and save) with the built-in SnippetEditor for now. First you should manually recover the proper formatting with your text editor." + \
-			"\n\nIf you do save, EVERYTHING after the formatting error will be lost."
+			"\n\nIf you do save and there is a formatting error, EVERYTHING after the error will be lost. If all snippets loaded properly in the built-in editor, you can ignore this warning."
 		save_confirmation_dialog.rect_size = Vector2.ZERO
 		save_confirmation_dialog.popup_centered()
 	
@@ -118,7 +118,7 @@ func _on_CancelButton_gui_input(event: InputEvent) -> void:
 func _on_SaveButton_pressed() -> void:
 	if _snippet_file_is_corrupted():
 		save_confirmation_dialog.dialog_text = "Formatting error! Manually recover the proper formatting with an external editor first." + \
-				" If you continue now, EVERYTHING after that error will be lost. Are you sure you want to save?"
+				" If you continue now and there is a formatting error, EVERYTHING after that error will be lost. Are you sure you want to save?"
 		save_confirmation_dialog.rect_size = Vector2.ZERO
 		save_confirmation_dialog.popup_centered()
 	
@@ -138,7 +138,7 @@ func _on_SaveButton_pressed() -> void:
 
 func _on_SaveConfirmationDialog_confirmed() -> void:
 	if save_confirmation_dialog.dialog_text == "Formatting error! Manually recover the proper formatting with an external editor first." + \
-				" If you continue now, EVERYTHING after that error will be lost. Are you sure you want to save?":
+				" If you continue now and there is a formatting error, EVERYTHING after that error will be lost. Are you sure you want to save?":
 		_save_to_snippet_file()
 
 
@@ -448,7 +448,7 @@ func _snippet_file_is_corrupted() -> bool:
 	# get complete file_content (but only get the characters)
 	var file = File.new()
 	file.open(owner.snippet_config_path, File.READ)
-	var file_content = file.get_as_text().strip_escapes().replace(" ", "").replace("\\\"", "\"")
+	var file_content : String = file.get_as_text().c_unescape().strip_escapes().c_unescape().replace(" ", "").replace("\\", "")
 	file.close()
 	
 	# get valid ConfigFile content to compare against complete content
@@ -458,19 +458,14 @@ func _snippet_file_is_corrupted() -> bool:
 		cfg_content += "[" + section + "]"
 		
 		for key in owner.snippets_cfg.get_section_keys(section):
-			# valid keys
-			if key == "body":
-				cfg_content += "body=\"" + owner.snippets_cfg.get_value(section, "body") + "\""
-			elif key == "additional_info":
-				cfg_content += "additional_info=\"" + owner.snippets_cfg.get_value(section, "additional_info") + "\""
-			elif key == "other_info":
-				cfg_content += "other_info=\"" + owner.snippets_cfg.get_value(section, "other_info") + "\""
+			# unused key
+			if not key in ["body", "additional_info", "other_info"]:
+				push_warning("Unknown section key in snippet file. Key: %s. That key has no function." % key)
 			
-			# invalid keys
-			else:
-				push_warning("Unknown section key in snippet file. Key: %s" % key)
-				return true
-	cfg_content = cfg_content.strip_escapes().replace(" ", "")
+			cfg_content += key + "=\"" + owner.snippets_cfg.get_value(section, key, "") + "\""
+	
+	cfg_content = cfg_content.c_unescape().strip_escapes().replace(" ", "").replace("\\", "")
+	
 	return file_content != cfg_content
 
 
