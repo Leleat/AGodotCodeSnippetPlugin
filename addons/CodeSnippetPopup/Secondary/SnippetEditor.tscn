@@ -142,7 +142,6 @@ margin_top = 30.0
 margin_right = 491.0
 margin_bottom = 531.0
 size_flags_vertical = 3
-auto_height = true
 
 [node name="VSeparator" type="VSeparator" parent="Main/VBoxContainer/HBoxContainer"]
 modulate = Color( 0, 0, 0, 0 )

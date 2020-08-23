@@ -188,7 +188,7 @@ func _on_Edit_pressed() -> void:
 	var txt = snippet_file.get_as_text()
 	snippet_file.close()
 	
-	SNIPPET_EDITOR.popup_centered_clamped(editor_size)
+	SNIPPET_EDITOR.popup_centered_clamped(editor_size, .95)
 
 
 func _show_main_popup() -> void:
