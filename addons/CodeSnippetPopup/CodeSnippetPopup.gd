@@ -431,7 +431,7 @@ func _get_cursor_position() -> Vector2: # approx.; could use help for more preci
 	var vscroll_bar = code_editor.get_child(1)
 	
 	var curr_line : String
-	var line_width
+	var curr_line_width
 	var line_height = code_font.get_string_size("").y + EDITOR_SETTINGS.get_setting("text_editor/theme/line_spacing")
 	var tabs = " ".repeat(EDITOR_SETTINGS.get_setting("text_editor/indent/size") as int)
 	
@@ -440,12 +440,12 @@ func _get_cursor_position() -> Vector2: # approx.; could use help for more preci
 		curr_line = code_editor.get_line(code_editor.get_selection_from_line())
 		var selection_pos = curr_line.find( code_editor.get_selection_text()) 
 		var line_til_selection = curr_line.substr(0, selection_pos) 
-		line_width = code_font.get_string_size( line_til_selection.replace("\t", tabs) ).x
+		curr_line_width = code_font.get_string_size( line_til_selection.replace("\t", tabs) ).x
 	
 	else:
 		curr_line = code_editor.get_line(code_editor.cursor_get_line())
 		var line_til_cursor = curr_line.substr(0, code_editor.cursor_get_column()) 
-		line_width = code_font.get_string_size( line_til_cursor.replace("\t", tabs) ).x
+		curr_line_width = code_font.get_string_size( line_til_cursor.replace("\t", tabs) ).x
 	
 	var hidden_lines = 0
 	for line in (code_editor.get_selection_from_line() if code_editor.get_selection_text() else code_editor.cursor_get_line()):
@@ -453,7 +453,7 @@ func _get_cursor_position() -> Vector2: # approx.; could use help for more preci
 			hidden_lines += 1
 	
 	var pos : Vector2
-	pos.x = code_editor.rect_global_position.x + line_width + 80 - hscroll - (15 if not vscroll_bar.visible else 0) # 80 is the value from the left until the code folding symbol // 15 is just a MagicNr which looked right
+	pos.x = code_editor.rect_global_position.x + curr_line_width + 80 - hscroll - (15 if not vscroll_bar.visible else 0) # 80 is the value from the left until the code folding symbol // 15 is just a MagicNr which looked right
 	pos.y = code_editor.rect_global_position.y + (code_editor.cursor_get_line() - code_editor.scroll_vertical - hidden_lines - 1) * line_height + 48 # 48 is a MagicNr which looked right 
 	return pos
 
