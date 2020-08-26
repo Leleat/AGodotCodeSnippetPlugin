@@ -4,7 +4,7 @@
 [ext_resource path="res://addons/CodeSnippetPopup/Secondary/SnippetEditor.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/CodeSnippetPopup/Secondary/OptionsPopup.tscn" type="PackedScene" id=3]
 
-[sub_resource type="Image" id=3]
+[sub_resource type="Image" id=1]
 data = {
 "data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
 "format": "LumAlpha8",
@@ -16,7 +16,7 @@ data = {
 [sub_resource type="ImageTexture" id=2]
 flags = 4
 flags = 4
-image = SubResource( 3 )
+image = SubResource( 1 )
 size = Vector2( 16, 16 )
 
 [node name="CodeSnippetPopup" type="PopupPanel"]
@@ -353,7 +353,7 @@ You can manually enter a file path (file name is part of the file path) or use t
 
 Make sure the path exist otherwise it may cause Godot to crash. In that case you need to remove/redownload the plugin or manually edit the settings.cfg file to reset the settings."
 size_flags_horizontal = 11
-text = "/home/toni/.var/app/org.godotengine.Godot/data/godot/app_userdata/CodeSnippetsEnhanced/../Snippet1.cfg"
+text = "user://../CodeSnippets.cfg"
 align = 2
 caret_blink = true
 caret_blink_speed = 0.5
@@ -412,8 +412,8 @@ dialog_autowrap = true
 mode = 3
 access = 2
 show_hidden_files = true
-current_dir = "/home/toni/Godot/CodeSnippetsEnhanced"
-current_path = "/home/toni/Godot/CodeSnippetsEnhanced/"
+current_dir = "/home/toni/Godot/PluginDevelopment"
+current_path = "/home/toni/Godot/PluginDevelopment/"
 
 [node name="EnterShortcutPopup" type="WindowDialog" parent="SettingsPopup"]
 anchor_right = 1.0
@@ -514,16 +514,7 @@ flat = true
 [connection signal="pressed" from="Main/VBoxContainer/HBoxContainer/Settings" to="." method="_on_SettingsButton_pressed"]
 [connection signal="item_activated" from="Main/VBoxContainer/ItemList" to="." method="_on_ItemList_item_activated"]
 [connection signal="popup_hide" from="SettingsPopup" to="." method="_on_SettingsPopup_popup_hide"]
-[connection signal="text_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer/ShortcutLineEdit" to="." method="_on_ShortcutLineEdit_text_changed"]
 [connection signal="pressed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer/EditShortcutButton" to="." method="_on_ShortcutEditButton_pressed"]
-[connection signal="toggled" from="SettingsPopup/Main/VBoxContainer/HBoxContainer2/AdaptiveHeightCheckBox" to="." method="_on_AdaptiveHeightCheckBox_toggled"]
-[connection signal="toggled" from="SettingsPopup/Main/VBoxContainer/HBoxContainer10/StatusUpdatesCheckBox" to="." method="_on_StatusUpdatesCheckBox_toggled"]
-[connection signal="toggled" from="SettingsPopup/Main/VBoxContainer/HBoxContainer8/AtCursorCheckbox" to="." method="_on_AtCursorCheckbox_toggled"]
-[connection signal="value_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer3/PopupHeightSpinBox" to="." method="_on_MainHeightSpinBox_value_changed"]
-[connection signal="value_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer4/PopupWidthSpinBox" to="." method="_on_MainWidthSpinBox_value_changed"]
-[connection signal="value_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer5/EditorHeightSpinBox" to="." method="_on_EditorHeightSpinBox_value_changed"]
-[connection signal="value_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer6/EditorWidthSpinBox" to="." method="_on_EditorWidthSpinBox_value_changed"]
-[connection signal="text_changed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer7/FilepathLineEdit" to="." method="_on_FilepathLineEdit_text_changed"]
 [connection signal="pressed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer7/FileDialogButton" to="." method="_on_FileDialogButton_pressed"]
 [connection signal="pressed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer9/CancelButton" to="." method="_on_SettingsCancelButton_pressed"]
 [connection signal="pressed" from="SettingsPopup/Main/VBoxContainer/HBoxContainer9/SaveButton" to="." method="_on_SettingsSaveButton_pressed"]
