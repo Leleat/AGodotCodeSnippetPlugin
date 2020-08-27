@@ -123,7 +123,6 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 	# Settings page: recording keyboard input on release for shortcut setting.
 	if settings_enter_shortcut_popup.visible and not event.pressed:
 		settings_shortcut_lineedit.text = event.as_text()
-		keyboard_shortcut = event.as_text()
 		settings_enter_shortcut_popup.hide()
 
 
