@@ -20,6 +20,7 @@ image = SubResource( 1 )
 size = Vector2( 16, 16 )
 
 [node name="CodeSnippetPopup" type="PopupPanel"]
+visible = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
@@ -40,11 +41,11 @@ margin_right = 1016.0
 margin_bottom = 592.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Main/VBoxContainer"]
-margin_right = 1912.0
+margin_right = 1016.0
 margin_bottom = 26.0
 
 [node name="Filter" type="LineEdit" parent="Main/VBoxContainer/HBoxContainer"]
-margin_right = 1704.0
+margin_right = 808.0
 margin_bottom = 26.0
 hint_tooltip = "Ending the search_string with \" X\" (space + integer) will jump to the X-th item in the list.
 
@@ -59,24 +60,24 @@ caret_blink = true
 caret_blink_speed = 0.5
 
 [node name="Copy" type="Button" parent="Main/VBoxContainer/HBoxContainer"]
-margin_left = 1708.0
-margin_right = 1769.0
+margin_left = 812.0
+margin_right = 873.0
 margin_bottom = 26.0
 hint_tooltip = "Copy the selected snippet to your clipboard. The copy will include all jump markers/tabstops WITHOUT the ability to use the jumping."
 text = "Copy"
 icon = SubResource( 2 )
 
 [node name="Edit" type="Button" parent="Main/VBoxContainer/HBoxContainer"]
-margin_left = 1773.0
-margin_right = 1827.0
+margin_left = 877.0
+margin_right = 931.0
 margin_bottom = 26.0
 hint_tooltip = "Open the built-in SnippetEditor"
 text = "Edit"
 icon = SubResource( 2 )
 
 [node name="Settings" type="Button" parent="Main/VBoxContainer/HBoxContainer"]
-margin_left = 1831.0
-margin_right = 1912.0
+margin_left = 935.0
+margin_right = 1016.0
 margin_bottom = 26.0
 hint_tooltip = " Configuration options for this plugin."
 text = "Settings"
@@ -84,8 +85,8 @@ icon = SubResource( 2 )
 
 [node name="ItemList" type="ItemList" parent="Main/VBoxContainer"]
 margin_top = 30.0
-margin_right = 1912.0
-margin_bottom = 1072.0
+margin_right = 1016.0
+margin_bottom = 592.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 items = [ " 0  :: ", null, false, "_ready", null, false, "", null, true, " 1  :: ", null, false, "_enter_tree", null, false, "", null, true, " 2  :: ", null, false, "_exit_tree", null, false, "", null, true, " 3  :: ", null, false, "_physics_process", null, false, " (delta : float)", null, true, " 4  :: ", null, false, "_process", null, false, " (delta : float)", null, true, " 5  :: ", null, false, "_input", null, false, " (event : InputEvent)", null, true, " 6  :: ", null, false, "_unhandled_input", null, false, " (event : InputEvent)", null, true, " 7  :: ", null, false, "_unhandled_key_input", null, false, " (event : InputEventKey)", null, true, " 8  :: ", null, false, "_gui_input", null, false, " (event : InputEvent)", null, true, " 9  :: ", null, false, "_draw", null, false, "", null, true ]
@@ -95,6 +96,7 @@ __meta__ = {
 }
 
 [node name="SettingsPopup" type="WindowDialog" parent="."]
+visible = true
 margin_left = 4.0
 margin_top = 4.0
 margin_right = 1020.0
@@ -123,7 +125,7 @@ margin_right = 976.0
 margin_bottom = 552.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 24.0
 
 [node name="CustomShortcut" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer"]
@@ -140,7 +142,7 @@ text = "Keyboard shortcut"
 
 [node name="ShortcutLineEdit" type="LineEdit" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer"]
 margin_left = 254.0
-margin_right = 1839.0
+margin_right = 943.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 165, 0 )
 hint_tooltip = "Clicking the EditButton will record the next pressed Keyboard input. You can also manually enter the keyboard shortcut.
@@ -150,11 +152,10 @@ Make sure you do it right. Otherwise you won't be able to open the plugin anymor
 mouse_filter = 1
 size_flags_horizontal = 11
 text = "Control+T"
-align = 2
 
 [node name="EditShortcutButton" type="Button" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer"]
-margin_left = 1843.0
-margin_right = 1872.0
+margin_left = 947.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 29, 0 )
 hint_tooltip = "Clicking the EditButton will record the next pressed Keyboard input. You can also manually enter the keyboard shortcut.
@@ -166,7 +167,7 @@ icon = SubResource( 2 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 28.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 52.0
 
 [node name="AdaptiveHeight" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer2"]
@@ -179,18 +180,16 @@ mouse_filter = 1
 text = "Adaptive height"
 
 [node name="AdaptiveHeightCheckBox" type="CheckBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer2"]
-margin_left = 1848.0
-margin_right = 1872.0
+margin_left = 952.0
+margin_right = 976.0
 margin_bottom = 24.0
 hint_tooltip = "Change the height of the popup based on the number of items in the list."
 size_flags_horizontal = 10
 pressed = true
-align = 2
-expand_icon = true
 
 [node name="HBoxContainer10" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 56.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 80.0
 
 [node name="StatusUpdate" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer10"]
@@ -202,8 +201,8 @@ mouse_filter = 1
 text = "Show status  updates"
 
 [node name="StatusUpdatesCheckBox" type="CheckBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer10"]
-margin_left = 1848.0
-margin_right = 1872.0
+margin_left = 952.0
+margin_right = 976.0
 margin_bottom = 24.0
 hint_tooltip = "Show a popup when the snippet is completely inserted (i.e. all jumps and mirroring is done) or when the insertion is aborted via the Esc key."
 size_flags_horizontal = 10
@@ -211,7 +210,7 @@ pressed = true
 
 [node name="HBoxContainer8" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 84.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 108.0
 
 [node name="Label" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer8"]
@@ -223,15 +222,15 @@ mouse_filter = 1
 text = "Main popup at cursor position (approx.)"
 
 [node name="AtCursorCheckbox" type="CheckBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer8"]
-margin_left = 1848.0
-margin_right = 1872.0
+margin_left = 952.0
+margin_right = 976.0
 margin_bottom = 24.0
 hint_tooltip = "Instead of appearing at the screen center, the popup will apear at the text cursor position (or at least tries to)."
 size_flags_horizontal = 10
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 112.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 136.0
 
 [node name="PopupHeight" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer3"]
@@ -244,17 +243,16 @@ text = "Main popup's height"
 
 [node name="PopupHeightSpinBox" type="SpinBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer3"]
 margin_left = 254.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 11
 max_value = 6000.0
 value = 500.0
-align = 2
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 140.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 164.0
 
 [node name="PopupWidth" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer4"]
@@ -267,17 +265,16 @@ text = "Main popup's width"
 
 [node name="PopupWidthSpinBox" type="SpinBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer4"]
 margin_left = 254.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 11
 max_value = 6000.0
 value = 750.0
-align = 2
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 168.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 192.0
 
 [node name="EditorHeight" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer5"]
@@ -290,17 +287,16 @@ text = "Snippet editor's popup height"
 
 [node name="EditorHeightSpinBox" type="SpinBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer5"]
 margin_left = 254.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 11
 max_value = 6000.0
 value = 800.0
-align = 2
 
 [node name="HBoxContainer6" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 196.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 220.0
 
 [node name="EditorWidth2" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer6"]
@@ -313,17 +309,16 @@ text = "Snippet editor's popup width"
 
 [node name="EditorWidthSpinBox" type="SpinBox" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer6"]
 margin_left = 254.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 11
 max_value = 6000.0
 value = 1200.0
-align = 2
 
 [node name="HBoxContainer7" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
 margin_top = 224.0
-margin_right = 1872.0
+margin_right = 976.0
 margin_bottom = 248.0
 
 [node name="EditorWidth3" type="Label" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer7"]
@@ -343,7 +338,7 @@ text = "File path of snippet cfg file"
 
 [node name="FilepathLineEdit" type="LineEdit" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer7"]
 margin_left = 254.0
-margin_right = 1840.0
+margin_right = 944.0
 margin_bottom = 24.0
 hint_tooltip = "The default path saves the snippet file in the directory where Godot's saves a project's settings (user://../CodeSnippets.cfg). 
 
@@ -354,13 +349,12 @@ You can manually enter a file path (file name is part of the file path) or use t
 Make sure the path exist otherwise it may cause Godot to crash. In that case you need to remove/redownload the plugin or manually edit the settings.cfg file to reset the settings."
 size_flags_horizontal = 11
 text = "user://../CodeSnippets.cfg"
-align = 2
 caret_blink = true
 caret_blink_speed = 0.5
 
 [node name="FileDialogButton" type="Button" parent="SettingsPopup/Main/VBoxContainer/HBoxContainer7"]
-margin_left = 1844.0
-margin_right = 1872.0
+margin_left = 948.0
+margin_right = 976.0
 margin_bottom = 24.0
 hint_tooltip = "The default path saves the snippet file in the directory where Godot's saves a project's settings (user://../CodeSnippets.cfg). 
 
@@ -372,10 +366,10 @@ Make sure the path exist otherwise it may cause Godot to crash. In that case you
 icon = SubResource( 2 )
 
 [node name="HBoxContainer9" type="HBoxContainer" parent="SettingsPopup/Main/VBoxContainer"]
-margin_left = 836.0
-margin_top = 1010.0
-margin_right = 1036.0
-margin_bottom = 1032.0
+margin_left = 388.0
+margin_top = 530.0
+margin_right = 588.0
+margin_bottom = 552.0
 rect_min_size = Vector2( 200, 0 )
 size_flags_horizontal = 4
 size_flags_vertical = 10
