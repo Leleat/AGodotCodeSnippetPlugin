@@ -305,7 +305,7 @@ The [section] is the snippet name and it is the name which will appear in the sn
 \"additional_info\" is optional and will appear in the snippet list but greyed out. It won't be inserted when activating a snippet. 
 \"other_info\" is also optional and will be shown as a tooltip in the snippet list.
 
-Use [@X] in your snippets, where X is an integer, to mark the position(s) the cursor jumps to. Once the snippet has been inserted into the code editor, you can jump with the cursor to the [@x] marker in the text using the shortcut key (Ctrl+Tab by default). The numerical order of the tabstops will be respected. If you use a number multiple times, the code you used at the first jump marker will be mirrored to the other markers with the same number. 
+Use [@X] in your snippets, where X is an integer, to mark the position(s) the cursor jumps to. Once the snippet has been inserted into the code editor, you can jump with the cursor to the [@X] marker in the text using the shortcut key (Ctrl+E by default). The numerical order of the tabstops will be respected. If you use a number multiple times, the code you used at the first jump marker will be mirrored to the other markers with the same number. 
 
 You can add a placeholder/dropdown options by separating the options by commas. For example: [@1:OptionA,OptionB] will be the first position the cursor will jump to after the snippet has been inserted. A popup window will open with \"OptionA\" and \"OptionB\" as choices under the text cursor position.
 
