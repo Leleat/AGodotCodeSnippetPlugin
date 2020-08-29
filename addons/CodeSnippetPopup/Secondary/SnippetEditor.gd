@@ -91,6 +91,9 @@ func _on_SnippetEditor_about_to_show() -> void:
 	if itemlist.get_item_count():
 		itemlist.select(0)
 		itemlist.emit_signal("item_selected", 0)
+		rename_button.disabled = false
+		move_down_button.disabled = false
+		move_up_button.disabled = false
 	
 	if _snippet_file_is_corrupted():
 		file_was_corrupted = true
@@ -270,7 +273,11 @@ func _on_MoveDownButton_pressed() -> void:
 
 
 func _on_SrcButton_pressed() -> void:
-	OS.shell_open(ProjectSettings.globalize_path(owner.snippet_config_path.get_base_dir()))
+	var err = OS.shell_open("file://" + ProjectSettings.globalize_path(owner.snippet_config_path.get_base_dir()))
+	if err != OK:
+		push_warning("Snippet Error: LocalPath: %s" % owner.snippet_config_path.get_base_dir())
+		push_warning("Snippet Error: GlobalPath: %s" % ProjectSettings.globalize_path(owner.snippet_config_path.get_base_dir()))
+		push_warning("Error opening source folder for your code snippets with your file manager. Error code: %s" % err)
 
 
 func _on_HelpButton_pressed() -> void:

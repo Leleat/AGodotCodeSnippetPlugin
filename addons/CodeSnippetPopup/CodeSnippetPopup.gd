@@ -54,8 +54,6 @@ var tabstop_numbers : Array # numerically sorted array of the numbers of the jum
 var current_main_screen : String = ""
 var snippets_cfg : ConfigFile
 var version_number # of plugin
-var prev_file_path := "" # for snippet cfg file in settings page
-var prev_shortcut := "" # for settings page
 	
 const LINE = 0 # different than TextEdits search results 
 const COLUMN = 1 # different than TextEdits search results
@@ -125,7 +123,6 @@ func _unhandled_key_input(event : InputEventKey) -> void:
 	# Settings page: recording keyboard input on release for shortcut setting.
 	if settings_enter_shortcut_popup.visible and not event.pressed:
 		settings_shortcut_lineedit.text = event.as_text()
-		keyboard_shortcut = event.as_text()
 		settings_enter_shortcut_popup.hide()
 
 
@@ -431,7 +428,7 @@ func _get_cursor_position() -> Vector2: # approx.; could use help for more preci
 	var vscroll_bar = code_editor.get_child(1)
 	
 	var curr_line : String
-	var line_width
+	var curr_line_width
 	var line_height = code_font.get_string_size("").y + EDITOR_SETTINGS.get_setting("text_editor/theme/line_spacing")
 	var tabs = " ".repeat(EDITOR_SETTINGS.get_setting("text_editor/indent/size") as int)
 	
@@ -440,12 +437,12 @@ func _get_cursor_position() -> Vector2: # approx.; could use help for more preci
 		curr_line = code_editor.get_line(code_editor.get_selection_from_line())
 		var selection_pos = curr_line.find( code_editor.get_selection_text()) 
 		var line_til_selection = curr_line.substr(0, selection_pos) 
-		line_width = code_font.get_string_size( line_til_selection.replace("\t", tabs) ).x
+		curr_line_width = code_font.get_string_size( line_til_selection.replace("\t", tabs) ).x
 	
 	else:
 		curr_line = code_editor.get_line(code_editor.cursor_get_line())
 		var line_til_cursor = curr_line.substr(0, code_editor.cursor_get_column()) 
-		line_width = code_font.get_string_size( line_til_cursor.replace("\t", tabs) ).x
+		curr_line_width = code_font.get_string_size( line_til_cursor.replace("\t", tabs) ).x
 	
 	var hidden_lines = 0
 	for line in (code_editor.get_selection_from_line() if code_editor.get_selection_text() else code_editor.cursor_get_line()):
@@ -453,7 +450,7 @@ func _get_cursor_position() -> Vector2: # approx.; could use help for more preci
 			hidden_lines += 1
 	
 	var pos : Vector2
-	pos.x = code_editor.rect_global_position.x + line_width + 80 - hscroll - (15 if not vscroll_bar.visible else 0) # 80 is the value from the left until the code folding symbol // 15 is just a MagicNr which looked right
+	pos.x = code_editor.rect_global_position.x + curr_line_width + 80 - hscroll - (15 if not vscroll_bar.visible else 0) # 80 is the value from the left until the code folding symbol // 15 is just a MagicNr which looked right
 	pos.y = code_editor.rect_global_position.y + (code_editor.cursor_get_line() - code_editor.scroll_vertical - hidden_lines - 1) * line_height + 48 # 48 is a MagicNr which looked right 
 	return pos
 
@@ -506,12 +503,6 @@ func _on_SettingsButton_pressed() -> void:
 	settings_editshortcut_button.grab_focus()
 
 
-func _on_ShortcutLineEdit_text_changed(new_text: String) -> void:
-	if not prev_shortcut:
-		prev_shortcut = keyboard_shortcut
-	keyboard_shortcut = new_text
-
-
 func _on_ShortcutEditButton_pressed() -> void:
 	if settings_editshortcut_button.icon == get_icon("Edit", "EditorIcons"):
 		settings_editshortcut_button.set_deferred("icon", get_icon("DebugSkipBreakpointsOff", "EditorIcons"))
@@ -526,40 +517,6 @@ func _on_EnterShortcutPopup_modal_closed_or_hide() -> void:
 	if settings_editshortcut_button:
 		settings_editshortcut_button.icon = get_icon("Edit", "EditorIcons")
 		settings_editshortcut_button.grab_focus()
-
-
-func _on_AdaptiveHeightCheckBox_toggled(button_pressed: bool) -> void:
-	adapt_popup_height = button_pressed
-
-
-func _on_StatusUpdatesCheckBox_toggled(button_pressed: bool) -> void:
-	status_updates_enabled = button_pressed
-
-
-func _on_AtCursorCheckbox_toggled(button_pressed: bool) -> void:
-	popup_at_cursor_pos = button_pressed
-
-
-func _on_MainHeightSpinBox_value_changed(value: float) -> void:
-	main_popup_size.y = value
-
-
-func _on_MainWidthSpinBox_value_changed(value: float) -> void:
-	main_popup_size.x = value
-
-
-func _on_EditorHeightSpinBox_value_changed(value: float) -> void:
-	editor_size.y = value
-
-
-func _on_EditorWidthSpinBox_value_changed(value: float) -> void:
-	editor_size.x = value
-
-
-func _on_FilepathLineEdit_text_changed(new_text: String) -> void:
-	if not prev_file_path:
-		prev_file_path = snippet_config_path
-	snippet_config_path = new_text
 
 
 func _on_FileDialogButton_pressed() -> void:
@@ -578,38 +535,60 @@ func _on_FileDialog_file_selected(path: String) -> void:
 
 
 func _on_SettingsSaveButton_pressed() -> void: # settings button
-	if prev_file_path: # file path for snippets was changed
-		if not ProjectSettings.globalize_path(snippet_config_path).get_base_dir(): # invalid path... sorta
+	var settings = ConfigFile.new()
+	var error = settings.load("user://../code_snippets_settings%s.cfg" % version_number)
+	if error != OK:
+		push_warning("Plugin couldn't load snippet settings. Error code: %s" % error)
+		return
+	
+	# set shortcut setting
+	var prev_shortcut = settings.get_value("Settings", "shortcut")
+	var new_shortcut = settings_shortcut_lineedit.text
+	if prev_shortcut != new_shortcut:
+		var shortcut_is_valid = true
+		for key in new_shortcut.split("+"):
+			if not OS.find_scancode_from_string(key): # doesn't check invalid key combos (for example Control+Control+E), only invalid single keys
+				shortcut_is_valid = false
+				settings_shortcut_lineedit.text = prev_shortcut
+				push_warning("Invalid keyboard shortcut for code snippets." )
+		if shortcut_is_valid:
+			keyboard_shortcut = settings_shortcut_lineedit.text
+	
+	# set snippet file path setting
+	var prev_file_path = settings.get_value("Settings", "file_path")
+	var new_file_path = settings_file_path_lineedit.text
+	if prev_file_path != new_file_path:
+		if not ProjectSettings.globalize_path(new_file_path).get_base_dir(): # invalid path... sorta
 			settings_file_path_lineedit.text = prev_file_path
-			snippet_config_path = prev_file_path
 			push_warning("Invalid file path for code snippets." )
 		else:
 			var new_file = File.new()
-			var err = new_file.open(snippet_config_path, File.READ_WRITE)
+			var err = new_file.open(new_file_path, File.READ_WRITE)
 			if err == ERR_FILE_NOT_FOUND:
-				new_file.open(snippet_config_path, File.WRITE_READ)
+				new_file.open(new_file_path, File.WRITE_READ)
 			elif err != OK:
 				push_warning("Error saving the snippets_cfg. Error code: %s." % err)
 				return
 			if new_file.get_as_text() == "":
 				var file = File.new()
-				var error = file.open(prev_file_path, File.READ)
-				if error != OK:
-					push_warning("Error saving the snippets_cfg. Error code: %s." % error)
+				var err2 = file.open(prev_file_path, File.READ)
+				if err2 != OK:
+					push_warning("Error saving the snippets_cfg. Error code: %s." % err2)
 					return
 				new_file.store_string(file.get_as_text())
 				file.close()
 				new_file.close()
-		prev_file_path = ""
+			snippet_config_path = new_file_path
 		_update_snippets()
-		
-	if prev_shortcut: # keyboard shortcut was changed
-		for key in keyboard_shortcut.split("+"):
-			if not OS.find_scancode_from_string(key):
-				settings_shortcut_lineedit.text = prev_shortcut
-				keyboard_shortcut = prev_shortcut
-				push_warning("Invalid keyboard shortcut for code snippets." )
-		prev_shortcut = ""
+	
+	# set other settings
+	adapt_popup_height = settings_adaptive_height_checkbox.pressed
+	status_updates_enabled = settings_status_updates_checkbox.pressed
+	popup_at_cursor_pos = settings_popup_at_cursor_pos_checkbox.pressed
+	main_popup_size.y = settings_main_height_spinbox.value
+	main_popup_size.x = settings_main_width_spinbox.value
+	editor_size.y = settings_editor_height_spinbox.value
+	editor_size.x = settings_editor_width_spinbox.value
 	
 	_save_settings()
 	_update_popup_list()
