@@ -274,7 +274,10 @@ func _on_MoveDownButton_pressed() -> void:
 
 func _on_SrcButton_pressed() -> void:
 	var err = OS.shell_open("file://" + ProjectSettings.globalize_path(owner.snippet_config_path.get_base_dir()))
-	push_warning("---- ErrCode: " + String(err) + " ---- LocalPath: " + owner.snippet_config_path.get_base_dir() + " ---- GlobalPath: " + ProjectSettings.globalize_path(owner.snippet_config_path.get_base_dir()))
+	if err != OK:
+		push_warning("Snippet Error: LocalPath: %s" % owner.snippet_config_path.get_base_dir())
+		push_warning("Snippet Error: GlobalPath: %s" % ProjectSettings.globalize_path(owner.snippet_config_path.get_base_dir()))
+		push_warning("Error opening source folder for your code snippets with your file manager. Error code: %s" % err)
 
 
 func _on_HelpButton_pressed() -> void:
