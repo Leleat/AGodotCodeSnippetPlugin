@@ -207,7 +207,7 @@ margin_right = 491.0
 margin_bottom = 327.0
 hint_tooltip = "Quick access via O key (when non-input node is focused).
 
-The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here."
+The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here. It will appear as a tooltip in the snippet list."
 mouse_filter = 1
 text = "Other information:"
 valign = 1
@@ -219,7 +219,7 @@ margin_bottom = 531.0
 rect_min_size = Vector2( 0, 200 )
 hint_tooltip = "Quick access via O key (when non-input node is focused).
 
-The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here."
+The OtherInformation is also optional. It can be anything - ranging from a description to other notes. The length doesn't matter here. It will appear as a tooltip in the snippet list."
 draw_tabs = true
 highlight_all_occurrences = true
 wrap_enabled = true
