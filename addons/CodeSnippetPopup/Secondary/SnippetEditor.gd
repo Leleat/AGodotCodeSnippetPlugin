@@ -181,7 +181,9 @@ func _on_RenameButton_pressed() -> void:
 			itemlist.emit_signal("item_selected", idx)
 		snippet_name_dialog.popup_centered_clamped(Vector2(200, 50), .75)
 		snippet_name_dialog.window_title = "Rename Snippet"
+		snippet_name_lineedit.text = itemlist.get_item_text(selection[0])
 		snippet_name_lineedit.grab_focus()
+		snippet_name_lineedit.caret_position = snippet_name_lineedit.text.length()
 
 
 func _on_MoveUpButton_pressed() -> void:
