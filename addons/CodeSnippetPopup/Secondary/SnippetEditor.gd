@@ -151,7 +151,7 @@ func _on_SaveConfirmationDialog_popup_hide() -> void:
 
 
 func _on_AddButton_pressed() -> void:
-	snippet_name_dialog.popup_centered_clamped(Vector2(200, 50), .75)
+	snippet_name_dialog.popup_centered_clamped(Vector2(300, 50), .75)
 	snippet_name_dialog.window_title = "New Snippet"
 	snippet_name_lineedit.grab_focus()
 
@@ -179,9 +179,10 @@ func _on_RenameButton_pressed() -> void:
 			var idx = selection[0]
 			itemlist.select(idx)
 			itemlist.emit_signal("item_selected", idx)
-		snippet_name_dialog.popup_centered_clamped(Vector2(200, 50), .75)
+		snippet_name_dialog.popup_centered_clamped(Vector2(300, 50), .75)
 		snippet_name_dialog.window_title = "Rename Snippet"
 		snippet_name_lineedit.text = itemlist.get_item_text(selection[0])
+		snippet_name_lineedit.select_all()
 		snippet_name_lineedit.grab_focus()
 		snippet_name_lineedit.caret_position = snippet_name_lineedit.text.length()
 

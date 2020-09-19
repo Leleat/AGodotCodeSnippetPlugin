@@ -39,8 +39,8 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Main"]
-margin_right = 994.0
-margin_bottom = 575.0
+margin_right = 1890.0
+margin_bottom = 1055.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Main/VBoxContainer"]
 margin_right = 994.0
@@ -299,7 +299,7 @@ margin_top = 18.0
 margin_right = 960.0
 margin_bottom = 460.0
 size_flags_vertical = 3
-text = "The snippet file uses a INI-style structure. If you  want to edit the snippet file manually:
+text = "If you  want to edit the snippet file manually, the file uses a INI-style structure.:
 The [section] is the snippet name and it is the name which will appear in the snippet list.
 \"body\" (without quotations marks) is the only key which has to be defined. 
 \"additional_info\" is optional and will appear in the snippet list but greyed out. It won't be inserted when activating a snippet. 
