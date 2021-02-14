@@ -1,4 +1,11 @@
-# Godot Code Snippet Plugin
+# This is no longer being developed
+.
+
+.
+
+.
+
+.
 
 This plugin adds code snipptes to Godot 3.2.X. The popup is default shown with **Control+T**. Read the built-in help page and the tooltips to see how to use this plugin.
 
